@@ -33,7 +33,134 @@ const testDatabaseConnection = async (req, res) => {
   }
 };
 
+// Route 2: GET /search?field?query?limit
+const search = async (req, res) => {
+  const { field, query, limit } = req.query;
+
+  // define allowed fields
+  const allowedFields = ["title", "isbn", "author", "publisher"];
+  if (!allowedFields.includes(field)) {
+    return res.status(400).json({ error: "Invalid search parameter" });
+  }
+
+  // set limit to 10 if not given
+  const resLimit = limit ? parseInt(limit, 10) : 10;
+
+  try {
+    const result = await connection.query(
+      `SELECT * FROM book WHERE ${field} ILIKE $1 LIMIT $2`,
+      [`%${query}%`, resLimit]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing search query", err);
+    res.status(500).json({ error: "Failed to execute search query" });
+  }
+};
+
+// Route 3: GET /random
+const random = async (req, res) => {
+  try {
+    const result = await connection.query(`
+        SELECT *
+        FROM book
+        ORDER BY RANDOM()
+        LIMIT 1
+      `);
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("Error fetching random book", err);
+    res.status(500).json({ error: "Failed to fetch random book" });
+  }
+};
+
+// Route 4: GET /popular-books-by-location
+const popularBooksByLocation = async (req, res) => {
+  const { latitude, longitude } = req.query;
+
+  const lat = parseFloat(latitude);
+  const long = parseFloat(longitude);
+
+  // ensure lat and long are provided
+  if (isNaN(lat) || isNaN(long)) {
+    return res
+      .status(400)
+      .json({ error: "Latitude and longitude are required" });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      WITH location_filtered_users AS (
+        SELECT
+            p.userId,
+            r.isbn,
+            l.latitude,
+            l.longitude,
+            r.score,
+            l.location_id,
+            l.city,
+            l.state,
+            l.country
+        FROM person p
+                JOIN review r ON p.userId = r.userId
+                JOIN location l ON p.location_id = l.location_id
+        WHERE l.latitude BETWEEN CAST($1 AS float8) - 2 AND CAST($1 AS float8) + 2
+          AND l.longitude BETWEEN CAST($2 AS float8) - 2 AND CAST($2 AS float8) + 2
+    ),
+        geographic_popular_books AS (
+            SELECT
+                lfu.isbn,
+                b.title,
+                b.author,
+                COUNT(lfu.userId) AS review_count,
+                ROUND(CAST(AVG(lfu.score) AS numeric), 2) AS avg_rating,
+                lfu.city,
+                lfu.state,
+                lfu.country
+            FROM location_filtered_users lfu
+                      JOIN book b ON lfu.isbn = b.isbn
+            GROUP BY lfu.isbn, b.title, b.author, lfu.city, lfu.state,
+                      lfu.country
+            HAVING COUNT(lfu.userId) > 2
+        ),
+        ranked_books AS (
+            SELECT
+                gpb.isbn,
+                gpb.title,
+                gpb.author,
+                gpb.review_count,
+                gpb.avg_rating,
+                gpb.city,
+                gpb.state,
+                gpb.country,
+                ROW_NUMBER() OVER (
+                    PARTITION BY gpb.city, gpb.state, gpb.country
+                    ORDER BY gpb.avg_rating DESC, gpb.review_count DESC
+                    ) AS rank
+            FROM geographic_popular_books gpb
+        )
+      SELECT city, state, country, isbn, title, author, review_count,
+            avg_rating, rank
+      FROM ranked_books
+      WHERE rank BETWEEN 1 AND 5
+      ORDER BY city, state, country;
+      `,
+      [lat, long]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing popular books by location query", err);
+    res
+      .status(500)
+      .json({ error: "Failed to execute popular books by location query" });
+  }
+};
+
 // export routes
 module.exports = {
   testDatabaseConnection,
+  search,
+  random,
+  popularBooksByLocation,
 };

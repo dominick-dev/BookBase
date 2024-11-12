@@ -18,6 +18,11 @@ app.get("/", (req, res) => {
 // Route to test connection to DB
 app.get("/test-db", routes.testDatabaseConnection);
 
+// Bookbase routes
+app.get("/search", routes.search);
+app.get("/random", routes.random);
+app.get("/popular-books-by-location", routes.popularBooksByLocation);
+
 // Start the server
 app.listen(config.server_port, () => {
   console.log(
