@@ -10,10 +10,13 @@ app.use(
   })
 );
 
-// Route for testing
+// Route to test that server is running
 app.get("/", (req, res) => {
   res.send("Express server running!");
 });
+
+// Route to test connection to DB
+app.get("/test-db", routes.testDatabaseConnection);
 
 // Start the server
 app.listen(config.server_port, () => {
