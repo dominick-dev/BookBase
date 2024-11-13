@@ -25,6 +25,9 @@ app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/polarizing-books", routes.polarizingBooks);
 app.get("/by-age-group", routes.byAgeGroup);
 app.get("/by-location", routes.byLocation)
+app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
+app.get("/magnum-opus/:author", routes.magnumOpus);
+app.get("/hidden-gems", routes.hiddenGems);
 
 // Start the server
 app.listen(config.server_port, () => {
