@@ -254,10 +254,52 @@ const magnumOpus = async (req, res) => {
       .status(500)
       .json({error: "Failed to execute magnum opus query"});
   }
+}
+
+
+// ROUTE XXX: /hidden-gems
+const hiddenGems = async (req, res) => {
+
+  const minRating = parseFloat(req.query.minRating ) || 9.0;
+  const maxReviews = parseInt(req.query.maxReview) || 8;
+
+  try {
+    const result = await connection.query(
+      `
+      WITH review_summary AS (
+        SELECT
+            isbn,
+            avg(score) as avg_rating,
+            COUNT (userId) as review_count
+        FROM review
+        GROUP BY isbn
+        HAVING AVG(score) >= ${minRating} AND COUNT(userId) < ${maxReviews}
+     )
+      SELECT
+          b.isbn,
+          b.title,
+          b.author,
+          rs.avg_rating,
+          rs.review_count
+      FROM book b JOIN review_summary rs ON b.isbn = rs.isbn
+      WHERE b.author IS NOT NULL
+      ORDER BY rs.avg_rating DESC, rs. review_count DESC;
+      `
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing hidden gems query")
+
+    res
+    .status(500)
+    .json({error: "Failed to execute hidden gems query",
+      
+    })
+  }
+
 
 
 }
-
 
 // export routes
 module.exports = {
@@ -267,5 +309,5 @@ module.exports = {
   popularBooksByLocation,
   topReviewerFavorites,
   magnumOpus,
-  
+  hiddenGems,
 };
