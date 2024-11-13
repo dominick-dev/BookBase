@@ -222,6 +222,43 @@ const topReviewerFavorites = async(req, res) => {
   }
 }
 
+// Route XX: /magnum-opus
+const magnumOpus = async (req, res) => {
+  const author = req.params.author;
+
+  if(!author){
+    return res.status(400).json({error: "Author is required"});
+  }
+
+  try {
+    const response = await connection.query (
+    `
+    WITH review_summary AS (
+      SELECT
+          isbn,
+          AVG(score) as avg_rating
+      FROM review
+      GROUP BY isbn
+   )
+   SELECT b.isbn, b.title, b.author, rs.avg_rating
+   FROM book b JOIN review_summary rs ON b.isbn = rs.isbn
+   WHERE b.author LIKE '%${author}%'
+   ORDER BY avg_rating DESC
+   LIMIT 1;
+    `);
+    res.json(response.rows);
+  } catch (err) {
+    console.error("Error executing magnum opus query");
+
+    res
+      .status(500)
+      .json({error: "Failed to execute magnum opus query"});
+  }
+
+
+}
+
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -229,4 +266,6 @@ module.exports = {
   random,
   popularBooksByLocation,
   topReviewerFavorites,
+  magnumOpus,
+  
 };

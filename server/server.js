@@ -23,6 +23,7 @@ app.get("/search", routes.search);
 app.get("/random", routes.random);
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
+app.get("/magnum-opus/:author", routes.magnumOpus);
 
 // Start the server
 app.listen(config.server_port, () => {
