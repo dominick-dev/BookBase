@@ -157,10 +157,76 @@ const popularBooksByLocation = async (req, res) => {
   }
 };
 
+// Route XX: GET /top-reviewer-favorites/:genre
+const topReviewerFavorites = async(req, res) => {
+  const threshold = req.params.threshold ?? 10;
+  const genre = req.params.genre;
+
+  if(!genre) {
+    return res.status(400).json({error: "Genre paramater is required"});
+  }
+
+  try {
+    const response = await connection.query (
+      `WITH top_reviewers AS (
+        SELECT userId
+        FROM review
+        GROUP BY userId
+        HAVING count(*) > ${threshold}
+     ), top_reviewer_books AS (
+        SELECT r.isbn, r.userId
+        FROM review r JOIN top_reviewers ts ON r.userid = ts.userid
+     ), top_reviewer_scores AS (
+       SELECT trb.isbn, ROUND(CAST(AVG(r.score) AS numeric), 2) AS avg_top_reviewer_score
+       FROM review r JOIN top_reviewer_books trb ON r.isbn = trb.isbn AND r.userid = trb.userid
+       GROUP BY trb.isbn
+     ), genre_filtered_books AS (
+        SELECT
+            b.isbn,
+            b.title,
+            b.author,
+            b.genre_id
+        FROM book b JOIN genre g ON b.genre_id = g.genre_id
+        WHERE g.genre = '${genre}'
+     ), all_top_reviewer_books AS (
+        SELECT
+            gfb.isbn,
+            gfb.title,
+            gfb.author,
+            COUNT(trb.userid) AS top_reviewer_count,
+            trs.avg_top_reviewer_score
+        FROM genre_filtered_books gfb JOIN
+            top_reviewer_books trb ON gfb.isbn = trb.isbn JOIN
+            top_reviewer_scores trs ON gfb.isbn = trs.isbn
+        GROUP BY gfb.isbn, gfb.title, gfb.author, trs.avg_top_reviewer_score
+     ), distinct_author_book_combos AS (
+        SELECT DISTINCT ON (author)
+            isbn,
+            title,
+            author,
+            top_reviewer_count,
+            avg_top_reviewer_score as avg_rating
+        FROM all_top_reviewer_books
+        ORDER BY author, title, top_reviewer_count DESC, avg_rating
+     )
+     SELECT *
+     FROM distinct_author_book_combos
+     ORDER BY top_reviewer_count DESC, avg_rating;`
+    );
+    res.json(response.rows);
+  } catch (err) {
+    console.log(err)
+    res
+      .status(500)
+      .json({error: "Failed to execute top reviewer favorites query"})
+  }
+}
+
 // export routes
 module.exports = {
   testDatabaseConnection,
   search,
   random,
   popularBooksByLocation,
+  topReviewerFavorites,
 };
