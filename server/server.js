@@ -22,6 +22,9 @@ app.get("/test-db", routes.testDatabaseConnection);
 app.get("/search", routes.search);
 app.get("/random", routes.random);
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
+app.get("/polarizing-books", routes.polarizingBooks);
+app.get("/by-age-group", routes.byAgeGroup);
+app.get("/by-location", routes.byLocation)
 
 // Start the server
 app.listen(config.server_port, () => {
