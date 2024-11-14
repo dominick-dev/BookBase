@@ -209,11 +209,38 @@ const polarizingBooks = async (req, res) => {
 const byAgeGroup = async (req, res) => {
   try {
 
-      const {ageGroup} = req.query;
-      const definedGroups = ['Under 18', '18-30', '31-50', '51-65', '65+'];
-      if (!definedGroups.includes(ageGroup)) {
-        return res.status(400).json({error: "Requested age group not defined."})
+      const {birthYear} = req.params;
+      const birthYearInt = parseInt(birthYear); // attempt to parse
+
+      // check for parsing success
+      if (isNaN(birthYearInt)) {
+        return res.status(400).json({error: "Invalid birth year."})
       }
+
+      const age = new Date().getFullYear() - birthYearInt;
+
+      if (age < 0) {
+        return res.status(400).json({error: "Invalid birth year."})
+      }
+
+      let ageGroup;
+
+      if (age < 18) {
+        ageGroup = "Under 18";
+      } else if (age <= 30) {
+        ageGroup = "18-30";
+      } else if (age <= 50) {
+        ageGroup = "31-50";
+      } else if (age <= 65) {
+        ageGroup = "51-65";
+      } else {
+        ageGroup = "65+";
+      }
+
+      // const definedGroups = ['Under 18', '18-30', '31-50', '51-65', '65+'];
+      // if (!definedGroups.includes(ageGroup)) {
+      //   return res.status(400).json({error: "Requested age group not defined."})
+      // }
 
 
       const result = await connection.query(`
@@ -276,7 +303,7 @@ const byAgeGroup = async (req, res) => {
 const byLocation = async (req, res) => {
   try {
 
-      const {column, placeName} = req.query;
+      const {column, placeName} = req.params;
       const definedColumns = ['city', 'state', 'country'];
       if (!definedColumns.includes(column)) {
         return res.status(400).json({error: "Requested column not defined."})
