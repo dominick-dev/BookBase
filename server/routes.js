@@ -509,7 +509,7 @@ const helpfulUsers = async (req, res) => {
   }
 }
 
-// Route XX: /author-stats?authorName
+// Route XX: /author-stats
 const authorStats = async (req, res) => {
   
   // Optional author name param
@@ -555,6 +555,56 @@ const authorStats = async (req, res) => {
   }
 }
 
+// Route XX: /genre-stats
+const genreStats = async (req, res) => {
+  // Optional author name param
+  const genreName = req.query.genreName ? req.query.genreName.toString() : null;
+  const numGenres = parseInt(req.query.numGenres, 10) || 10;
+
+  // data validation
+  if (isNaN(numGenres) || numGenres < 0) {
+    return res.status(400).json({ error: "Invalid numGenres provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      SELECT
+        g.genre
+        , AVG(r.score) AS avg_rating
+        , AVG(CASE WHEN r.helpfulness IS NOT NULL AND SPLIT_PART(r.helpfulness, '/', 2)::float != 0 THEN
+            SPLIT_PART(r.helpfulness, '/', 1)::float / SPLIT_PART(r.helpfulness, '/', 2)::float
+        END) AS avg_helpfulness
+        , AVG(r.price) AS avg_price
+        , COUNT(r.isbn) AS num_reviews
+      FROM
+        genre g
+      JOIN
+        book b
+        ON g.genre_id = b.genre_id
+      JOIN
+        review r
+        ON b.isbn = r.ISBN
+      WHERE
+        ($1::text IS NULL OR LOWER(g.genre) LIKE LOWER(CONCAT('%', $1, '%')))
+      GROUP BY
+        g.genre
+      ORDER BY
+        avg_rating DESC
+      LIMIT $2;
+      `,
+      [genreName, numGenres]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing genre-stats query", err)
+
+    res
+    .status(500)
+    .json({error: "Failed to execute genre-stats query"});
+  }
+}
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -568,5 +618,6 @@ module.exports = {
   magnumOpus,
   hiddenGems,
   helpfulUsers,
-  authorStats
+  authorStats,
+  genreStats
 };

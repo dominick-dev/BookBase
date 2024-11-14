@@ -30,6 +30,7 @@ app.get("/magnum-opus/:author", routes.magnumOpus);
 app.get("/hidden-gems", routes.hiddenGems);
 app.get("/helpful-users", routes.helpfulUsers)
 app.get("/author-stats", routes.authorStats)
+app.get("/genre-stats", routes.genreStats)
 
 // Start the server
 app.listen(config.server_port, () => {
