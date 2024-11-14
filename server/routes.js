@@ -509,6 +509,52 @@ const helpfulUsers = async (req, res) => {
   }
 }
 
+// Route XX: /author-stats?authorName
+const authorStats = async (req, res) => {
+  
+  // Optional author name param
+  const authorName = req.query.authorName ? req.query.authorName.toString() : null;
+  const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
+
+  // data validation
+  if (isNaN(numAuthors) || numAuthors < 0) {
+    return res.status(400).json({ error: "Invalid numAuthors provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      SELECT
+        b.author, 
+        COUNT(b.isbn) AS n_books,
+        COUNT(r.userid) AS n_reviews,
+        AVG(r.score) AS avg_rating,
+        AVG(r.price) AS avg_price
+      FROM
+        book b
+      JOIN
+        review r ON b.isbn = r.isbn
+      WHERE
+        b.author IS NOT NULL
+        AND ($1::text IS NULL OR LOWER(b.author) LIKE LOWER(CONCAT('%', $1, '%')))
+      GROUP BY
+        b.author
+      ORDER BY
+        n_reviews DESC, n_books DESC, avg_rating DESC
+      LIMIT $2;
+      `,
+      [authorName, numAuthors]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing author-stats query", err)
+
+    res
+    .status(500)
+    .json({error: "Failed to execute author-stats query"})
+  }
+}
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -521,5 +567,6 @@ module.exports = {
   topReviewerFavorites,
   magnumOpus,
   hiddenGems,
-  helpfulUsers
+  helpfulUsers,
+  authorStats
 };

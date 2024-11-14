@@ -29,6 +29,7 @@ app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
 app.get("/magnum-opus/:author", routes.magnumOpus);
 app.get("/hidden-gems", routes.hiddenGems);
 app.get("/helpful-users", routes.helpfulUsers)
+app.get("/author-stats", routes.authorStats)
 
 // Start the server
 app.listen(config.server_port, () => {
