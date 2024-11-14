@@ -440,11 +440,74 @@ const hiddenGems = async (req, res) => {
       
     })
   }
-
-
-
 }
 
+// Route XX: /helpful-users
+const helpfulUsers = async (req, res) => {
+  
+  const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
+  const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
+
+  // Validation on the parameters if they're given
+  if (minNumVotes < 0) {
+    return res.status(400).json({ error: "Invalid minNumVotes provided. Please provide a positive integer." });
+  }
+  if (maxUsers < 0) {
+    return res.status(400).json({ error: "Invalid maxUsers provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      WITH calc_help AS (
+        SELECT
+            u.userid AS userid,
+            COALESCE(r.username, 'Unknown') AS username,
+            COUNT(*) AS num_reviews,
+            COUNT(DISTINCT r.isbn) AS n_books,
+            SUM(SPLIT_PART(r.helpfulness, '/', 2)::float) AS num_votes,
+            AVG(SPLIT_PART(r.helpfulness, '/', 1)::float
+                / SPLIT_PART(r.helpfulness, '/', 2)::float
+            ) AS avg_user_helpfulness
+        FROM
+            review r
+        LEFT JOIN
+            person u ON r.userid = u.userid
+        WHERE
+            r.helpfulness IS NOT NULL
+            AND SPLIT_PART(r.helpfulness, '/', 2)::float != 0
+        GROUP BY
+            u.userid, r.username
+      )
+      SELECT
+          userid,
+          username,
+          avg_user_helpfulness * num_votes AS weighted_user_helpfulness,
+          avg_user_helpfulness,
+          num_reviews,
+          num_votes,
+          n_books
+      FROM
+        calc_help
+      WHERE
+        num_votes >= $1
+      ORDER BY
+        weighted_user_helpfulness DESC
+      LIMIT $2
+      `,
+      [minNumVotes, maxUsers]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing helpful-users query")
+
+    res
+    .status(500)
+    .json({error: "Failed to execute helpful-users query",
+      
+    })
+  }
+}
 
 // export routes
 module.exports = {
@@ -458,4 +521,5 @@ module.exports = {
   topReviewerFavorites,
   magnumOpus,
   hiddenGems,
+  helpfulUsers
 };
