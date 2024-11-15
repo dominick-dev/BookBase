@@ -467,11 +467,170 @@ const hiddenGems = async (req, res) => {
       
     })
   }
-
-
-
 }
 
+// Route XX: /helpful-users
+const helpfulUsers = async (req, res) => {
+  
+  const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
+  const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
+
+  // Validation on the parameters if they're given
+  if (minNumVotes < 0) {
+    return res.status(400).json({ error: "Invalid minNumVotes provided. Please provide a positive integer." });
+  }
+  if (maxUsers < 0) {
+    return res.status(400).json({ error: "Invalid maxUsers provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      WITH calc_help AS (
+        SELECT
+            u.userid AS userid,
+            COALESCE(r.username, 'Unknown') AS username,
+            COUNT(*) AS num_reviews,
+            COUNT(DISTINCT r.isbn) AS n_books,
+            SUM(SPLIT_PART(r.helpfulness, '/', 2)::float) AS num_votes,
+            AVG(SPLIT_PART(r.helpfulness, '/', 1)::float
+                / SPLIT_PART(r.helpfulness, '/', 2)::float
+            ) AS avg_user_helpfulness
+        FROM
+            review r
+        LEFT JOIN
+            person u ON r.userid = u.userid
+        WHERE
+            r.helpfulness IS NOT NULL
+            AND SPLIT_PART(r.helpfulness, '/', 2)::float != 0
+        GROUP BY
+            u.userid, r.username
+      )
+      SELECT
+          userid,
+          username,
+          avg_user_helpfulness * num_votes AS weighted_user_helpfulness,
+          avg_user_helpfulness,
+          num_reviews,
+          num_votes,
+          n_books
+      FROM
+        calc_help
+      WHERE
+        num_votes >= $1
+      ORDER BY
+        weighted_user_helpfulness DESC
+      LIMIT $2
+      `,
+      [minNumVotes, maxUsers]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing helpful-users query")
+
+    res
+    .status(500)
+    .json({error: "Failed to execute helpful-users query",
+      
+    })
+  }
+}
+
+// Route XX: /author-stats
+const authorStats = async (req, res) => {
+  
+  // Optional author name param
+  const authorName = req.query.authorName ? req.query.authorName.toString() : null;
+  const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
+
+  // data validation
+  if (isNaN(numAuthors) || numAuthors < 0) {
+    return res.status(400).json({ error: "Invalid numAuthors provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      SELECT
+        b.author, 
+        COUNT(b.isbn) AS n_books,
+        COUNT(r.userid) AS n_reviews,
+        AVG(r.score) AS avg_rating,
+        AVG(r.price) AS avg_price
+      FROM
+        book b
+      JOIN
+        review r ON b.isbn = r.isbn
+      WHERE
+        b.author IS NOT NULL
+        AND ($1::text IS NULL OR LOWER(b.author) LIKE LOWER(CONCAT('%', $1, '%')))
+      GROUP BY
+        b.author
+      ORDER BY
+        n_reviews DESC, n_books DESC, avg_rating DESC
+      LIMIT $2;
+      `,
+      [authorName, numAuthors]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing author-stats query", err)
+
+    res
+    .status(500)
+    .json({error: "Failed to execute author-stats query"})
+  }
+}
+
+// Route XX: /genre-stats
+const genreStats = async (req, res) => {
+  // Optional author name param
+  const genreName = req.query.genreName ? req.query.genreName.toString() : null;
+  const numGenres = parseInt(req.query.numGenres, 10) || 10;
+
+  // data validation
+  if (isNaN(numGenres) || numGenres < 0) {
+    return res.status(400).json({ error: "Invalid numGenres provided. Please provide a positive integer." });
+  }
+
+  try {
+    const result = await connection.query(
+      `
+      SELECT
+        g.genre
+        , AVG(r.score) AS avg_rating
+        , AVG(CASE WHEN r.helpfulness IS NOT NULL AND SPLIT_PART(r.helpfulness, '/', 2)::float != 0 THEN
+            SPLIT_PART(r.helpfulness, '/', 1)::float / SPLIT_PART(r.helpfulness, '/', 2)::float
+        END) AS avg_helpfulness
+        , AVG(r.price) AS avg_price
+        , COUNT(r.isbn) AS num_reviews
+      FROM
+        genre g
+      JOIN
+        book b
+        ON g.genre_id = b.genre_id
+      JOIN
+        review r
+        ON b.isbn = r.ISBN
+      WHERE
+        ($1::text IS NULL OR LOWER(g.genre) LIKE LOWER(CONCAT('%', $1, '%')))
+      GROUP BY
+        g.genre
+      ORDER BY
+        avg_rating DESC
+      LIMIT $2;
+      `,
+      [genreName, numGenres]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing genre-stats query", err)
+
+    res
+    .status(500)
+    .json({error: "Failed to execute genre-stats query"});
+  }
+}
 
 // export routes
 module.exports = {
@@ -485,4 +644,7 @@ module.exports = {
   topReviewerFavorites,
   magnumOpus,
   hiddenGems,
+  helpfulUsers,
+  authorStats,
+  genreStats
 };
