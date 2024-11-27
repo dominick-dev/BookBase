@@ -2,13 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const config = require("./config");
 const routes = require("./routes");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 
-const mongoUri = config.mongo_uri;;
+// const mongoUri = config.mongo_uri;;
 
-mongoose.connect(mongoUri)
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch(err => console.log('MongoDB connection error: ', err));
+// mongoose.connect(mongoUri)
+//   .then(() => console.log("MongoDB connected successfully"))
+//   .catch(err => console.log('MongoDB connection error: ', err));
 
 const app = express();
 app.use(
