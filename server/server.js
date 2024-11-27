@@ -2,6 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const config = require("./config");
 const routes = require("./routes");
+const mongoose = require("mongoose");
+
+const mongoUri = config.mongo_uri;;
+
+mongoose.connect(mongoUri)
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch(err => console.log('MongoDB connection error: ', err));
 
 const app = express();
 app.use(
@@ -24,13 +31,13 @@ app.get("/random", routes.random);
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/polarizing-books", routes.polarizingBooks);
 app.get("/by-age-group/:birthYear", routes.byAgeGroup);
-app.get("/by-location/:column/:placeName", routes.byLocation)
+app.get("/by-location/:column/:placeName", routes.byLocation);
 app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
 app.get("/magnum-opus/:author", routes.magnumOpus);
 app.get("/hidden-gems", routes.hiddenGems);
-app.get("/helpful-users", routes.helpfulUsers)
-app.get("/author-stats", routes.authorStats)
-app.get("/genre-stats", routes.genreStats)
+app.get("/helpful-users", routes.helpfulUsers);
+app.get("/author-stats", routes.authorStats);
+app.get("/genre-stats", routes.genreStats);
 
 // Start the server
 app.listen(config.server_port, () => {
