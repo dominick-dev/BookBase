@@ -658,5 +658,6 @@ module.exports = {
   helpfulUsers,
   authorStats,
   genreStats,
-  get20Books
+  get20Books,
+  connection
 };
