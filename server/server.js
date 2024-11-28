@@ -69,11 +69,15 @@ passport.use(
       profileFields: ['id', 'emails', 'name'],
     },
     async (accessToken, refreshToken, profile, done) => {
-      const email = profile.emails[0].value;
+      console.log("Facebook profile: ", profile);
+
+      const email = profile.emails?.[0]?.value || `${profile.id}@facebook.com`;
+      console.log("Email: ", email);
 
       try {
         let user = await User.findOne({ email });
         if (!user) {
+          console.log("User not found. Creating new user...");
           user = new User({
             email,
             provider: 'facebook',
@@ -81,9 +85,11 @@ passport.use(
             user_id: new mongoose.Types.ObjectId(),
           });
           await user.save();
+          console.log("User created successfully!", user);
         }
         done(null, user);
       } catch (err) {
+        console.log("Error in Facebook Strategy: ", err);
         done(err, null);
       }
     }
