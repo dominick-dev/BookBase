@@ -35,7 +35,7 @@ passport.use(
     {
       clientID: config.google_client_id,
       clientSecret: config.google_client_secret,
-      callbackURL: config.google_callback_url,
+      callbackURL: config.google_redirect_uri,
     },
     async (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value;
