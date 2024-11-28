@@ -1,10 +1,7 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './styles/App.css'
 import './styles/BookCard.css'
 
-import BookCard from './components/BookCard'
 import HomePage from './pages/HomePage'
 
 function App() {
@@ -13,7 +10,7 @@ function App() {
   return (
     <>
     <h1>SAMPLE</h1>
-    <BookCard/>
+    <HomePage/>
     </>
   )
 }
