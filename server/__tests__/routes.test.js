@@ -1,10 +1,10 @@
 const request = require('supertest');
 const express = require('express');
-const { search, connection } = require('../routes'); // Corrected import path
+const { search, connection } = require('../routes');
 
 const app = express();
 app.use(express.json());
-app.get('/search', search); // Mount the search route
+app.get('/search', search);
 
 describe('GET /search', () => {
   it('should return books matching the search query', async () => {

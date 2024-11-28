@@ -3,7 +3,7 @@ const express = require('express');
 const { testDatabaseConnection, connection } = require('../routes');
 
 const app = express();
-app.get('/test-db', testDatabaseConnection); // Set up the route for testing
+app.get('/test-db', testDatabaseConnection);
 
 describe('GET /test-db', () => {
   it('should return a successful database connection message', async () => {
@@ -14,7 +14,6 @@ describe('GET /test-db', () => {
   });
 
   it('should return an error message on database connection failure', async () => {
-    // Mock the connection.query method to simulate a failure
     jest.spyOn(connection, 'query').mockImplementationOnce(() => {
       throw new Error('Connection failed');
     });
