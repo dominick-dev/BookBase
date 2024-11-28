@@ -632,6 +632,17 @@ const genreStats = async (req, res) => {
   }
 }
 
+const get20Books = async (req, res) => {
+  try {
+    const result = await connection.query("SELECT * FROM book WHERE image IS NOT NULL LIMIT 20");
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing getAllBooks:", err.message, err.stack);
+    res.status(500).json({ error: "Failed to retrieve books from the database." });
+  }
+};
+
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -646,5 +657,6 @@ module.exports = {
   hiddenGems,
   helpfulUsers,
   authorStats,
-  genreStats
+  genreStats,
+  get20Books
 };

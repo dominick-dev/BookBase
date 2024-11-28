@@ -1,0 +1,115 @@
+.flip-card{
+    background-color: transparent;
+    border: 1px solid transparent;
+    perspective: 1000px;
+    width: 300px;
+    height: 400px;
+    margin: auto;
+}
+
+.flip-card-inner{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s ease;
+    transform-style:preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(-180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  border: 1px solid black;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backface-visibility: hidden;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  background-color: wheat;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+}
+.content-container {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: wheat;
+    width: 90%;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #333;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    box-shadow: 8px 8px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f1f1f;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.card-author {
+    font-family: 'Lato', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: #666666;
+    margin-bottom: 15px;
+}
+
+.book-rating{
+    margin-bottom: 15px;
+    align-self: center;
+}
+
+.button-container {
+    background-color: wheat;
+    margin-top: auto;
+    width: 90%;
+    display: flex;
+    border: 1px solid #333;
+    border-radius: 10px;
+    justify-content: center;
+}
+  
+.btn-primary {
+    font-family: 'Lato', sans-serif;
+    font-weight: 700;
+    color: #333;
+    padding: 10px 0;
+    font-size: 1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    width: 90%;
+}
+
+.button-container:hover {
+    background-color: #333333;
+    color: #ffffff; /* Ensure hover text is still visible */
+    text-decoration: none; /* Keeps the underline off on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
