@@ -32,6 +32,8 @@ app.get("/helpful-users", routes.helpfulUsers)
 app.get("/author-stats", routes.authorStats)
 app.get("/genre-stats", routes.genreStats)
 app.get("/20books", routes.get20Books)
+app.get("/book/:isbn", routes.bookByISBN);
+app.get("/reviews/:isbn", routes.reviewsByISBN);
 
 // Start the server
 app.listen(config.server_port, () => {

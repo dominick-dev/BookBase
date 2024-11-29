@@ -642,6 +642,56 @@ const get20Books = async (req, res) => {
   }
 };
 
+// get books by isbn
+const bookByISBN = async (req, res) => {
+  try {
+
+      const {isbn} = req.params;
+
+      const result = await connection.query(`
+          SELECT *
+          FROM book
+          WHERE isbn = $1
+          LIMIT 1;
+      `, [isbn]);
+
+
+    // console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching book by ISBN", err);
+    res.status(500).json({ error: "Failed to fetch book by ISBN."});
+  }
+};
+
+// get books by isbn
+const reviewsByISBN = async (req, res) => {
+  try {
+
+      const {isbn} = req.params;
+
+      const result = await connection.query(`
+        SELECT *
+        FROM review
+        WHERE isbn = $1
+        ORDER BY
+            CASE
+                WHEN CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) = 0 THEN 0
+                ELSE CAST(SPLIT_PART(helpfulness, '/', 1) AS INT) * 1.0 /  CAST(SPLIT_PART(helpfulness, '/', 2) AS INT)
+            END DESC,
+            CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) DESC;
+      `, [isbn]);
+
+
+    // console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching reviews by ISBN", err);
+    res.status(500).json({ error: "Failed to fetch reviews by ISBN."});
+  }
+};
+
+
 
 // export routes
 module.exports = {
@@ -658,5 +708,7 @@ module.exports = {
   helpfulUsers,
   authorStats,
   genreStats,
-  get20Books
+  get20Books,
+  bookByISBN,
+  reviewsByISBN,
 };
