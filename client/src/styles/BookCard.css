@@ -23,6 +23,7 @@
 .flip-card-front, .flip-card-back {
   position: absolute;
   border: 1px solid black;
+  background-color: wheat;
   width: 100%;
   height: 100%;
   top: 0;
@@ -84,6 +85,9 @@ body {
 .book-rating{
     margin-bottom: 15px;
     align-self: center;
+}
+.book-rating .MuiRating-root {
+    color: #ffb400; /* Ensures gold-colored stars for visibility */
 }
 
 .button-container {

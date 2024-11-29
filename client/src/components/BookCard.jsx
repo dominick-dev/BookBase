@@ -8,7 +8,7 @@ const getBookDetails = (book) => {
   return {
     title: book.title || "No title available",
     author: book.author || "No author available",
-    averageRating: book.averageRating || 0,
+    averageRating: book.avg_review || 0,
     image: book.image || getFallbackCover(book.title || "No title available"),
   };
 };
@@ -35,7 +35,7 @@ const BookCard = ({ book }) => {
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
+              objectFit: 'contain',
               borderRadius: '0.25rem',
             }}        
           />
@@ -51,6 +51,7 @@ const BookCard = ({ book }) => {
                 size="large"
                 readOnly
                 precision={0.1}
+                sx={{ color: '#ffb400' }} 
               />
             </div>
           </div>
