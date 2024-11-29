@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
-import BookCarousel from '../components/BookCarousel';
-import NavBar from '../components/NavBar';
-import {Routes, Route} from 'react-router-dom'
-
+import BookCard from './BookCard';
 
 
 const HomePage = () => {
@@ -35,19 +32,21 @@ const HomePage = () => {
 
   return (
     <>
-        <NavBar />
-        <Routes>
-            <Route path='/' element={
-                <>
-                <BookCarousel/>
-                </>
-            }/>
-            <Route path='/books' element={<h1>BOOKS PAGE</h1>}/>
-            <Route path='/search' element={<h1>SEARCH</h1>}/>
-            <Route path='/insights' element={<h1>INTERESTING INSIGHTS</h1>}/>
-        </Routes>
+    <div className="container mt-5">
+        <h1 className="text-center mb-4">Book Carousel</h1>
+        <Carousel>
+            {books.map((book, index) => (
+            book ? ( // Check if book is not null or undefined
+                <Carousel.Item key={index}>
+                <BookCard book={book} />
+                </Carousel.Item>
+            ) : null // Do not render if book is invalid
+            ))}
+        </Carousel>
+    </div>
     </>
   );
 };
 
 export default HomePage;
+

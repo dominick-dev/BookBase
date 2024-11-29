@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './styles/App.css'
 import './styles/BookCard.css'
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
 
 import HomePage from './pages/HomePage'
 
@@ -8,10 +9,9 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-    <h1>SAMPLE</h1>
-    <HomePage/>
-    </>
+    <BrowserRouter>
+      <HomePage />
+    </BrowserRouter>
   )
 }
 
