@@ -19,7 +19,7 @@ const SocialLoginButtons = () => {
           color="error"
           onClick={handleGoogleLogin}
         >
-          Continue with Google
+          Google
         </Button>
       </Grid>
       <Grid item xs={12}>
@@ -29,7 +29,7 @@ const SocialLoginButtons = () => {
           color="primary"
           onClick={handleFacebookLogin}
         >
-          Continue with Facebook
+          Facebook
         </Button>
       </Grid>
     </Grid>
