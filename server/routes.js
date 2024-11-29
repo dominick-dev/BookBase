@@ -711,4 +711,5 @@ module.exports = {
   get20Books,
   bookByISBN,
   reviewsByISBN,
+  connection
 };
