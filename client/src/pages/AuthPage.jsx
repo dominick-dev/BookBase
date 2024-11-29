@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Tabs, Tab, Typography, TextField, Button, Grid } from "@material-ui/core";
+import { Tabs, Tab, Typography, TextField, Button, Grid, Box } from '@mui/material';
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
 
@@ -23,7 +23,7 @@ const AuthPage = () => {
             }}
         >
             <Typography variant="h4" align="center" mb={2}>
-                Bookbase Authentication
+                welcome to bookbase 📚
             </Typography>
             <Tabs value={activeTab} onChange={handleTabChange} centered>
                 <Tab label="Login"/>
