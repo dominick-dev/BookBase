@@ -97,7 +97,7 @@
 
 
     return (
-    <AppBar position="relative" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333' }}>
+    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333'}}>
         <Container maxWidth="xl">
         <Toolbar disableGutters>
             {/* Logo */}

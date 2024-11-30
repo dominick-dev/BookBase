@@ -1,6 +1,7 @@
 import React from "react";
 import BookCarousel from "../components/BookCarousel";
 import HomePageHero from "../components/HomePageHero";
+import TopAuthors from '../components/TopAuthors'
 import NavBar from "../components/NavBar";
 import { Routes, Route } from "react-router-dom";
 
@@ -15,6 +16,7 @@ const HomePage = () => {
             <>
                 <HomePageHero />
                 <BookCarousel />
+                <TopAuthors />
             </>
           }
         />

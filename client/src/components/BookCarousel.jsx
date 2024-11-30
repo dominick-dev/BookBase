@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
-//import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BookCard from './BookCard';
-
-import Carousel from 'react-multi-carousel'
-import 'react-multi-carousel/lib/styles.css'
 
 import {Swiper, SwiperSlide} from 'swiper/react'
 import 'swiper/css'
@@ -40,7 +36,7 @@ const BookCarousel = () => {
 
   return (
     <>
-    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '12px', paddingBottom: '12px'}}>
+    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '20px', paddingBottom: '20px'}}>
     <Swiper
         direction="horizontal"
         effect={'coverflow'}
@@ -52,7 +48,7 @@ const BookCarousel = () => {
         coverflowEffect={{
           rotate: 50,
           stretch: 0,
-          depth: 50,
+          depth: 100,
           modifier: 1,
           slideShadows: false,
         }}
@@ -69,81 +65,6 @@ const BookCarousel = () => {
     ))}
     </Swiper>
     </div>
-    
-    
-    {/* <Carousel
-    additionalTransfrom={0}
-    arrows
-    autoPlaySpeed={3000}
-    centerMode
-    className=""
-    containerClass="container"
-    dotListClass=""
-    draggable
-    focusOnSelect={false}
-    infinite
-    itemClass=""
-    keyBoardControl
-    minimumTouchDrag={80}
-    pauseOnHover
-    renderArrowsWhenDisabled={false}
-    renderButtonGroupOutside={false}
-    renderDotsOutside={false}
-    responsive={{
-        desktop: {
-        breakpoint: {
-            max: 3000,
-            min: 1024
-        },
-        items: 3,
-        partialVisibilityGutter: 40
-        },
-        mobile: {
-        breakpoint: {
-            max: 464,
-            min: 0
-        },
-        items: 1,
-        partialVisibilityGutter: 30
-        },
-        tablet: {
-        breakpoint: {
-            max: 1024,
-            min: 464
-        },
-        items: 2,
-        partialVisibilityGutter: 30
-        }
-    }}
-    rewind={false}
-    rewindWithAnimation={false}
-    rtl={false}
-    shouldResetAutoplay
-    showDots={false}
-    sliderClass=""
-    slidesToSlide={1}
-    swipeable
-    >
-        {books.map((book, index) => (
-            book ? (
-                <BookCard book={book}/>
-        ) : null
-    ))}
-    </Carousel> */}
-
-
-    {/* <div className="container mt-5" style={{padding: '0'}}>
-        <h1 className="text-center mb-4">Book Carousel</h1>
-        <Carousel style={{width:'100%'}}>
-            {books.map((book, index) => (
-            book ? ( // Check if book is not null or undefined
-                <Carousel.Item key={index}>
-                <BookCard book={book} />
-                </Carousel.Item>
-            ) : null // Do not render if book is invalid
-            ))}
-        </Carousel>
-    </div> */}
     </>
   );
 };
