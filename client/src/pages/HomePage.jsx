@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
-import BookCard from '../components/BookCard'
+import BookCard from '../components/BookCard';
 
 const HomePage = () => {
   const [books, setBooks] = useState([]);
@@ -15,7 +15,7 @@ const HomePage = () => {
         console.log("Attempting to fetch books...")
         const response = await fetch("http://localhost:8080/20books");
         const data = await response.json();
-        console.log(`Fetched ${data.length} books.`);
+        console.log("Fetched data:", data);
         setBooks(data);
       } catch (error) {
         console.error("Error fetching books:", error);
