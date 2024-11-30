@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { TextField, Button, Grid, Divider, Alert } from "@mui/material";
 import SocialLoginButtons from "./SocialLoginButtons";
 import axios from "axios";
@@ -22,7 +22,7 @@ const SignupForm = () => {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/register", {
+      await axios.post("http://localhost:8080/auth/register", {
         email,
         password,
       });
