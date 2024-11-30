@@ -9,17 +9,17 @@ const InsightsPage = () => {
 
     useEffect(() => {
         // fetch hidden gems
-        axios.get("http://localhost:8080/insights/hidden-gems")
+        axios.get("http://localhost:8080/hidden-gems")
             .then((response) => setHiddenGems(response.data))
             .catch((error) => console.error("Error fetching hidden gems: " + error));
 
         // fetch polarizing books
-        axios.get("http://localhost:8080/insights/polarizing-books")
+        axios.get("http://localhost:8080/polarizing-books")
             .then((response) => setPolarizingBooks(response.data))
             .catch((error) => console.error("Error fetching polarizing books: " + error));
 
         // fetch top reviewer favorites by genre
-        axios.get("http://localhost:8080/insights/top-reviewer-favorites")
+        axios.get("http://localhost:8080/top-reviewer-favorites?genre=fiction")
             .then((response) => setTopReviewerFavorites(response.data))
             .catch((error) => console.error("Error fetching top reviewer favorites: " + error));
     }, []);
