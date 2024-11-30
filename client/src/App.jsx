@@ -1,29 +1,20 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { useState } from 'react'
-import './styles/App.css'
-import './styles/BookCard.css'
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import HomePage from './pages/HomePage';
-import BookPage from './pages/BookPage';
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import BookPage from "./pages/BookPage";
+import HomePage from "./pages/HomePage";
+import ReviewsPage from "./pages/ReviewsPage";
+import "./styles/App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    // <>
-    // <h1>SAMPLE</h1>
-    // <HomePage/>
-    // </>
-
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/book/:isbn" element={<BookPage/>}/>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/book/:isbn" element={<BookPage />} />
+        <Route path="/reviews/:isbn" element={<ReviewsPage />} />
       </Routes>
-    </BrowserRouter>
-  )
+    </Router>
+  );
 }
 
 export default App;
