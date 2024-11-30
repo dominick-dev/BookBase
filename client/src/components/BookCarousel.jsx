@@ -36,7 +36,7 @@ const BookCarousel = () => {
 
   return (
     <>
-    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '20px', paddingBottom: '20px'}}>
+    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '20px', paddingBottom: '20px', border: '5px solid wheat'}}>
     <Swiper
         direction="horizontal"
         effect={'coverflow'}

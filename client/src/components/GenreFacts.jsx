@@ -16,7 +16,6 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { TableHead } from '@mui/material';
-
 import '../styles/HomePageCharts.css'
 
 
@@ -81,21 +80,21 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const TopAuthors = () => {
+const GenreFacts = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [authors, setAuthors] = React.useState([]);
+  const [genres, setGenres] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     // Fetch books from the top-authors route
     const fetchBooks = async () => {
       try {
-        console.log("Attempting to fetch authors...")
-        const response = await fetch("http://localhost:8080/author-stats?numAuthors=30");
+        console.log("Attempting to fetch genre facts...")
+        const response = await fetch("http://localhost:8080/genre-stats");
         const data = await response.json();
-        console.log(`Fetched ${data.length} authors.`);
-        setAuthors(data);
+        console.log(`Fetched ${data.length} genres.`);
+        setGenres(data);
       } catch (error) {
         console.error("Error fetching books:", error);
       } finally {
@@ -108,7 +107,7 @@ const TopAuthors = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - authors.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - genres.length) : 0;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -120,37 +119,41 @@ const TopAuthors = () => {
   };
 
   
-  console.log("Top Authors component is rendering");
+  console.log("Genre Stats component is rendering");
 
   if (loading) return <div>Loading...</div>;
 
   return (
     <>
-    <div className='top-authors' style={{width:'100%', border: '2px solid black'}}>
-        <h1 className='header'>Top Authors</h1>
+    <div className='genre-facts' style={{width:'100%', border: '2px solid black'}}>
+        <h1 className='header'>Genre Stats</h1>
         <TableContainer component={Paper}>
         <Table sx={{maxWidth: '100%', bgcolor: 'paper', tableLayout:'auto'}} aria-label="custom pagination table">
             <TableHead sx={{bgcolor: 'gray'}}>
                 <TableRow>
-                    <TableCell>Author</TableCell>
+                    <TableCell>Genre</TableCell>
                     <TableCell align="right">Number of Reviews</TableCell>
                     <TableCell align="right">Average Rating</TableCell>
+                    <TableCell align="right">Average Price</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
             {(rowsPerPage > 0
-                ? authors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                : authors
-            ).map((author) => (
-                <TableRow key={author.author}>
+                ? genres.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                : genres
+            ).map((genre) => (
+                <TableRow key={genre.genre}>
                 <TableCell component="th" scope="row" style={{width: 100}}>
-                    {author.author}
+                    {genre.genre}
                 </TableCell>
                 <TableCell style={{ width: 100 }} align="right">
-                    {author.n_reviews}
+                    {genre.num_reviews}
                 </TableCell>
                 <TableCell style={{ width: 100}} align="right">
-                    {author.avg_rating.toFixed(2)}
+                    {genre.avg_rating.toFixed(2)}
+                </TableCell>
+                <TableCell style={{ width: 100 }} align = 'right'>
+                    ${genre.avg_price.toFixed(2)}
                 </TableCell>
                 </TableRow>
             ))}
@@ -163,9 +166,9 @@ const TopAuthors = () => {
             <TableFooter>
             <TableRow>
                 <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[5, 10, { label: 'All', value: -1 }]}
                 colSpan={3}
-                count={authors.length}
+                count={genres.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 slotProps={{
@@ -189,4 +192,4 @@ const TopAuthors = () => {
   );
 }
 
-export default TopAuthors;
+export default GenreFacts;
