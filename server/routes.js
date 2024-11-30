@@ -359,14 +359,17 @@ const byLocation = async (req, res) => {
   }
 };
 
-// Route XX: GET /top-reviewer-favorites/:genre
+// Route XX: GET /top-reviewer-favorites/:genre/:threshold
 const topReviewerFavorites = async(req, res) => {
   const threshold = req.params.threshold ?? 10;
   const genre = req.params.genre;
 
   if(!genre) {
-    return res.status(400).json({error: "Genre paramater is required"});
+    return res.status(400).json({error: "Genre parameter is required"});
   }
+
+  console.log("Threshold: ", threshold);
+  console.log("Genre: ", genre);
 
   try {
     const response = await connection.query (
@@ -374,7 +377,7 @@ const topReviewerFavorites = async(req, res) => {
         SELECT userId
         FROM review
         GROUP BY userId
-        HAVING count(*) > ${threshold}
+        HAVING count(*) > $2
      ), top_reviewer_books AS (
         SELECT r.isbn, r.userId
         FROM review r JOIN top_reviewers ts ON r.userid = ts.userid
@@ -389,7 +392,7 @@ const topReviewerFavorites = async(req, res) => {
             b.author,
             b.genre_id
         FROM book b JOIN genre g ON b.genre_id = g.genre_id
-        WHERE g.genre = '${genre}'
+        WHERE LOWER(g.genre) = LOWER($1)
      ), all_top_reviewer_books AS (
         SELECT
             gfb.isbn,
@@ -413,8 +416,8 @@ const topReviewerFavorites = async(req, res) => {
      )
      SELECT *
      FROM distinct_author_book_combos
-     ORDER BY top_reviewer_count DESC, avg_rating;`
-    );
+     ORDER BY top_reviewer_count DESC, avg_rating;`,
+     [genre, threshold]);
     res.json(response.rows);
   } catch (err) {
     console.log(err)
