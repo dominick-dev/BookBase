@@ -36,6 +36,7 @@
     [theme.breakpoints.up('sm')]: {
     width: 'auto',
     },
+    alignItems: 'center'
     }));
 
     const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -53,8 +54,11 @@
     '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    alignItems: "center",
+    display: 'flex',
     transition: theme.transitions.create('width'),
     width: '100%',
+    height: '100%',
     [theme.breakpoints.up('md')]: {
         width: '20ch',
     },
@@ -93,7 +97,7 @@
 
 
     return (
-    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333' }}>
+    <AppBar position="relative" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333' }}>
         <Container maxWidth="xl">
         <Toolbar disableGutters>
             {/* Logo */}
@@ -105,7 +109,7 @@
             to="/"
             sx={{
                 mr: 2,
-                fontFamily: 'Lato',
+                fontFamily: 'lato',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
                 color: 'inherit',
@@ -168,9 +172,9 @@
                 sx={{
                 my: 2,
                 color: '#333333',
-                backgroundColor: 'white',
+                backgroundColor: 'wheat',
                 '&:hover': {
-                    backgroundColor: '#f5deb3',
+                    backgroundColor: 'white',
                     color: '#000',
                 },
                 textTransform: 'uppercase',
@@ -185,9 +189,9 @@
                 sx={{
                 my: 2,
                 color: '#333333',
-                backgroundColor: 'white',
+                backgroundColor: 'wheat',
                 '&:hover': {
-                    backgroundColor: '#f5deb3',
+                    backgroundColor: 'white',
                     color: '#000',
                 },
                 textTransform: 'uppercase',
@@ -202,9 +206,9 @@
                 sx={{
                 my: 2,
                 color: '#333333',
-                backgroundColor: 'white',
+                backgroundColor: 'wheat',
                 '&:hover': {
-                    backgroundColor: '#f5deb3',
+                    backgroundColor: 'white',
                     color: '#000',
                 },
                 textTransform: 'uppercase',
@@ -216,14 +220,14 @@
             </Box>
 
             {/* Search Bar */}
-            <Box sx={{display:'flex', justifyContent: 'center'}}>
+            <Box sx={{display:'flex', alignItems: 'center'}}>
                 <Search>
                 <SearchIconWrapper>
                     <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
                     placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
+                    inputProps={{ 'lato': 'search' }}
                     value={searchQuery}
                     onChange={(e)=> setSearchQuery(e.target.value)}
                     onKeyDown={(e)=>{
@@ -231,11 +235,12 @@
                            handleSearchKeyPress(e); 
                         }
                     }   
-                    }       
+                    }
+                    sx={{justifyContent: 'center'}}       
                 />
                 </Search>
-                <FormControl sx={{paddingRight: '5px'}}>
-                    <InputLabel id='search-type-label'>Search By</InputLabel>
+                <FormControl  sx={{paddingRight: '5px', m:1}} size="small">
+                    <InputLabel id='search-type-label'>By</InputLabel>
                     <Select
                         labelId='search-type-label'
                         value={searchType}

@@ -3,8 +3,7 @@ import Carousel from "react-bootstrap/Carousel";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BookCard from './BookCard';
 
-
-const HomePage = () => {
+const BookCarousel = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   console.log("HomePage component is rendering");
@@ -32,9 +31,9 @@ const HomePage = () => {
 
   return (
     <>
-    <div className="container mt-5">
+    <div className="container mt-5" style={{padding: '0'}}>
         <h1 className="text-center mb-4">Book Carousel</h1>
-        <Carousel>
+        <Carousel style={{width:'100%'}}>
             {books.map((book, index) => (
             book ? ( // Check if book is not null or undefined
                 <Carousel.Item key={index}>
@@ -48,5 +47,5 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default BookCarousel;
 
