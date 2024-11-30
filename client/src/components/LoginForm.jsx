@@ -1,12 +1,12 @@
-import React from "react";
+import { useState } from "react";
 import { TextField, Button, Grid, Divider, Alert } from "@mui/material";
 import SocialLoginButtons from "./SocialLoginButtons";
 import axios from "axios";
 
 const LoginForm = () => {
-  const [email, setEmail] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [error, setError] = React.useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
