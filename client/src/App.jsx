@@ -1,18 +1,20 @@
-import { useState } from 'react'
-import './styles/App.css'
-import './styles/BookCard.css'
-
-import HomePage from './pages/HomePage'
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import BookPage from "./pages/BookPage";
+import HomePage from "./pages/HomePage";
+import ReviewsPage from "./pages/ReviewsPage";
+import "./styles/App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-    <h1>SAMPLE</h1>
-    <HomePage/>
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/book/:isbn" element={<BookPage />} />
+        <Route path="/reviews/:isbn" element={<ReviewsPage />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
