@@ -18,7 +18,7 @@ const BookCard = ({ book }) => {
   // perform some validation on the book object
   if (typeof book !== 'object' || book === null) {
     console.error("Invalid book object:", book);
-    return null;
+    return <div>Invalid book object</div>;
   }
 
   // use the fallback function to get book details
