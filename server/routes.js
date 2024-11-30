@@ -33,34 +33,52 @@ const testDatabaseConnection = async (req, res) => {
   }
 };
 
-// Route 2: GET /search?field?query?limit
+// Route 2: GET /search?author=&title=&genre=&isbn=
 const searchBooks = async (req, res) => {
-  const { field, query, limit } = req.query;
-  console.log("search route hit");
-
-  console.log(field, query, limit);
-
-  // define allowed fields
-  const allowedFields = ["title", "isbn", "author", "publisher"];
-  if (!allowedFields.includes(field)) {
-    console.log("invalid searchBooks parameter: ", field);
-    return res.status(400).json({ error: "Invalid searchBooks parameter: ", field });
-  }
-
-  // set limit to 10 if not given
-  const resLimit = limit ? parseInt(limit, 10) : 10;
-
   try {
-    console.log("search query hit");
-    const result = await connection.query(
-      `SELECT * FROM book WHERE ${field} ILIKE $1 LIMIT $2`,
-      [`%${query}%`, resLimit]
-    );
-    res.json(result.rows);
-    console.log(result.rows);
-  } catch (err) {
-    console.error("Error executing searchBooks query", err);
-    res.status(500).json({ error: "Failed to execute searchBooks query" });
+    const { author, title, genre, isbn, limit } = req.query;
+
+    // Build the query dynamically based on provided parameters
+    const conditions = [];
+    const values = [];
+    let index = 1;
+
+    if (author) {
+      conditions.push(`author ILIKE $${index++}`);
+      values.push(`%${author}%`);
+    }
+    if (title) {
+      conditions.push(`title ILIKE $${index++}`);
+      values.push(`%${title}%`);
+    }
+    if (genre) {
+      conditions.push(`genre ILIKE $${index++}`);
+      values.push(`%${genre}%`);
+    }
+    if (isbn) {
+      conditions.push(`isbn = $${index++}`);
+      values.push(isbn);
+    }
+
+    // Set a default limit if not provided
+    const resLimit = limit ? parseInt(limit, 10) : 10;
+    values.push(resLimit);
+
+    // Construct the SQL query
+    const query = `
+      SELECT * FROM book
+      ${conditions.length ? 'WHERE ' + conditions.join(' AND ') : ''}
+      LIMIT $${index}
+    `;
+
+    // Execute the search query
+    const result = await connection.query(query, values);
+
+    // Send the search results
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error executing search query:", error);
+    res.status(500).json({ message: "Failed to execute search query" });
   }
 };
 

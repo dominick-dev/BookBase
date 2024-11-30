@@ -45,6 +45,11 @@ app.get("/reviews/:isbn", (req, res) => {
   routes.searchReviews(req, res);
 });
 
+// search?author=&title=&genre=&isbn=&limit=
+app.get("/search", (req, res) => {
+  console.log("search route hit");
+  routes.searchBooks(req, res);
+});
 
 // Start the server
 app.listen(config.server_port, () => {
