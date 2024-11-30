@@ -16,16 +16,19 @@
     "@mui/material": "^6.1.9",
     "axios": "^1.7.8",
     "bootstrap": "^5.3.3",
+    "mathjs": "^14.0.0",
     "mongodb": "^6.11.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.1",
+    "util": "^0.12.5"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
     "@eslint/js": "^9.13.0",
-    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^15.0.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
@@ -45,5 +48,14 @@
       "@babel/preset-react",
       "@babel/preset-env"
     ]
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/src/utils/jest.setup.js"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "testEnvironment": "jsdom"
   }
 }

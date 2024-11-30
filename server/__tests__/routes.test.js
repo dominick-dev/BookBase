@@ -1,15 +1,15 @@
 const request = require('supertest');
 const express = require('express');
-const { search, connection } = require('../routes');
+const { searchBooks, connection } = require('../routes');
 
 const app = express();
 app.use(express.json());
-app.get('/search', search);
+app.get('/searchBooks', searchBooks);
 
-describe('GET /search', () => {
-  it('should return books matching the search query', async () => {
+describe('GET /searchBooks', () => {
+  it('should return books matching the searchBooks query', async () => {
     const response = await request(app)
-      .get('/search?field=title&query=someTitle&limit=5');
+      .get('/searchBooks?field=title&query=someTitle&limit=5');
     
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
@@ -18,10 +18,10 @@ describe('GET /search', () => {
 
   it('should return 400 for invalid field', async () => {
     const response = await request(app)
-      .get('/search?field=invalidField&query=someTitle');
+      .get('/searchBooks?field=invalidField&query=someTitle');
     
     expect(response.status).toBe(400);
-    expect(response.body).toHaveProperty('error', "Invalid search parameter");
+    expect(response.body).toHaveProperty('error', "Invalid searchBooks parameter: ");
   });
 
   it('should return 500 for server error', async () => {
@@ -31,15 +31,15 @@ describe('GET /search', () => {
     });
 
     const response = await request(app)
-      .get('/search?field=title&query=someTitle');
+      .get('/searchBooks?field=title&query=someTitle');
     
     expect(response.status).toBe(500);
-    expect(response.body).toHaveProperty('error', "Failed to execute search query");
+    expect(response.body).toHaveProperty('error', "Failed to execute searchBooks query");
   });
 
   it('should default limit to 10 if not provided', async () => {
     const response = await request(app)
-      .get('/search?field=title&query=someTitle');
+      .get('/searchBooks?field=title&query=someTitle');
     
     expect(response.status).toBe(200);
     // Check if the limit is applied correctly in the response

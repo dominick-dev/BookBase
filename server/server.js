@@ -108,7 +108,7 @@ app.get("/", (req, res) => {
 app.get("/test-db", routes.testDatabaseConnection);
 
 // Bookbase routes
-app.get("/search", routes.search);
+app.get("/searchBooks", routes.searchBooks);
 app.get("/random", routes.random);
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/polarizing-books", routes.polarizingBooks);
@@ -120,7 +120,20 @@ app.get("/hidden-gems", routes.hiddenGems);
 app.get("/helpful-users", routes.helpfulUsers);
 app.get("/author-stats", routes.authorStats);
 app.get("/genre-stats", routes.genreStats);
-app.get("/20books", routes.get20Books)
+app.get("/20books", routes.get20Books);
+app.get("/book/:isbn", (req, res) => {
+  req.query.field = "isbn";
+  req.query.query = req.params.isbn;
+  routes.searchBooks(req, res);
+});
+
+app.get("/reviews/:isbn", (req, res) => {
+  console.log("ISBN from params:", req.params.isbn);
+  req.query.field = "isbn";
+  req.query.query = req.params.isbn;
+  routes.searchReviews(req, res);
+});
+
 
 // Start the server
 app.listen(config.server_port, () => {
