@@ -34,29 +34,60 @@ const testDatabaseConnection = async (req, res) => {
 };
 
 // Route 2: GET /search?field?query?limit
-const search = async (req, res) => {
+const searchBooks = async (req, res) => {
   const { field, query, limit } = req.query;
+  console.log("search route hit");
+
+  console.log(field, query, limit);
 
   // define allowed fields
   const allowedFields = ["title", "isbn", "author", "publisher"];
   if (!allowedFields.includes(field)) {
-    return res.status(400).json({ error: "Invalid search parameter" });
+    console.log("invalid searchBooks parameter: ", field);
+    return res.status(400).json({ error: "Invalid searchBooks parameter: ", field });
   }
 
   // set limit to 10 if not given
   const resLimit = limit ? parseInt(limit, 10) : 10;
 
   try {
+    console.log("search query hit");
     const result = await connection.query(
       `SELECT * FROM book WHERE ${field} ILIKE $1 LIMIT $2`,
       [`%${query}%`, resLimit]
     );
     res.json(result.rows);
+    console.log(result.rows);
   } catch (err) {
-    console.error("Error executing search query", err);
-    res.status(500).json({ error: "Failed to execute search query" });
+    console.error("Error executing searchBooks query", err);
+    res.status(500).json({ error: "Failed to execute searchBooks query" });
   }
 };
+
+const searchReviews = async (req, res) => {
+  const { field, query, limit } = req.query;
+  console.log("search reviews route hit");
+  console.log(field, query, limit);
+
+  // define allowed fields
+  const allowedFields = ["isbn"];
+  if (!allowedFields.includes(field)) {
+    console.log("invalid search parameter: ", field);
+    return res.status(400).json({ error: "Invalid search parameter: ", field });
+  }
+
+  // set limit to 10 if not given
+  const resLimit = limit ? parseInt(limit, 10) : 10;
+
+  // query the database
+  try {
+    const result = await connection.query(`SELECT * FROM review WHERE ${field} = $1 LIMIT $2`, [query, resLimit]);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error executing search reviews query", err);
+    res.status(500).json({ error: "Failed to execute search reviews query" });
+  }
+}
 
 // Route 3: GET /random
 const random = async (req, res) => {
@@ -696,7 +727,6 @@ const reviewsByISBN = async (req, res) => {
 // export routes
 module.exports = {
   testDatabaseConnection,
-  search,
   random,
   popularBooksByLocation,
   polarizingBooks,
@@ -709,7 +739,7 @@ module.exports = {
   authorStats,
   genreStats,
   get20Books,
-  bookByISBN,
-  reviewsByISBN,
-  connection
+  connection,
+  searchReviews,
+  searchBooks
 };
