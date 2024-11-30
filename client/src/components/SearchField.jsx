@@ -10,7 +10,7 @@ const SearchField = ({ name, placeholder, value, onChange }) => {
       placeholder={placeholder}
       value={value}
       onChange={onChange}
-      className="form-control" // Bootstrap class for styling input fields
+      className="form-control"
     />
   );
 };

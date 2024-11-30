@@ -12,15 +12,17 @@ const SearchPage = () => {
     genre: '',
     isbn: '',
   });
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
-  const [randomBook, setRandomBook] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false); // State to control modal visibility
+  const [searchResults, setSearchResults] = useState([]); // State to store search results
+  const [randomBook, setRandomBook] = useState(null); // State to store random book
 
+  // Function to handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setSearchParams({ ...searchParams, [name]: value });
   };
 
+  // Function to handle search button click
   const handleSearch = async () => {
     const results = await fetchBooks(searchParams);
     setModalIsOpen(true); // Open the modal immediately
@@ -28,6 +30,7 @@ const SearchPage = () => {
     setRandomBook(null); // Clear random book if any
   };
 
+  // Function to handle random book button click
   const handleRandomBook = async () => {
     setRandomBook({ title: 'Loading random book...' });
     setSearchResults([]); // Clear previous search results
@@ -37,11 +40,15 @@ const SearchPage = () => {
     setRandomBook(book);
   };
 
+  // Render the SearchPage component    
   return (
     <div className="container py-4">
         <h1 className="text-center mb-4">Book Search</h1>
         {/* Book Search Inputs */}
         <div className="row g-3 mb-3">
+        {/* 
+        TODO: Make genre a dropdown with options for genres
+        */}
         {['author', 'title', 'genre', 'isbn'].map((field) => (
           <div className="col-md-3" key={field}>
             <SearchField
