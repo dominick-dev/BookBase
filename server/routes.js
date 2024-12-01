@@ -33,34 +33,75 @@ const testDatabaseConnection = async (req, res) => {
   }
 };
 
-// Route 2: GET /search?field?query?limit
+// Route 2: GET /search?author=&title=&genre=&isbn=
 const searchBooks = async (req, res) => {
-  const { field, query, limit } = req.query;
-  console.log("search route hit");
+  console.log("searching for books");
+  console.log("query parameters: ", req.query);
+  console.log("building query");
 
-  console.log(field, query, limit);
+  const values = [];
+  let limitInt = null;
+  let queryConditions = [];
 
-  // define allowed fields
-  const allowedFields = ["title", "isbn", "author", "publisher"];
-  if (!allowedFields.includes(field)) {
-    console.log("invalid searchBooks parameter: ", field);
-    return res.status(400).json({ error: "Invalid searchBooks parameter: ", field });
+  if ('author' in req.query && req.query.author !== '') {
+    const author = req.query.author;
+    console.log("author: ", author);
+    values.push(author);
+    queryConditions.push(`author = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
+  }
+  if ('title' in req.query && req.query.title !== '') {
+    const title = req.query.title;
+    console.log("title: ", title);
+    values.push(title);
+    queryConditions.push(`title = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
+  }
+  if ('genre' in req.query && req.query.genre !== '') {
+    const genre = req.query.genre;
+    console.log("genre: ", genre);
+    values.push(genre);
+    queryConditions.push(`genre = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
+  }
+  if ('isbn' in req.query && req.query.isbn !== '') {
+    const isbn = req.query.isbn;
+    console.log("isbn: ", isbn);
+    values.push(isbn);
+    queryConditions.push(`isbn = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
+  }
+  if ('limit' in req.query && req.query.limit !== '') {
+    const limit = req.query.limit;
+    console.log("limit: ", limit);
+    limitInt = parseInt(limit, 10);
+  }
+  // set fetch limit to 10 if not given
+  if (isNaN(limitInt) || limitInt === null || req.query.limit === '') {
+    limitInt = 10;
   }
 
-  // set limit to 10 if not given
-  const resLimit = limit ? parseInt(limit, 10) : 10;
+  // build query
+  const query = `
+    SELECT * 
+    FROM book 
+    ${'genre' in req.query ? 'LEFT JOIN genre on book.genre_id = genre.genre_id' : ''}
+    ${queryConditions.length > 0 ? 'WHERE ' + queryConditions.join(' AND ') : ''}
+    ${limitInt ? 'LIMIT ' + limitInt : ''}
+  `;
 
+  console.log("query: ", query);
+
+  console.log("executing query");
   try {
-    console.log("search query hit");
-    const result = await connection.query(
-      `SELECT * FROM book WHERE ${field} ILIKE $1 LIMIT $2`,
-      [`%${query}%`, resLimit]
-    );
-    res.json(result.rows);
-    console.log(result.rows);
+    const result = await connection.query(query, values);
+    console.log("query result of length: ", result.rows.length, "returned");
+    return res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error executing searchBooks query", err);
-    res.status(500).json({ error: "Failed to execute searchBooks query" });
+    console.error("Error executing query:", err);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Failed to execute searchBooks query" });
+    }
   }
 };
 
@@ -73,7 +114,7 @@ const searchReviews = async (req, res) => {
   const allowedFields = ["isbn"];
   if (!allowedFields.includes(field)) {
     console.log("invalid search parameter: ", field);
-    return res.status(400).json({ error: "Invalid search parameter: ", field });
+    return res.status(400).json({ error: `Invalid search parameter: ${field}` });
   }
 
   // set limit to 10 if not given
@@ -85,7 +126,7 @@ const searchReviews = async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("Error executing search reviews query", err);
-    res.status(500).json({ error: "Failed to execute search reviews query" });
+    return res.status(500).json({ error: "Failed to execute search reviews query" });
   }
 }
 
