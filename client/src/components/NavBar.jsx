@@ -16,6 +16,9 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -226,6 +229,39 @@ function NavBar() {
                 </MenuItem>
               ))}
             </Menu>
+          </Box>
+
+            {/* Search Bar */}
+          <Box sx={{display:'flex', justifyContent: 'center'}}>
+            <Search>
+                <SearchIconWrapper>
+                    <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={searchQuery}
+                    onChange={(e)=> setSearchQuery(e.target.value)}
+                    onKeyDown={(e)=>{
+                        if (e.key === 'Enter'){
+                           handleSearchKeyPress(e); 
+                        }
+                    }}       
+                />
+            </Search>
+            <FormControl sx={{paddingRight: '5px'}}>
+                <InputLabel id='search-type-label'>Search By</InputLabel>
+                <Select
+                    labelId='search-type-label'
+                    value={searchType}
+                    onChange={(e)=>setSearchType(e.target.value)}
+                    label='Search By'    
+                >
+                    <MenuItem value='title'>Title</MenuItem>
+                    <MenuItem value='author'>Author</MenuItem>
+                    <MenuItem value='isbn'>ISBN</MenuItem>
+                </Select>
+            </FormControl>
           </Box>
         </Toolbar>
       </Container>
