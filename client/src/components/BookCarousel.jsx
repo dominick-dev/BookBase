@@ -7,6 +7,7 @@ import 'swiper/css'
 import 'swiper/css/effect-coverflow'
 import 'swiper/css/pagination'
 import { EffectCoverflow, Navigation, Mousewheel} from 'swiper/modules'
+import {CircularProgress, Box} from '@mui/material'
 
 const BookCarousel = () => {
   const [books, setBooks] = useState([]);
@@ -32,11 +33,22 @@ const BookCarousel = () => {
     fetchBooks();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return (
+        <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="300px"
+        >
+        <CircularProgress />
+        </Box>
+    );
+    }
 
   return (
     <>
-    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '20px', paddingBottom: '20px', border: '5px solid wheat'}}>
+    <div className="carousel" style={{backgroundColor: '#333', paddingTop: '30px', paddingBottom: '30px', border: '30px solid wheat'}}>
     <Swiper
         direction="horizontal"
         effect={'coverflow'}

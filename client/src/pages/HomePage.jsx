@@ -7,6 +7,7 @@ import NavBar from "../components/NavBar";
 import { Routes, Route } from "react-router-dom";
 import Grid from '@mui/material/Grid2'
 import Box from '@mui/material/Box'
+import RandomBook from "../components/RandomBook";
 
 const HomePage = () => {
   return (
@@ -19,7 +20,7 @@ const HomePage = () => {
             <>
                 <HomePageHero />
                 <BookCarousel />
-                <Box sx={{flexGrow: 1, bgcolor: 'wheat'}}>
+                <Box sx={{flexGrow: 1, bgcolor: 'wheat', padding: 4}}>
                 <Grid container spacing={2}>
                     <Grid size={5}>
                         <TopAuthors/>
@@ -29,6 +30,7 @@ const HomePage = () => {
                     </Grid>
                 </Grid>
                 </Box>
+                <RandomBook/>
                 
             </>
           }

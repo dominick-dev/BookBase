@@ -167,7 +167,7 @@ const GenreFacts = () => {
             <TableRow>
                 <TablePagination
                 rowsPerPageOptions={[5, 10, { label: 'All', value: -1 }]}
-                colSpan={3}
+                colSpan={4}
                 count={genres.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
