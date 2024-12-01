@@ -21,6 +21,7 @@ connection.connect((err) => err && console.log(err));
 // routes...
 // Route 1: Use to test connection to PostgreSQL db
 const testDatabaseConnection = async (req, res) => {
+  console.log("test database connection route hit");
   try {
     const result = await connection.query("SELECT 1");
     res.json({
@@ -106,8 +107,8 @@ const searchBooks = async (req, res) => {
 };
 
 const searchReviews = async (req, res) => {
-  const { field, query, limit } = req.query;
   console.log("search reviews route hit");
+  const { field, query, limit } = req.query;
   console.log(field, query, limit);
 
   // define allowed fields
@@ -132,6 +133,7 @@ const searchReviews = async (req, res) => {
 
 // Route 3: GET /random
 const random = async (req, res) => {
+  console.log("random route hit");
   try {
     const result = await connection.query(`
         SELECT *
@@ -149,6 +151,7 @@ const random = async (req, res) => {
 
 // Route 4: GET /popular-books-by-location
 const popularBooksByLocation = async (req, res) => {
+  console.log("popular books by location route hit");
   const { latitude, longitude } = req.query;
 
   const lat = parseFloat(latitude);
@@ -232,6 +235,7 @@ const popularBooksByLocation = async (req, res) => {
 
 // get polarizing books
 const polarizingBooks = async (req, res) => {
+  console.log("polarizing books route hit");
   try {
 
       const result = await connection.query(`
@@ -280,6 +284,7 @@ const polarizingBooks = async (req, res) => {
 
 // get books by age group
 const byAgeGroup = async (req, res) => {
+  console.log("books by age group route hit");
   try {
 
       const {birthYear} = req.params;
@@ -374,6 +379,7 @@ const byAgeGroup = async (req, res) => {
 
 // get books by location
 const byLocation = async (req, res) => {
+  console.log("books by location route hit");
   try {
 
       const {column, placeName} = req.params;
@@ -403,6 +409,7 @@ const byLocation = async (req, res) => {
 
 // Route XX: GET /top-reviewer-favorites/:genre
 const topReviewerFavorites = async(req, res) => {
+  console.log("top reviewer favorites route hit");
   const threshold = req.params.threshold ?? 10;
   const genre = req.params.genre;
 
@@ -468,6 +475,7 @@ const topReviewerFavorites = async(req, res) => {
 
 // Route XX: /magnum-opus
 const magnumOpus = async (req, res) => {
+  console.log("magnum opus route hit");
   const author = req.params.author;
 
   if(!author){
@@ -503,7 +511,7 @@ const magnumOpus = async (req, res) => {
 
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
-
+  console.log("hidden gems route hit");
   const minRating = parseFloat(req.query.minRating ) || 9.0;
   const maxReviews = parseInt(req.query.maxReview) || 8;
 
@@ -544,7 +552,7 @@ const hiddenGems = async (req, res) => {
 
 // Route XX: /helpful-users
 const helpfulUsers = async (req, res) => {
-  
+  console.log("helpful users route hit");
   const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
   const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
 
@@ -611,7 +619,7 @@ const helpfulUsers = async (req, res) => {
 
 // Route XX: /author-stats
 const authorStats = async (req, res) => {
-  
+  console.log("author stats route hit");
   // Optional author name param
   const authorName = req.query.authorName ? req.query.authorName.toString() : null;
   const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
@@ -657,6 +665,7 @@ const authorStats = async (req, res) => {
 
 // Route XX: /genre-stats
 const genreStats = async (req, res) => {
+  console.log("genre stats route hit");
   // Optional author name param
   const genreName = req.query.genreName ? req.query.genreName.toString() : null;
   const numGenres = parseInt(req.query.numGenres, 10) || 10;
@@ -706,6 +715,7 @@ const genreStats = async (req, res) => {
 }
 
 const get20Books = async (req, res) => {
+  console.log("get 20 books route hit");
   try {
     const result = await connection.query(
       `
@@ -724,6 +734,7 @@ const get20Books = async (req, res) => {
 
 // get books by isbn
 const bookByISBN = async (req, res) => {
+  console.log("book by isbn route hit");
   try {
 
       const {isbn} = req.params;
@@ -746,6 +757,7 @@ const bookByISBN = async (req, res) => {
 
 // get books by isbn
 const reviewsByISBN = async (req, res) => {
+  console.log("reviews by isbn route hit");
   try {
 
       const {isbn} = req.params;
