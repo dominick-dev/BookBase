@@ -54,6 +54,7 @@ const SearchPage = () => {
       const book = await fetchRandomBook();
       console.log("Random book fetched: ", book);
       setRandomBook(book);
+      setSearchParams({ author: '', title: '', genre: '', isbn: '', limit: '' });
     } catch (error) {
       console.error("Error fetching random book: ", error);
     } finally {
