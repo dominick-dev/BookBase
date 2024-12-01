@@ -75,10 +75,10 @@ const searchBooks = async (req, res) => {
     const limit = req.query.limit;
     console.log("limit: ", limit);
     limitInt = parseInt(limit, 10);
-    // set fetch limit to 10 if not given
-    if (isNaN(limitInt)) {
-      limitInt = 10;
-    }
+  }
+  // set fetch limit to 10 if not given
+  if (isNaN(limitInt) || limitInt === null || req.query.limit === '') {
+    limitInt = 10;
   }
 
   // build query
