@@ -228,7 +228,7 @@ const polarizingBooks = async (req, res) => {
         WHERE highScoreCount > midScoreCount and lowScoreCount > midScoreCount
         ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC;
       `);
-    console.log(result.rows.slice(0, 1000));
+    // console.log(result.rows.slice(0, 1000));
     res.json(result.rows.slice(0, 1000));
   } catch (err) {
     console.error("Error fetching polarizing books", err);
@@ -367,9 +367,6 @@ const topReviewerFavorites = async(req, res) => {
   if(!genre) {
     return res.status(400).json({error: "Genre parameter is required"});
   }
-
-  console.log("Threshold: ", threshold);
-  console.log("Genre: ", genre);
 
   try {
     const response = await connection.query (
