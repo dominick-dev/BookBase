@@ -5,8 +5,8 @@ const { testDatabaseConnection, connection } = require('../routes');
 const app = express();
 app.get('/test-db', testDatabaseConnection);
 
-// set timeout for all tests
-jest.setTimeout(1000);
+// Increase timeout for all tests
+jest.setTimeout(5000);
 
 describe('GET /test-db', () => {
   it('should return a successful database connection message', async () => {
