@@ -1,7 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import BookPage from "./pages/BookPage";import { BrowserRouter, Routes, Route} from 'react-router-dom'
-
+import BookPage from "./pages/BookPage";
 import HomePage from "./pages/HomePage";
 import ReviewsPage from "./pages/ReviewsPage";
 import "./styles/App.css";
