@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import BookPage from "./pages/BookPage";
 import HomePage from "./pages/HomePage";
 import ReviewsPage from "./pages/ReviewsPage";
@@ -9,6 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="*" element={<HomePage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/book/:isbn" element={<BookPage />} />
         <Route path="/reviews/:isbn" element={<ReviewsPage />} />

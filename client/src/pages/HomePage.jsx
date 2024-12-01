@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import BookCarousel from "../components/BookCarousel";
 import HomePageHero from "../components/HomePageHero";
 import TopAuthors from '../components/TopAuthors'

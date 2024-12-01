@@ -95,6 +95,7 @@ const random = async (req, res) => {
     const result = await connection.query(`
         SELECT *
         FROM book
+        WHERE image_url IS NOT NULL
         ORDER BY RANDOM()
         LIMIT 1
       `);
