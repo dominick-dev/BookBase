@@ -15,7 +15,7 @@
     background-color: rgba(128, 128, 128, 0.7); /* Gray background with transparency */
     padding: 20px 40px; /* Add padding for spacing inside the box */
     border-radius: 10px; /* Rounded corners for the box */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Optional: Shadow for better appearance */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
     text-align: center; /* Center align text */
     display: flex;
     flex-direction: column;
