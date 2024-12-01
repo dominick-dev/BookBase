@@ -11,65 +11,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
-import InputBase from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import { Link, useNavigate } from 'react-router-dom';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  justifyContent: 'center',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: theme.spacing(2),
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    width: 'auto',
-  },
-  alignItems: 'center',
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    alignItems: 'center',
-    display: 'flex',
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    height: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
+import { Link } from 'react-router-dom';
+import Logo from './logo';
+import SearchComponent_nav from './SearchComponent_nav';
+import AccountMenu from './AccountMenu';
+import NavButton from './NavButton';
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState('title');
-  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -87,37 +37,15 @@ function NavBar() {
     setAnchorElUser(null);
   };
 
-  const handleSearchKeyPress = (event) => {
-    if (event.key === 'Enter' && searchQuery.trim()) {
-      navigate(`/search?field=${searchType}&query=${encodeURIComponent(searchQuery)}`);
-    }
-  };
-
   return (
-    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333' }}>
+    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333', padding: '0 20px' }}>
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-            {/* Logo */}
-          <BookOutlinedIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/"
-            sx={{
-              mr: 2,
-              fontFamily: 'lato',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            BookBase
-          </Typography>
+        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
+          {/* Logo */}
+          <Logo />
 
-            {/* Navigation Menu for Small Screens */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          {/* Navigation Menu for Small Screens */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, justifyContent: 'flex-end' }}>
             <IconButton
               size="large"
               aria-label="menu"
@@ -143,126 +71,24 @@ function NavBar() {
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
             >
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Typography component={Link} to="/search" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                  Search
-                </Typography>
-              </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
-                <Typography component={Link} to="/insights" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                  Interesting Insights
-                </Typography>
-              </MenuItem>
+              <NavButton to="/search" label="Search" isMobile={true} onClick={handleCloseNavMenu} />
+              <NavButton to="/insights" label="Interesting Insights" isMobile={true} onClick={handleCloseNavMenu} />
             </Menu>
           </Box>
 
-            {/* Desktop Navigation Buttons */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-              component={Link}
-              to="/searchBooks"
-              sx={{
-                my: 2,
-                color: '#333333',
-                backgroundColor: 'wheat',
-                border: '2px solid #333',
-                '&:hover': {
-                  backgroundColor: 'white',
-                  color: '#000',
-                },
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                fontSize: '1.1rem',
-                mx: 1,
-              }}
-            >
-              Search
-            </Button>
-            <Button
-              component={Link}
-              to="/insights"
-              sx={{
-                my: 2,
-                color: '#333333',
-                backgroundColor: 'wheat',
-                border: '2px solid #333',
-                '&:hover': {
-                  backgroundColor: 'white',
-                  color: '#000',
-                },
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                fontSize: '1.1rem',
-                mx: 1,
-              }}
-            >
-              Interesting Insights
-            </Button>
+          {/* Desktop Navigation Buttons */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center' }}>
+            <NavButton to="/insights" label="Interesting Insights" isMobile={false} />
           </Box>
 
-            {/* Account Button */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
-            </Menu>
-          </Box>
-
-            {/* Search Bar */}
-          <Box sx={{display:'flex', justifyContent: 'center'}}>
-            <Search>
-                <SearchIconWrapper>
-                    <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
-                    value={searchQuery}
-                    onChange={(e)=> setSearchQuery(e.target.value)}
-                    onKeyDown={(e)=>{
-                        if (e.key === 'Enter'){
-                           handleSearchKeyPress(e); 
-                        }
-                    }}       
-                />
-            </Search>
-            <FormControl sx={{paddingRight: '5px'}}>
-                <InputLabel id='search-type-label'>Search By</InputLabel>
-                <Select
-                    labelId='search-type-label'
-                    value={searchType}
-                    onChange={(e)=>setSearchType(e.target.value)}
-                    label='Search By'    
-                >
-                    <MenuItem value='title'>Title</MenuItem>
-                    <MenuItem value='author'>Author</MenuItem>
-                    <MenuItem value='isbn'>ISBN</MenuItem>
-                </Select>
-            </FormControl>
-          </Box>
+          {/* Search Component */}
+          <SearchComponent_nav />
+          {/* Account Button */}
+          <AccountMenu
+            anchorElUser={anchorElUser}
+            handleOpenUserMenu={handleOpenUserMenu}
+            handleCloseUserMenu={handleCloseUserMenu}
+          />
         </Toolbar>
       </Container>
     </AppBar>

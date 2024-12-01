@@ -4,11 +4,13 @@ import HomePageHero from "../components/HomePageHero";
 import TopAuthors from '../components/TopAuthors'
 import GenreFacts from "../components/GenreFacts";
 import NavBar from "../components/NavBar";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import RandomBook from "../components/RandomBook";
 import { Container, Grid, Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   console.log("HomePage component is rendering");
 
   return (
@@ -38,8 +40,7 @@ const HomePage = () => {
             </>
           }
         />
-        <Route path="/books" element={<h1>BOOKS PAGE</h1>} />
-        <Route path="/search" element={<h1>SEARCH</h1>} />
+        <Route path="/search" element={<Navigate to="/searchBooks" />} />
         <Route path="/insights" element={<h1>INTERESTING INSIGHTS</h1>} />
     </Routes>
     </>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import BookCard from '../components/BookCard';
 import SearchField from '../components/SearchField';
+import NavBar from '../components/NavBar';
 import '../styles/BookCard.css';
 
 Modal.setAppElement('#root');
@@ -76,87 +77,90 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h1 className="text-center mb-4">Book Search</h1>
-      <div className="row g-3 mb-3">
-        {['author', 'title', 'isbn', 'limit'].map((field) => (
-          <div className="col-md-3" key={field}>
-            <SearchField
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={searchParams[field]}
+    <div>
+      <Navbar />
+      <div className="container py-4">
+        <h1 className="text-center mb-4">Book Search</h1>
+        <div className="row g-3 mb-3">
+          {['author', 'title', 'isbn', 'limit'].map((field) => (
+            <div className="col-md-3" key={field}>
+              <SearchField
+                name={field}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                value={searchParams[field]}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+          ))}
+          <div className="col-md-3">
+            <select
+              className="form-select"
+              name="genre"
+              value={searchParams.genre}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-            />
-          </div>
-        ))}
-        <div className="col-md-3">
-          <select
-            className="form-select"
-            name="genre"
-            value={searchParams.genre}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-          >
-            <option value="">Select Genre</option>
-            {[
-              "Fiction", "Non-Fiction", "Biography & Autobiography", "History",
-              "Science", "Arts & Music", "Business", "Education", "Children",
-              "Travel", "Health & Wellness", "Technology & Engineering",
-              "Language", "Social Sciences", "Spirituality & Religion", "Other"
-            ].map((genre) => (
-              <option key={genre} value={genre}>{genre}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div className="text-center mb-3">
-        <button className="btn btn-primary me-2" onClick={executeSearch}>
-          Search
-        </button>
-        <button className="btn btn-secondary" onClick={fetchRandomBookHandler}>
-          Give me a random book
-        </button>
-      </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        className="modal-content"
-        overlayClassName="modal-overlay"
-        contentLabel="Search Results"
-      >
-        <div className="modal-header">
-          <h5 className="modal-title">Search Results</h5>
-          <button
-            type="button"
-            className="btn-close"
-            aria-label="Close"
-            onClick={() => setModalIsOpen(false)}
-          ></button>
-        </div>
-        <div className="modal-body">
-          {isLoading ? (
-            <div className="text-center text-muted">Fetching results...</div>
-          ) : randomBook ? (
-            <BookCard book={randomBook} />
-          ) : searchResults.length > 0 ? (
-            <ul className="list-group">
-              {searchResults.map((book, index) => (
-                <li key={index} className="list-group-item">
-                  <BookCard book={book} />
-                </li>
+            >
+              <option value="">Select Genre</option>
+              {[
+                "Fiction", "Non-Fiction", "Biography & Autobiography", "History",
+                "Science", "Arts & Music", "Business", "Education", "Children",
+                "Travel", "Health & Wellness", "Technology & Engineering",
+                "Language", "Social Sciences", "Spirituality & Religion", "Other"
+              ].map((genre) => (
+                <option key={genre} value={genre}>{genre}</option>
               ))}
-            </ul>
-          ) : (
-            <div className="text-center text-muted">No results found.</div>
-          )}
+            </select>
+          </div>
         </div>
-        <div className="modal-footer">
-          <button className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
-            Close
+        <div className="text-center mb-3">
+          <button className="btn btn-primary me-2" onClick={executeSearch}>
+            Search
+          </button>
+          <button className="btn btn-secondary" onClick={fetchRandomBookHandler}>
+            Give me a random book
           </button>
         </div>
-      </Modal>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          className="modal-content"
+          overlayClassName="modal-overlay"
+          contentLabel="Search Results"
+        >
+          <div className="modal-header">
+            <h5 className="modal-title">Search Results</h5>
+            <button
+              type="button"
+              className="btn-close"
+              aria-label="Close"
+              onClick={() => setModalIsOpen(false)}
+            ></button>
+          </div>
+          <div className="modal-body">
+            {isLoading ? (
+              <div className="text-center text-muted">Fetching results...</div>
+            ) : randomBook ? (
+              <BookCard book={randomBook} />
+            ) : searchResults.length > 0 ? (
+              <ul className="list-group">
+                {searchResults.map((book, index) => (
+                  <li key={index} className="list-group-item">
+                    <BookCard book={book} />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-center text-muted">No results found.</div>
+            )}
+          </div>
+          <div className="modal-footer">
+            <button className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
+              Close
+            </button>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 };
