@@ -147,11 +147,6 @@
                 onClose={handleCloseNavMenu}
             >
                 <MenuItem onClick={handleCloseNavMenu}>
-                <Typography component={Link} to="/books" sx={{ textDecoration: 'none', color: '#333' }}>
-                    Books
-                </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
                 <Typography component={Link} to="/search" sx={{ textDecoration: 'none', color: '#333' }}>
                     Search
                 </Typography>
@@ -166,23 +161,6 @@
 
             {/* Desktop Navigation Buttons */}
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Button
-                component={Link}
-                to="/books"
-                sx={{
-                my: 2,
-                color: '#333333',
-                backgroundColor: 'wheat',
-                '&:hover': {
-                    backgroundColor: 'white',
-                    color: '#000',
-                },
-                textTransform: 'uppercase',
-                fontWeight: 'bold',
-                }}
-            >
-                Books
-            </Button>
             <Button
                 component={Link}
                 to="/search"
