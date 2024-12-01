@@ -11,66 +11,111 @@ const SearchPage = () => {
     title: '',
     genre: '',
     isbn: '',
+    limit: '',
   });
-  const [modalIsOpen, setModalIsOpen] = useState(false); // State to control modal visibility
-  const [searchResults, setSearchResults] = useState([]); // State to store search results
-  const [randomBook, setRandomBook] = useState(null); // State to store random book
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [randomBook, setRandomBook] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Function to handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setSearchParams({ ...searchParams, [name]: value });
+    setSearchParams((prevParams) => ({ ...prevParams, [name]: value }));
   };
 
-  // Function to handle search button click
-  const handleSearch = async () => {
-    const results = await fetchBooks(searchParams);
-    setModalIsOpen(true); // Open the modal immediately
-    setSearchResults(results);
-    setRandomBook(null); // Clear random book if any
+  // handle when a search is initiated 
+  const initiateSearch = () => {
+    setModalIsOpen(true);
+    setSearchResults([]);
+    setRandomBook(null);
+    console.log("Initiating search...");
   };
 
-  // Function to handle random book button click
-  const handleRandomBook = async () => {
-    setRandomBook({ title: 'Loading random book...' });
-    setSearchResults([]); // Clear previous search results
-    setModalIsOpen(true); // Open the modal immediately
-
-    const book = await fetchRandomBook();
-    setRandomBook(book);
+  // handle when a search is executed
+  const executeSearch = async () => {
+    initiateSearch();
+    setIsLoading(true);
+    try {
+      const results = await fetchBooks(searchParams);
+      setSearchResults(results);
+      console.log("Search results obtained: ", results);
+    } catch (error) {
+      console.error("Error fetching search results: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // Render the SearchPage component    
+  // handle when a random book is fetched
+  const fetchRandomBookHandler = async () => {
+    initiateSearch();
+    setIsLoading(true);
+    try {
+      const book = await fetchRandomBook();
+      console.log("Random book fetched: ", book);
+      setRandomBook(book);
+    } catch (error) {
+      console.error("Error fetching random book: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // handle when a search is executed by pressing enter from within any input field
+  // or at any point when on the search page
+  // or when the modal is open
+  // for mac, this is cmd + enter
+  const handleKeyDown = (e) => {
+    console.log(`Key pressed: ${e.key}, Meta key: ${e.metaKey}`);
+    if (e.key === 'Enter' || (e.metaKey && e.key === 'Enter')) {
+      console.log("Executing search...");
+      executeSearch();
+    }
+  };
+
   return (
     <div className="container py-4">
-        <h1 className="text-center mb-4">Book Search</h1>
-        {/* Book Search Inputs */}
-        <div className="row g-3 mb-3">
-        {/* 
-        TODO: Make genre a dropdown with options for genres
-        */}
-        {['author', 'title', 'genre', 'isbn'].map((field) => (
+      <h1 className="text-center mb-4">Book Search</h1>
+      <div className="row g-3 mb-3">
+        {['author', 'title', 'isbn', 'limit'].map((field) => (
           <div className="col-md-3" key={field}>
             <SearchField
               name={field}
               placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
               value={searchParams[field]}
               onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
             />
           </div>
         ))}
+        <div className="col-md-3">
+          <select
+            className="form-select"
+            name="genre"
+            value={searchParams.genre}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+          >
+            <option value="">Select Genre</option>
+            {[
+              "Fiction", "Non-Fiction", "Biography & Autobiography", "History",
+              "Science", "Arts & Music", "Business", "Education", "Children",
+              "Travel", "Health & Wellness", "Technology & Engineering",
+              "Language", "Social Sciences", "Spirituality & Religion", "Other"
+            ].map((genre) => (
+              <option key={genre} value={genre}>{genre}</option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="text-center mb-3">
-        {/* Book Search Buttons */}
-        <button className="btn btn-primary me-2" onClick={handleSearch}>
+        <button className="btn btn-primary me-2" onClick={executeSearch}>
           Search
         </button>
-        <button className="btn btn-secondary" onClick={handleRandomBook}>
+        <button className="btn btn-secondary" onClick={fetchRandomBookHandler}>
           Give me a random book
         </button>
       </div>
-
-      {/* Book Search Results Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}
@@ -88,7 +133,9 @@ const SearchPage = () => {
           ></button>
         </div>
         <div className="modal-body">
-          {randomBook ? (
+          {isLoading ? (
+            <div className="text-center text-muted">Fetching results...</div>
+          ) : randomBook ? (
             <BookCard book={randomBook} />
           ) : searchResults.length > 0 ? (
             <ul className="list-group">
@@ -112,7 +159,6 @@ const SearchPage = () => {
   );
 };
 
-// Functions to make API calls
 const fetchBooks = async (params) => {
   try {
     const queryString = new URLSearchParams(params).toString();
@@ -122,7 +168,6 @@ const fetchBooks = async (params) => {
       console.error("Failed to fetch books:", errorDetails);
       throw new Error(`Failed to fetch books: ${errorDetails.message}`);
     }
-    console.log("response: ", response);
     return await response.json();
   } catch (error) {
     console.error('Error fetching books:', error);

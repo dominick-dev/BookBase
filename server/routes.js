@@ -43,36 +43,45 @@ const searchBooks = async (req, res) => {
   let limitInt = null;
   let queryConditions = [];
 
-  if ('author' in req.query) {
+  if ('author' in req.query && req.query.author !== '') {
     const author = req.query.author;
     console.log("author: ", author);
     values.push(author);
     queryConditions.push(`author = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
   }
-  if ('title' in req.query) {
+  if ('title' in req.query && req.query.title !== '') {
     const title = req.query.title;
     console.log("title: ", title);
     values.push(title);
     queryConditions.push(`title = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
   }
-  if ('genre' in req.query) {
+  if ('genre' in req.query && req.query.genre !== '') {
     const genre = req.query.genre;
     console.log("genre: ", genre);
     values.push(genre);
     queryConditions.push(`genre = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
   }
-  if ('isbn' in req.query) {
+  if ('isbn' in req.query && req.query.isbn !== '') {
     const isbn = req.query.isbn;
     console.log("isbn: ", isbn);
     values.push(isbn);
     queryConditions.push(`isbn = $${values.length}`);
+    console.log("queryConditions: ", queryConditions);
   }
-  if ('limit' in req.query) {
+  if ('limit' in req.query && req.query.limit !== '') {
     const limit = req.query.limit;
     console.log("limit: ", limit);
     limitInt = parseInt(limit, 10);
+    // set fetch limit to 10 if not given
+    if (isNaN(limitInt)) {
+      limitInt = 10;
+    }
   }
 
+  // build query
   const query = `
     SELECT * 
     FROM book 
@@ -80,6 +89,7 @@ const searchBooks = async (req, res) => {
     ${queryConditions.length > 0 ? 'WHERE ' + queryConditions.join(' AND ') : ''}
     ${limitInt ? 'LIMIT ' + limitInt : ''}
   `;
+
   console.log("query: ", query);
 
   console.log("executing query");

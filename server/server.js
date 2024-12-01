@@ -14,7 +14,7 @@ const mongoUri = config.mongo_uri;
 mongoose.connect(mongoUri)
   .then(() => console.log("MongoDB connected successfully"))
   .catch(err => console.log('MongoDB connection error: ', err));
-  
+
 const app = express();
 
 // Middleware
@@ -108,14 +108,6 @@ app.get("/", (req, res) => {
 app.get("/test-db", routes.testDatabaseConnection);
 
 // Bookbase routes
-// Route 1: GET /searchBooks?author=&title=&genre=&isbn=&limit=
-// example: /searchBooks?author=J.K. Rowling&limit=5
-// example using all parameters Ursula Hegi,SALT DANCERS,16,0684825309
-// /searchBooks?author=Ursula Hegi&title=SALT DANCERS&limit=16&isbn=0684825309
-app.get("/searchBooks", (req, res) => {
-  const { author, title, genre, isbn, limit } = req.query;
-  routes.searchBooks(req, res, { author, title, genre, isbn, limit });
-});
 app.get("/random", routes.random);
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/polarizing-books", routes.polarizingBooks);
@@ -141,7 +133,9 @@ app.get("/reviews/:isbn", (req, res) => {
   routes.searchReviews(req, res);
 });
 
-// search?author=&title=&genre=&isbn=&limit=
+// Route 1: GET /search?author=&title=&genre=&isbn=&limit=
+// example: /search?author=J.K. Rowling&limit=5
+// example using all parameters Ursula Hegi,SALT DANCERS,16,0684825309
 app.get("/search", (req, res) => {
   console.log("search route hit");
   routes.searchBooks(req, res);
