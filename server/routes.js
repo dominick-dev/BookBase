@@ -35,50 +35,63 @@ const testDatabaseConnection = async (req, res) => {
 
 // Route 2: GET /search?author=&title=&genre=&isbn=
 const searchBooks = async (req, res) => {
+  console.log("searching for books");
+  console.log("query parameters: ", req.query);
+  console.log("building query");
+
+  const values = [];
+  let limitInt = null;
+  let queryConditions = [];
+
+  if ('author' in req.query) {
+    const author = req.query.author;
+    console.log("author: ", author);
+    values.push(author);
+    queryConditions.push(`author = $${values.length}`);
+  }
+  if ('title' in req.query) {
+    const title = req.query.title;
+    console.log("title: ", title);
+    values.push(title);
+    queryConditions.push(`title = $${values.length}`);
+  }
+  if ('genre' in req.query) {
+    const genre = req.query.genre;
+    console.log("genre: ", genre);
+    values.push(genre);
+    queryConditions.push(`genre = $${values.length}`);
+  }
+  if ('isbn' in req.query) {
+    const isbn = req.query.isbn;
+    console.log("isbn: ", isbn);
+    values.push(isbn);
+    queryConditions.push(`isbn = $${values.length}`);
+  }
+  if ('limit' in req.query) {
+    const limit = req.query.limit;
+    console.log("limit: ", limit);
+    limitInt = parseInt(limit, 10);
+  }
+
+  const query = `
+    SELECT * 
+    FROM book 
+    ${'genre' in req.query ? 'LEFT JOIN genre on book.genre_id = genre.genre_id' : ''}
+    ${queryConditions.length > 0 ? 'WHERE ' + queryConditions.join(' AND ') : ''}
+    ${limitInt ? 'LIMIT ' + limitInt : ''}
+  `;
+  console.log("query: ", query);
+
+  console.log("executing query");
   try {
-    const { author, title, genre, isbn, limit } = req.query;
-
-    // Build the query dynamically based on provided parameters
-    const conditions = [];
-    const values = [];
-    let index = 1;
-
-    if (author) {
-      conditions.push(`author ILIKE $${index++}`);
-      values.push(`%${author}%`);
-    }
-    if (title) {
-      conditions.push(`title ILIKE $${index++}`);
-      values.push(`%${title}%`);
-    }
-    if (genre) {
-      conditions.push(`genre ILIKE $${index++}`);
-      values.push(`%${genre}%`);
-    }
-    if (isbn) {
-      conditions.push(`isbn = $${index++}`);
-      values.push(isbn);
-    }
-
-    // Set a default limit if not provided
-    const resLimit = limit ? parseInt(limit, 10) : 10;
-    values.push(resLimit);
-
-    // Construct the SQL query
-    const query = `
-      SELECT * FROM book
-      ${conditions.length ? 'WHERE ' + conditions.join(' AND ') : ''}
-      LIMIT $${index}
-    `;
-
-    // Execute the search query
     const result = await connection.query(query, values);
-
-    // Send the search results
-    res.status(200).json(result.rows);
-  } catch (error) {
-    console.error("Error executing search query:", error);
-    res.status(500).json({ message: "Failed to execute search query" });
+    console.log("query result of length: ", result.rows.length, "returned");
+    return res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error executing query:", err);
+    if (!res.headersSent) {
+      return res.status(500).json({ error: "Failed to execute searchBooks query" });
+    }
   }
 };
 
@@ -91,7 +104,7 @@ const searchReviews = async (req, res) => {
   const allowedFields = ["isbn"];
   if (!allowedFields.includes(field)) {
     console.log("invalid search parameter: ", field);
-    return res.status(400).json({ error: "Invalid search parameter: ", field });
+    return res.status(400).json({ error: `Invalid search parameter: ${field}` });
   }
 
   // set limit to 10 if not given
@@ -103,7 +116,7 @@ const searchReviews = async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("Error executing search reviews query", err);
-    res.status(500).json({ error: "Failed to execute search reviews query" });
+    return res.status(500).json({ error: "Failed to execute search reviews query" });
   }
 }
 
