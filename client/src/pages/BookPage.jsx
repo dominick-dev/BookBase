@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Container, Row, Col, Navbar, Nav } from "react-bootstrap";
 import BookCard from "../components/BookCard";
 import Reviews from "../components/Reviews";
+import '../styles/BookCard.css';
 
 const BookPage = () => {
   console.log("BookPage component is rendering");

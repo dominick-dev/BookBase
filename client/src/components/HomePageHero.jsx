@@ -1,6 +1,6 @@
 import React from 'react';
 import bookshelf from '../assets/bookshelf.png';
-import '../styles/HomePageHero.css'; // Create this file for custom CSS
+import '../styles/HomePageHero.css';
 
 const HomePageHero = () => {
   return (

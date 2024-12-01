@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, Card, CardMedia, CardContent, CircularProgress, Alert, Container, Rating } from "@mui/material";
 import { getFallbackCover } from "../utils/bookUtils";
-
+import '../styles/BookCard.css';
 const getBookDetails = (book) => ({
     title: book.title || "No title available",
     author: book.author || "Author Unknown",
@@ -14,8 +14,9 @@ const RandomBook = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  console.log("RandomBook component is rendering");
 
-    const fetchRandomBook = async () => {
+  const fetchRandomBook = async () => {
         setLoading(true);
         setError(null);
         try {

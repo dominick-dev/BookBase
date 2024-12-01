@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Rating } from '@mui/material';
 import { getFallbackCover } from '../utils/bookUtils';
 import { useNavigate } from 'react-router-dom';
+import '../styles/BookCard.css';
 
 const getBookDetails = (book) => {
   return {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import BookCard from './BookCard';
+import '../styles/BookCard.css';
 
 import {Swiper, SwiperSlide} from 'swiper/react'
 import 'swiper/css'
