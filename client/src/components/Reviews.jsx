@@ -19,7 +19,6 @@ const Review = ({ review }) => {
     // extract the values from the review object
     let { helpfulness, isbn, price, review_id, score, summary, text, time, userid, username } = review;
 
-
     // check if the review object is valid
     if (typeof review !== 'object' || review === null) {
         console.error("Invalid review object:", review);
@@ -31,15 +30,14 @@ const Review = ({ review }) => {
     score = score !== undefined ? Math.max(0, Math.min(10, score)) : null;
 
     // make sure helpfulness is in the format of "x/x"
-    const helpfulness_string = helpfulness !== undefined ? helpfulness.replace(/\//g, '/') : "No helpfulness available"; 
+    const helpfulness_string = helpfulness ? helpfulness.replace(/\//g, '/') : "No helpfulness available"; 
     // evaluate the helpfulness string
     try {
-        helpfulness = helpfulness_string !== null ? evaluate(helpfulness_string).toString() : null;
+        helpfulness = helpfulness_string !== "No helpfulness available" ? evaluate(helpfulness_string).toString() : null;
     } catch (error) {
         console.error("Error evaluating helpfulness:", error);
         helpfulness = null;
     }
-
 
     // get the summary or text from the review object
     const reviewerName = username || "Anonymous";

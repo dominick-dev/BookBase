@@ -60,9 +60,6 @@ const BookCard = ({ book }) => {
               />
             </div>
           </div>
-          <div className='button-container'>
-            <a href='#' className='btn-primary'>See More</a>
-          </div>
         </div>
       </div>
     </div>
