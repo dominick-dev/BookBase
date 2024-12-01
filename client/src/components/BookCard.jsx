@@ -2,6 +2,7 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
 import {Rating} from '@mui/material'
 import { getFallbackCover } from '../utils/bookUtils';
+import AddToWantToReadBtn from './AddToWantToReadBtn';
 
 // fallback function to get book details
 const getBookDetails = (book) => {
@@ -58,6 +59,7 @@ const BookCard = ({ book }) => {
               />
             </div>
           </div>
+          <AddToWantToReadBtn isbn={book.isbn} />
           <div className='button-container'>
             <a href='#' className='btn-primary'>See More</a>
           </div>
