@@ -1,242 +1,236 @@
-    import React, { useState } from 'react';
-    import AppBar from '@mui/material/AppBar';
-    import Box from '@mui/material/Box';
-    import Toolbar from '@mui/material/Toolbar';
-    import IconButton from '@mui/material/IconButton';
-    import Typography from '@mui/material/Typography';
-    import Menu from '@mui/material/Menu';
-    import MenuIcon from '@mui/icons-material/Menu';
-    import Container from '@mui/material/Container';
-    import Avatar from '@mui/material/Avatar';
-    import Button from '@mui/material/Button';
-    import Tooltip from '@mui/material/Tooltip';
-    import MenuItem from '@mui/material/MenuItem';
-    import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
-    import InputBase from '@mui/material/InputBase';
-    import SearchIcon from '@mui/icons-material/Search';
-    import { styled, alpha } from '@mui/material/styles';
-    import { Link, useNavigate } from 'react-router-dom';
-    import Select from '@mui/material/Select';
-    import FormControl from '@mui/material/FormControl';
-    import InputLabel from '@mui/material/InputLabel';
+import React, { useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import BookOutlinedIcon from '@mui/icons-material/BookOutlined';
+import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
+import { styled, alpha } from '@mui/material/styles';
+import { Link, useNavigate } from 'react-router-dom';
 
-    const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-    // Styled Search Components (boilerplate code from MUI website on navBar w/search)
-    const Search = styled('div')(({ theme }) => ({
-    position: 'relative',
-    justifyContent: 'center',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    '&:hover': {
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  justifyContent: 'center',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    marginLeft: theme.spacing(2),
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
+  },
+  marginLeft: theme.spacing(2),
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
     width: 'auto',
-    },
-    alignItems: 'center'
-    }));
+  },
+  alignItems: 'center',
+}));
 
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    }));
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
 
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    alignItems: "center",
+    alignItems: 'center',
     display: 'flex',
     transition: theme.transitions.create('width'),
     width: '100%',
     height: '100%',
     [theme.breakpoints.up('md')]: {
-        width: '20ch',
+      width: '20ch',
     },
-    },
-    }));
-    // end boilerplate
+  },
+}));
 
-    function NavBar() {
-    const [anchorElNav, setAnchorElNav] = useState(null);
-    const [anchorElUser, setAnchorElUser] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchType, setSearchType] = useState('title');
-    const navigate = useNavigate();
+function NavBar() {
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchType, setSearchType] = useState('title');
+  const navigate = useNavigate();
 
-    const handleOpenNavMenu = (event) => {
+  const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
-    };
+  };
 
-    const handleOpenUserMenu = (event) => {
+  const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
-    };
+  };
 
-    const handleCloseNavMenu = () => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-    };
+  };
 
-    const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = () => {
     setAnchorElUser(null);
-    };
+  };
 
-    const handleSearchKeyPress = (event) => {
+  const handleSearchKeyPress = (event) => {
     if (event.key === 'Enter' && searchQuery.trim()) {
-        navigate(`/search?field=${searchType}&query=${encodeURIComponent(searchQuery)}`);
+      navigate(`/search?field=${searchType}&query=${encodeURIComponent(searchQuery)}`);
     }
-    };
+  };
 
-
-    return (
-    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333'}}>
-        <Container maxWidth="xl">
+  return (
+    <AppBar position="fixed" sx={{ width: '100%', backgroundColor: 'wheat', color: '#333' }}>
+      <Container maxWidth="xl">
         <Toolbar disableGutters>
             {/* Logo */}
-            <BookOutlinedIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
-            <Typography
+          <BookOutlinedIcon sx={{ display: { xs: 'flex', md: 'flex' }, mr: 1 }} />
+          <Typography
             variant="h6"
             noWrap
             component={Link}
             to="/"
             sx={{
-                mr: 2,
-                fontFamily: 'lato',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
+              mr: 2,
+              fontFamily: 'lato',
+              fontWeight: 700,
+              letterSpacing: '.3rem',
+              color: 'inherit',
+              textDecoration: 'none',
             }}
-            >
+          >
             BookBase
-            </Typography>
+          </Typography>
 
             {/* Navigation Menu for Small Screens */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
-                size="large"
-                aria-label="menu"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
+              size="large"
+              aria-label="menu"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleOpenNavMenu}
+              color="inherit"
             >
-                <MenuIcon />
+              <MenuIcon />
             </IconButton>
             <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
+              id="menu-appbar"
+              anchorEl={anchorElNav}
+              anchorOrigin={{
                 vertical: 'bottom',
                 horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
+              }}
+              keepMounted
+              transformOrigin={{
                 vertical: 'top',
                 horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
+              }}
+              open={Boolean(anchorElNav)}
+              onClose={handleCloseNavMenu}
             >
-                <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={handleCloseNavMenu}>
                 <Typography component={Link} to="/search" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                    Search
+                  Search
                 </Typography>
-                </MenuItem>
-                <MenuItem onClick={handleCloseNavMenu}>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
                 <Typography component={Link} to="/insights" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
-                    Interesting Insights
+                  Interesting Insights
                 </Typography>
-                </MenuItem>
+              </MenuItem>
             </Menu>
-            </Box>
+          </Box>
 
             {/* Desktop Navigation Buttons */}
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
-                component={Link}
-                to="/search"
-                sx={{
+              component={Link}
+              to="/searchBooks"
+              sx={{
                 my: 2,
                 color: '#333333',
                 backgroundColor: 'wheat',
                 border: '2px solid #333',
                 '&:hover': {
-                    backgroundColor: 'white',
-                    color: '#000',
+                  backgroundColor: 'white',
+                  color: '#000',
                 },
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 fontSize: '1.1rem',
                 mx: 1,
-                }}
+              }}
             >
-                Search
+              Search
             </Button>
             <Button
-                component={Link}
-                to="/insights"
-                sx={{
+              component={Link}
+              to="/insights"
+              sx={{
                 my: 2,
                 color: '#333333',
                 backgroundColor: 'wheat',
                 border: '2px solid #333',
                 '&:hover': {
-                    backgroundColor: 'white',
-                    color: '#000',
+                  backgroundColor: 'white',
+                  color: '#000',
                 },
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
                 fontSize: '1.1rem',
                 mx: 1,
-                }}
+              }}
             >
-                Interesting Insights
+              Interesting Insights
             </Button>
-            </Box>
+          </Box>
 
             {/* Account Button */}
-            <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                </IconButton>
+              </IconButton>
             </Tooltip>
             <Menu
-                sx={{ mt: '45px' }}
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
+              }}
+              keepMounted
+              transformOrigin={{
                 vertical: 'top',
                 horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseUserMenu}
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
             >
-                {settings.map((setting) => (
+              {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
+                  <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
-                ))}
+              ))}
             </Menu>
-            </Box>
+          </Box>
         </Toolbar>
-        </Container>
+      </Container>
     </AppBar>
-    );
-    }
+  );
+}
 
-    export default NavBar;
+export default NavBar;
