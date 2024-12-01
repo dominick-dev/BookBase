@@ -42,6 +42,9 @@ const HomePage = () => {
           element={
             <>
                 <HomePageHero />
+                <div className="text-center mt-2">
+                  <strong style={{ fontSize: '1.2em' }}>Click on the book cards to learn more about the books!</strong>
+                </div>
                 <BookCarousel />
                 <div className="container mt-4" style={{ backgroundColor: 'wheat', padding: '20px' }}>
                     <div className="row">

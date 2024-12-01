@@ -147,12 +147,12 @@
                 onClose={handleCloseNavMenu}
             >
                 <MenuItem onClick={handleCloseNavMenu}>
-                <Typography component={Link} to="/search" sx={{ textDecoration: 'none', color: '#333' }}>
+                <Typography component={Link} to="/search" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
                     Search
                 </Typography>
                 </MenuItem>
                 <MenuItem onClick={handleCloseNavMenu}>
-                <Typography component={Link} to="/insights" sx={{ textDecoration: 'none', color: '#333' }}>
+                <Typography component={Link} to="/insights" sx={{ textDecoration: 'none', color: '#333', fontWeight: 'bold', fontSize: '1.1rem' }}>
                     Interesting Insights
                 </Typography>
                 </MenuItem>
@@ -168,12 +168,15 @@
                 my: 2,
                 color: '#333333',
                 backgroundColor: 'wheat',
+                border: '2px solid #333',
                 '&:hover': {
                     backgroundColor: 'white',
                     color: '#000',
                 },
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
+                fontSize: '1.1rem',
+                mx: 1,
                 }}
             >
                 Search
@@ -185,52 +188,21 @@
                 my: 2,
                 color: '#333333',
                 backgroundColor: 'wheat',
+                border: '2px solid #333',
                 '&:hover': {
                     backgroundColor: 'white',
                     color: '#000',
                 },
                 textTransform: 'uppercase',
                 fontWeight: 'bold',
+                fontSize: '1.1rem',
+                mx: 1,
                 }}
             >
                 Interesting Insights
             </Button>
             </Box>
 
-            {/* Search Bar */}
-            <Box sx={{display:'flex', alignItems: 'center'}}>
-                <Search>
-                <SearchIconWrapper>
-                    <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'lato': 'search' }}
-                    value={searchQuery}
-                    onChange={(e)=> setSearchQuery(e.target.value)}
-                    onKeyDown={(e)=>{
-                        if (e.key === 'Enter'){
-                           handleSearchKeyPress(e); 
-                        }
-                    }   
-                    }
-                    sx={{justifyContent: 'center'}}       
-                />
-                </Search>
-                <FormControl  sx={{paddingRight: '5px', m:1}} size="small">
-                    <InputLabel id='search-type-label'>By</InputLabel>
-                    <Select
-                        labelId='search-type-label'
-                        value={searchType}
-                        onChange={(e)=>setSearchType(e.target.value)}
-                        label='Search By'    
-                    >
-                        <MenuItem value='title'>Title</MenuItem>
-                        <MenuItem value='author'>Author</MenuItem>
-                        <MenuItem value='isbn'>ISBN</MenuItem>
-                    </Select>
-                </FormControl>
-            </Box>
             {/* Account Button */}
             <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
