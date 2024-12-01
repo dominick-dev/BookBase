@@ -9,30 +9,7 @@ import RandomBook from "../components/RandomBook";
 import { Container, Grid, Typography } from '@mui/material';
 
 const HomePage = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
   console.log("HomePage component is rendering");
-
-  useEffect(() => {
-    // Fetch books from the /20books route
-    const fetchBooks = async () => {
-      try {
-        console.log("Attempting to fetch books...")
-        const response = await fetch("http://localhost:8080/20books");
-        const data = await response.json();
-        console.log("Fetched data:", data);
-        setBooks(data);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
 
   return (
     <>
