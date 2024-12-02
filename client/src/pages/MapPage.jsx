@@ -8,11 +8,9 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 const MapPage = () => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
-  const [countryCoordinates, setCountryCoordinates] = useState({
-    avg_latitude: 40.7,
-    avg_longitude: -74.0
-  });
   const [markers, setMarkers] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(1);
+
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -38,22 +36,9 @@ const MapPage = () => {
 
     try {
       // search database based on country name
-      const countryResponse = await fetch(`http://localhost:8080/countryCoordinates/${countryName}`);
-      const countryData = await countryResponse.json();
-
-      if (countryData.length > 0) {
-        setCountryCoordinates(countryData[0]);  // set based on query result
-      } else {
-        console.log("No lat/long found");
-      }
-    } catch (error) {
-      console.error("Error fetching lat/long:", error);
-    }
-
-    try {
-      // search database based on country name
       const reviewResponse = await fetch(`http://localhost:8080/reviewsWithCoordinates/${countryName}`);
       const reviewData = await reviewResponse.json();
+      setZoomLevel(1);
 
       if (reviewData.length > 0) {
 
@@ -100,9 +85,9 @@ const MapPage = () => {
       </DropdownButton>
 
       <MapContainer
-        key={`${countryCoordinates.avg_latitude}-${countryCoordinates.avg_longitude}`} // map moves based on selection
-        center={[countryCoordinates.avg_latitude, countryCoordinates.avg_longitude]} 
-        zoom={5}
+        key={`${selectedCountry}-${zoomLevel}`}
+        center={[0, 0]}
+        zoom={zoomLevel}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

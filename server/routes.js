@@ -772,7 +772,7 @@ const countriesList = async (req, res) => {
         FROM location l
         JOIN person p ON l.location_id = p.location_id
         JOIN review r ON p.userid = r.userid
-        WHERE TRIM(country) ~ '^[A-Za-z.\- ]+$' --valid characters
+        WHERE TRIM(country) ~ '^[A-Za-z. ]+$' --valid characters
         AND LENGTH(TRIM(country)) > 1
         ORDER BY country;
       `);
@@ -784,42 +784,6 @@ const countriesList = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch list of countries."});
   }
 };
-
-// get lat long of a given country
-const countryCoordinates = async (req, res) => {
-  const countryName = req.params.country;
-
-  if(!countryName){
-    return res.status(400).json({error: "Country is required"});
-  }
-
-  try {
-    const response = await connection.query (
-      `
-        WITH latLongs AS (
-            SELECT
-              country,
-              AVG(latitude) AS avg_latitude,
-              AVG(longitude) AS avg_longitude
-            FROM
-              location
-            GROUP BY
-            country
-        )
-        SELECT *
-        FROM latLongs
-        WHERE country LIKE '%${countryName}%'
-        LIMIT 1;
-      `);
-    res.json(response.rows);
-  } catch (err) {
-    console.error("Error fetching country coordinates.");
-
-    res
-      .status(500)
-      .json({error: "Failed to fetch country coordinates."});
-  }
-}
 
 // get book reviews with lat/longs by country
 const reviewsWithCoordinates = async (req, res) => {
