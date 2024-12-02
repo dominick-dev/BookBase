@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col, Navbar, Nav } from "react-bootstrap";
+import { Container, Row, Col } from "react-bootstrap";
 import BookCard from "../components/BookCard";
 import Reviews from "../components/Reviews";
+import NavBar from "../components/NavBar";
 import '../styles/BookCard.css';
 
 const BookPage = () => {
@@ -63,35 +64,30 @@ const BookPage = () => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
+      <NavBar />
+      <div style={{ marginTop: '100px' }}>
         <Container>
-          <Navbar.Brand>Book App</Navbar.Brand>
-          <Nav className="me-auto">
-            <Nav.Link as={Link} to="/">Home</Nav.Link>
-          </Nav>
+          <Row className="justify-content-center">
+            <Col md={5}>
+              {loading ? (
+                <p>Loading book information...</p>
+              ) : book ? (
+                <BookCard book={book} />
+              ) : (
+                <p>No book found</p>
+              )}
+            </Col>
+            <Col md={7}>
+              <h3>Reviews</h3>
+              {reviewsLoading ? (
+                <p>Loading reviews...</p>
+              ) : (
+                <Reviews reviews={reviews} />
+              )}
+            </Col>
+          </Row>
         </Container>
-      </Navbar>
-      <Container>
-        <Row className="justify-content-center">
-          <Col md={5}>
-            {loading ? (
-              <p>Loading book information...</p>
-            ) : book ? (
-              <BookCard book={book} />
-            ) : (
-              <p>No book found</p>
-            )}
-          </Col>
-          <Col md={7}>
-            <h3>Reviews</h3>
-            {reviewsLoading ? (
-              <p>Loading reviews...</p>
-            ) : (
-              <Reviews reviews={reviews} />
-            )}
-          </Col>
-        </Row>
-      </Container>
+      </div>
     </>
   );
 };
