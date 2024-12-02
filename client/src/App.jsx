@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import BookPage from "./pages/BookPage";
 import HomePage from "./pages/HomePage";
 import ReviewsPage from "./pages/ReviewsPage";
+import SearchPage from "./pages/SearchPage";
 import AuthPage from "./pages/AuthPage";
 import Authenticate from "./components/Authenticate";
 import "./styles/App.css";
@@ -14,6 +15,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/book/:isbn" element={<BookPage />} />
         <Route path="/reviews/:isbn" element={<ReviewsPage />} />
+        <Route path="/searchBooks" element={<SearchPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/authenticate" element={<Authenticate />} />
       </Routes>
