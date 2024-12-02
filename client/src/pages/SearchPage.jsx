@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import BookCard from '../components/BookCard';
 import SearchField from '../components/SearchField';
+import '../styles/BookCard.css';
 
 Modal.setAppElement('#root');
 
