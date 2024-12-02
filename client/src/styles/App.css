@@ -41,8 +41,7 @@
   color: #888;
 }
 
-
 .leaflet-container {
-  height: 50vh;
+  height: 60vh;
   width: 100vh;
 }

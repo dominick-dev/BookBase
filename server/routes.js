@@ -819,6 +819,43 @@ const countryCoordinates = async (req, res) => {
   }
 }
 
+// get book reviews with lat/longs by country
+const reviewsWithCoordinates = async (req, res) => {
+  const countryName = req.params.country;
+
+  if(!countryName){
+    return res.status(400).json({error: "Country is required"});
+  }
+
+  try {
+    const response = await connection.query (
+      `
+      SELECT
+          l.city AS city,
+          l.state AS state,
+          l.longitude AS longitude,
+          l.latitude AS latitude,
+          p.userid AS userid,
+          r.score AS score,
+          b.title AS title,
+          b.author AS author,
+          b.isbn AS isbn
+      FROM location l
+      JOIN person p on l.location_id = p.location_id
+      JOIN review r on r.userid = p.userid
+      JOIN book b on r.isbn = b.isbn
+      WHERE country LIKE '%${countryName}%';
+      `);
+    res.json(response.rows);
+  } catch (err) {
+    console.error("Error fetching reviews by country.");
+
+    res
+      .status(500)
+      .json({error: "Failed to fetch reviews by country."});
+  }
+}
+
 
 // export routes
 module.exports = {
@@ -839,5 +876,6 @@ module.exports = {
   searchReviews,
   searchBooks,
   countriesList,
-  countryCoordinates
+  countryCoordinates,
+  reviewsWithCoordinates
 };
