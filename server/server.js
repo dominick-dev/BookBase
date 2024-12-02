@@ -52,6 +52,27 @@ app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
   }
 });
 
+// route to get user's want to read list
+app.get("want-to-read", authenticationToken, async (req, res) => {
+  try {
+    // extract userID from token
+    const userId = req.user.id;
+
+    // find user in DB
+    const user = await User.findOne({ user_id: userId });
+
+    // if user not found, return 404
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // get want to read list from user object
+    const wantToReadList = user.want_to_read || [];
+    res.status(200).json({ want_to_read: wantToReadList });
+  } catch (err) {
+    console.error("Error retrieving want to read list: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // google OAuth Strategy
 passport.use(
   new GoogleStrategy(
