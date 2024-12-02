@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
-import { Container, Dropdown, DropdownButton } from "react-bootstrap";
+import { Container, Dropdown, DropdownButton, Row, Col } from "react-bootstrap";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import NavBar from "../components/NavBar";
 import '../styles/MapPage.css';
@@ -98,35 +98,43 @@ const MapPage = () => {
             </div>
           </DropdownButton>
 
-          <MapContainer
-            key={`${selectedCountry}-${zoomLevel}`}
-            center={[0, 0]}
-            zoom={zoomLevel}
-            style={{height: "60vh", width: "100%"}}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+          <Row>
+            <Col md={6}>
+              <MapContainer
+                key={`${selectedCountry}-${zoomLevel}`}
+                center={[0, 0]}
+                zoom={zoomLevel}
+                style={{height: "60vh", width: "100%"}}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
 
-            <MarkerClusterGroup>
-              {markers.map(marker =>
-                <Marker position={marker.geocode}>
-                  <Popup>
-                    <div>
-                      User #{marker.userId} in {marker.city}, {marker.state}<br />
-                      <br />
-                      <a href={marker.link} target="_blank">{marker.title}</a><br />
-                      By {marker.author}<br />
-                      <br />
-                      Score: {marker.score}/10
-                    </div>
-                  </Popup>
-                </Marker>
-              )}
-            </MarkerClusterGroup>
-
-          </MapContainer>
+                <MarkerClusterGroup>
+                  {markers.map(marker =>
+                    <Marker position={marker.geocode}>
+                      <Popup>
+                        <div>
+                          User #{marker.userId} in {marker.city}, {marker.state}<br />
+                          <br />
+                          <a href={marker.link} target="_blank">{marker.title}</a><br />
+                          By {marker.author}<br />
+                          <br />
+                          Score: {marker.score}/10
+                        </div>
+                      </Popup>
+                    </Marker>
+                  )}
+                </MarkerClusterGroup>
+              </MapContainer>
+            </Col>
+            <Col md={6}>
+              <Container>
+                <p>alksdjf;laksjdf;j</p>
+              </Container>
+            </Col>
+          </Row>
         </Container>
       </div>
     </>
