@@ -73,6 +73,25 @@ app.get("get-want-to-read", authenticationToken, async (req, res) => {
   }
 });
 
+// route to remove from user's want to read list
+app.post("/remove-from-want-to-read", authenticationToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { isbn } = req.body;
+
+    const user = await User.findOne({ user_id: userId });
+    if1 (!user) return res.status(404).json({ message: "User not found" });
+
+    user.want_to_read = user.want_to_read.filter((book) => book !== isbn);
+    await user.save();
+
+    res.status(200).json({ message: "Book removed from want to read" });
+  } catch (err) {
+    console.error("Error removing book from want to read: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+})
+
 // google OAuth Strategy
 passport.use(
   new GoogleStrategy(
