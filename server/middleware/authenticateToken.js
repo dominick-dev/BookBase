@@ -7,9 +7,9 @@ const authenticateToken = (req, res, next) => {
 
   if (!token) return res.status(401).json({ message: "Access token required" });
 
-  jwt.verify(token, config.jwt_secret, (err, user) => {
+  jwt.verify(token, config.jwt_secret, (err, decoded) => {
     if (err) return res.status(403).json({ message: "Invalid token" });
-    req.user = user;
+    req.user = decoded;
     next();
   });
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, Tab, Typography, Box } from "@mui/material";
 import LoginForm from "../components/LoginForm";
 import SignupForm from "../components/SignupForm";
@@ -9,6 +9,16 @@ const AuthPage = () => {
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
+
+  // check if user is already logged in, redirect to home page if true
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("User already logged in, redirecting to home page");
+      alert("User already logged in, redirecting to home page");
+      window.location.href = "/";
+    }
+  }, []);
 
   return (
     <Box

@@ -6,31 +6,9 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const authRoutes = require("./auth");
 const User = require("./models/User");
-const authenticationToken = require("./middleware/authenticationToken");
+const authenticationToken = require("./middleware/authenticateToken");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
-
-// route to add to user's want to read list
-router.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
-  const { isbn } = req.body;
-
-  if (!isbn) return res.status(400).json({ message: "ISBN is required" });
-
-  try {
-    const user = await User.findOne({ user_id: req.user.user_id });
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    if (!user.want_to_read.includes(isbn)) {
-      user.want_to_read.push(isbn);
-      await user.save();
-      return res.status(200).json({ message: "Book added to want to read" });
-    }
-
-    res.status(200).json({ message: "Book already in want to read" });
-  } catch (err) {
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
 
 // MongoDB connection
 const mongoUri = config.mongo_uri;
@@ -51,6 +29,28 @@ app.use(
 app.use(express.json());
 
 app.use(passport.initialize());
+
+// route to add to user's want to read list
+app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
+  const { isbn } = req.body;
+
+  if (!isbn) return res.status(400).json({ message: "ISBN is required" });
+
+  try {
+    const user = await User.findOne({ user_id: req.user_id });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.want_to_read.includes(isbn)) {
+      user.want_to_read.push(isbn);
+      await user.save();
+      return res.status(200).json({ message: "Book added to want to read" });
+    }
+
+    res.status(200).json({ message: "Book already in want to read" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 // google OAuth Strategy
 passport.use(
@@ -92,10 +92,7 @@ passport.use(
       profileFields: ["id", "emails", "name"],
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log("Facebook profile: ", profile);
-
       const email = profile.emails?.[0]?.value || `${profile.id}@facebook.com`;
-      console.log("Email: ", email);
 
       try {
         let user = await User.findOne({ email });

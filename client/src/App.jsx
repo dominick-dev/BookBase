@@ -4,6 +4,7 @@ import BookPage from "./pages/BookPage";
 import HomePage from "./pages/HomePage";
 import ReviewsPage from "./pages/ReviewsPage";
 import AuthPage from "./pages/AuthPage";
+import Authenticate from "./components/Authenticate";
 import "./styles/App.css";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <Route path="/book/:isbn" element={<BookPage />} />
         <Route path="/reviews/:isbn" element={<ReviewsPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/authenticate" element={Authenticate} />
       </Routes>
     </Router>
   );

@@ -1,10 +1,12 @@
 import { Button, Grid } from "@mui/material";
 
 const SocialLoginButtons = () => {
+  // function to handle Google login
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:8080/auth/google";
   };
 
+  // function to handle Facebook login
   const handleFacebookLogin = () => {
     window.location.href = "http://localhost:8080/auth/facebook";
   };

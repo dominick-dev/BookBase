@@ -4,23 +4,27 @@ import SocialLoginButtons from "./SocialLoginButtons";
 import axios from "axios";
 
 const SignupForm = () => {
+  // state variables to track form input values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  // function to handle form submission
   const handleSignup = async (e) => {
+    // prevent default form submission
     e.preventDefault();
 
+    // validate form inputs
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
-
     setError("");
     setSuccess("");
 
+    // send signup request to server
     try {
       await axios.post("http://localhost:8080/auth/register", {
         email,

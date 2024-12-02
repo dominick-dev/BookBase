@@ -16,7 +16,7 @@ const getBookDetails = (book) => {
 
 // book card component
 const BookCard = ({ book }) => {
-  console.log("BookCard component received book:", book);
+  // console.log("BookCard component received book:", book);
 
   // perform some validation on the book object
   if (typeof book !== 'object' || book === null) {
@@ -26,10 +26,10 @@ const BookCard = ({ book }) => {
 
   // use the fallback function to get book details
   const { title, author, averageRating, image } = getBookDetails(book);
-  console.log("BookCard component extracted book details:", { title, author, averageRating, image });
+  // console.log("BookCard component extracted book details:", { title, author, averageRating, image });
 
   // book card component
-  console.log("BookCard component is returning the following JSX:");
+  // console.log("BookCard component is returning the following JSX:");
   return (
     <div className='flip-card mx-auto'>
       <div className='flip-card-inner'>
