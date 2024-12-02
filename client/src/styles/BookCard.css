@@ -23,6 +23,7 @@
 .flip-card-front, .flip-card-back {
   position: absolute;
   border: 1px solid black;
+  background-color: wheat;
   width: 100%;
   height: 100%;
   top: 0;
@@ -37,20 +38,16 @@
 
 .flip-card-back {
   transform: rotateY(180deg);
-  background-color: wheat;
-  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  align-items: center;
-  border-radius: 8px;
   padding: 10px;
 }
 
-body {
+body, .card-author {
     font-family: 'Lato', sans-serif;
 }
+
 .content-container {
-    font-family: 'Lato', sans-serif;
     font-size: 16px;
     color: wheat;
     width: 90%;
@@ -74,7 +71,6 @@ body {
 }
 
 .card-author {
-    font-family: 'Lato', sans-serif;
     font-size: 1.1rem;
     font-weight: 400;
     color: #666666;
@@ -84,6 +80,9 @@ body {
 .book-rating{
     margin-bottom: 15px;
     align-self: center;
+}
+.book-rating .MuiRating-root {
+    color: #ffb400;
 }
 
 .button-container {
@@ -97,7 +96,6 @@ body {
 }
   
 .btn-primary {
-    font-family: 'Lato', sans-serif;
     font-weight: 700;
     color: #333;
     padding: 10px 0;
@@ -108,8 +106,56 @@ body {
 }
 
 .button-container:hover {
-    background-color: #333333;
-    color: #ffffff; /* Ensure hover text is still visible */
-    text-decoration: none; /* Keeps the underline off on hover */
+    background-color: #333;
+    color: #fff;
+    text-decoration: none;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+
+.custom-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .custom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000;
+  }
+  
+  /* Spacing for grid items */
+.row.g-3 > .col-md-4 {
+    padding: 10px; /* Adds spacing around each grid item */
+  }
+  
+  /* Ensure proper grid alignment and spacing */
+  .modal-body .row {
+    margin: 0 -10px; /* Negative margin to offset padding of grid items */
+  }
+  
+  .modal-body .col-md-4 {
+    display: flex;
+    justify-content: center; /* Centers content within grid items */
+  }
+  
+  /* Ensure responsive spacing */
+  @media (max-width: 768px) {
+    .modal-body .col-md-4 {
+      padding: 5px;
+    }
+  }
+  
