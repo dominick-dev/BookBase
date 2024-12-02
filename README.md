@@ -23,7 +23,7 @@ Bookbase is a web application designed to provide users with a comprehensive pla
 
 - **Frontend**: React, Vite, Bootstrap, MUI
 - **Backend**: Express, Node.js
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL, MongoDB
 - **Testing**: Jest
 - **Build Tools**: Vite
 
