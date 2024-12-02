@@ -7,6 +7,7 @@ import ReviewsPage from "./pages/ReviewsPage";
 import SearchPage from "./pages/SearchPage";
 import MapPage from "./pages/MapPage"
 import AuthPage from "./pages/AuthPage";
+import Authenticate from "./components/Authenticate";
 import "./styles/App.css";
 
 function App() {
@@ -19,8 +20,9 @@ function App() {
         <Route path="/reviews/:isbn" element={<ReviewsPage />} />
         <Route path="/searchBooks" element={<SearchPage />} />
         <Route path="/insights" element={<InsightsPage />} />
-        <Route path="/auth" element={<AuthPage />} />
         <Route path="/map" element={<MapPage />} />
+        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/authenticate" element={<Authenticate />} />
       </Routes>
     </Router>
   );

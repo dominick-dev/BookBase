@@ -20,6 +20,10 @@ const LoginForm = () => {
       // save token to local storage
       localStorage.setItem("token", response.data.token);
       console.log("Login successful", response.data);
+      // alert("Login successful");
+      alert("Login successful");
+      // redirect to home page
+      window.location.href = "/";
     } catch (error) {
       if (error.response) {
         setError(error.response.data.message || "Login failed");

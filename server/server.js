@@ -6,14 +6,16 @@ const passport = require("passport");
 const mongoose = require("mongoose");
 const authRoutes = require("./auth");
 const User = require("./models/User");
+const authenticationToken = require("./middleware/authenticateToken");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 
 // MongoDB connection
 const mongoUri = config.mongo_uri;
-mongoose.connect(mongoUri)
+mongoose
+  .connect(mongoUri)
   .then(() => console.log("MongoDB connected successfully"))
-  .catch(err => console.log('MongoDB connection error: ', err));
+  .catch((err) => console.log("MongoDB connection error: ", err));
 
 const app = express();
 
@@ -28,6 +30,67 @@ app.use(express.json());
 
 app.use(passport.initialize());
 
+// route to add to user's want to read list
+app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
+  const { isbn } = req.body;
+
+  if (!isbn) return res.status(400).json({ message: "ISBN is required" });
+
+  try {
+    const user = await User.findOne({ user_id: req.user.id });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (!user.want_to_read.includes(isbn)) {
+      user.want_to_read.push(isbn);
+      await user.save();
+      return res.status(200).json({ message: "Book added to want to read" });
+    }
+
+    res.status(200).json({ message: "Book already in want to read" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// route to get user's want to read list
+app.get("get-want-to-read", authenticationToken, async (req, res) => {
+  try {
+    // extract userID from token
+    const userId = req.user.id;
+
+    // find user in DB
+    const user = await User.findOne({ user_id: userId });
+
+    // if user not found, return 404
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // get want to read list from user object
+    const wantToReadList = user.want_to_read || [];
+    res.status(200).json({ want_to_read: wantToReadList });
+  } catch (err) {
+    console.error("Error retrieving want to read list: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// route to remove from user's want to read list
+app.post("/remove-from-want-to-read", authenticationToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { isbn } = req.body;
+
+    const user = await User.findOne({ user_id: userId });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.want_to_read = user.want_to_read.filter((book) => book !== isbn);
+    await user.save();
+
+    res.status(200).json({ message: "Book removed from want to read" });
+  } catch (err) {
+    console.error("Error removing book from want to read: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 // google OAuth Strategy
 passport.use(
@@ -45,7 +108,7 @@ passport.use(
         if (!user) {
           user = new User({
             email,
-            provider: 'google',
+            provider: "google",
             providerAccountId: profile.id,
             user_id: new mongoose.Types.ObjectId(),
           });
@@ -57,7 +120,7 @@ passport.use(
       }
     }
   )
-)
+);
 
 // facebook OAuth Strategy
 passport.use(
@@ -66,13 +129,10 @@ passport.use(
       clientID: config.facebook_client_id,
       clientSecret: config.facebook_client_secret,
       callbackURL: config.facebook_redirect_uri,
-      profileFields: ['id', 'emails', 'name'],
+      profileFields: ["id", "emails", "name"],
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log("Facebook profile: ", profile);
-
       const email = profile.emails?.[0]?.value || `${profile.id}@facebook.com`;
-      console.log("Email: ", email);
 
       try {
         let user = await User.findOne({ email });
@@ -80,7 +140,7 @@ passport.use(
           console.log("User not found. Creating new user...");
           user = new User({
             email,
-            provider: 'facebook',
+            provider: "facebook",
             providerAccountId: profile.id,
             user_id: new mongoose.Types.ObjectId(),
           });
@@ -94,7 +154,7 @@ passport.use(
       }
     }
   )
-)
+);
 
 // routes
 app.use("/auth", authRoutes);

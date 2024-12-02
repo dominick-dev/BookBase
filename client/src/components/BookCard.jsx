@@ -4,7 +4,9 @@ import { Rating } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import '../styles/BookCard.css';
 import { getBookDetails } from '../utils/bookUtils';
+import AddToWantToReadBtn from './AddToWantToReadBtn';
 
+// book card component
 const BookCard = ({ book }) => {
   console.log("BookCard component is rendering with book:", book);
   const navigate = useNavigate();
@@ -55,6 +57,7 @@ const BookCard = ({ book }) => {
               />
             </div>
           </div>
+          <AddToWantToReadBtn isbn={book.isbn} />
         </div>
       </div>
     </div>
