@@ -70,6 +70,7 @@ const MapPage = () => {
         id="country-dropdown"
         title={selectedCountry || "Select country"}
         onSelect={handleSelect}
+        className="my-5"
       >
         <div style={dropdownMenuStyle}>
           {countries && countries.length > 0 ? (  // if countries retrieved
@@ -79,7 +80,7 @@ const MapPage = () => {
               </Dropdown.Item>
             ))
           ) : (
-            <Dropdown.Item>Error: no countries available</Dropdown.Item>  // provide display error
+            <Dropdown.Item>Loading countries...</Dropdown.Item>
           )}
         </div>
       </DropdownButton>
