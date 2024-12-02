@@ -8,6 +8,7 @@ import SearchPage from "./pages/SearchPage";
 import MapPage from "./pages/MapPage"
 import AuthPage from "./pages/AuthPage";
 import Authenticate from "./components/Authenticate";
+import ProfilePage from "./pages/ProfilePage";
 import "./styles/App.css";
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/map" element={<MapPage />} />
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/authenticate" element={<Authenticate />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>
   );
