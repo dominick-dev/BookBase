@@ -23,7 +23,6 @@ router.get(
     const token = jwt.sign({ id: req.user.user_id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    // res.send(generateTokenPage(token));
     res.redirect(
       `http://localhost:3000/authenticate?token=${encodeURIComponent(token)}`
     );
@@ -44,7 +43,9 @@ router.get(
     const token = jwt.sign({ id: req.user.user_id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.send(generateTokenPage(token));
+    res.redirect(
+      `http://localhost:3000/authenticate?token=${encodeURIComponent(token)}`
+    );
   }
 );
 

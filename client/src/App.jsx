@@ -15,7 +15,7 @@ function App() {
         <Route path="/book/:isbn" element={<BookPage />} />
         <Route path="/reviews/:isbn" element={<ReviewsPage />} />
         <Route path="/auth" element={<AuthPage />} />
-        <Route path="/authenticate" element={Authenticate} />
+        <Route path="/authenticate" element={<Authenticate />} />
       </Routes>
     </Router>
   );
