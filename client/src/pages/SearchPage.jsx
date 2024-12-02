@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import BookCard from '../components/BookCard';
 import SearchField from '../components/SearchField';
+import NavBar from '../components/NavBar';
 import '../styles/BookCard.css';
 
 Modal.setAppElement('#root');
@@ -67,91 +68,94 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="container py-4">
-      <h1 className="text-center mb-4">Book Search</h1>
+    <>
+      <NavBar />
+      <div className="container py-4">
+        <h1 className="text-center mb-4">Book Search</h1>
 
-      {/* Search Fields */}
-      <div className="row g-3 mb-3">
-        {['author', 'title', 'isbn', 'limit'].map((field) => (
-          <div className="col-md-3" key={field}>
-            <SearchField
-              name={field}
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
-              value={searchParams[field]}
+        {/* Search Fields */}
+        <div className="row g-3 mb-3">
+          {['author', 'title', 'isbn', 'limit'].map((field) => (
+            <div className="col-md-3" key={field}>
+              <SearchField
+                name={field}
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                value={searchParams[field]}
+                onChange={handleInputChange}
+              />
+            </div>
+          ))}
+          <div className="col-md-3">
+            <select
+              className="form-select"
+              name="genre"
+              value={searchParams.genre}
               onChange={handleInputChange}
-            />
+            >
+              <option value="">Select Genre</option>
+              {GENRES.map((genre) => (
+                <option key={genre} value={genre}>{genre}</option>
+              ))}
+            </select>
           </div>
-        ))}
-        <div className="col-md-3">
-          <select
-            className="form-select"
-            name="genre"
-            value={searchParams.genre}
-            onChange={handleInputChange}
-          >
-            <option value="">Select Genre</option>
-            {GENRES.map((genre) => (
-              <option key={genre} value={genre}>{genre}</option>
-            ))}
-          </select>
         </div>
-      </div>
 
-      {/* Buttons */}
-      <div className="text-center mb-3">
-        <button className="btn btn-primary me-2" onClick={executeSearch}>
-          Search
-        </button>
-        <button className="btn btn-secondary" onClick={fetchRandomBookHandler}>
-          Give me a random book
-        </button>
-      </div>
+        {/* Buttons */}
+        <div className="text-center mb-3">
+          <button className="btn btn-primary me-2" onClick={executeSearch}>
+            Search
+          </button>
+          <button className="btn btn-secondary" onClick={fetchRandomBookHandler}>
+            Give me a random book
+          </button>
+        </div>
 
-      {/* Modal */}
-      {modalIsOpen && (
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={() => setModalIsOpen(false)}
-          className="custom-modal"
-          overlayClassName="custom-overlay"
-          contentLabel="Search Results"
-        >
-          <div className="modal-header">
-            <h5 className="modal-title">Search Results</h5>
-            <button
-              type="button"
-              className="btn-close"
-              aria-label="Close"
-              onClick={() => setModalIsOpen(false)}
-            ></button>
-          </div>
-          <div className="modal-body">
-            {isLoading ? (
-              <div className="text-center text-muted">Fetching results...</div>
-            ) : randomBook ? (
-              <div className="d-flex justify-content-center">
-                <BookCard book={randomBook} />
-              </div>
-            ) : searchResults.length > 0 ? (
-              <div className="row g-3">
-                {searchResults.map((book, index) => (
-                  <div className="col-md-4" key={index}>
-                    <BookCard book={book} />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center text-muted">No results found.</div>
-            )}
-          </div>
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
-              Close
-            </button>
-          </div>
-        </Modal>
-      )}
-    </div>
+        {/* Modal */}
+        {modalIsOpen && (
+          <Modal
+            isOpen={modalIsOpen}
+            onRequestClose={() => setModalIsOpen(false)}
+            className="custom-modal"
+            overlayClassName="custom-overlay"
+            contentLabel="Search Results"
+          >
+            <div className="modal-header">
+              <h5 className="modal-title">Search Results</h5>
+              <button
+                type="button"
+                className="btn-close"
+                aria-label="Close"
+                onClick={() => setModalIsOpen(false)}
+              ></button>
+            </div>
+            <div className="modal-body">
+              {isLoading ? (
+                <div className="text-center text-muted">Fetching results...</div>
+              ) : randomBook ? (
+                <div className="d-flex justify-content-center">
+                  <BookCard book={randomBook} />
+                </div>
+              ) : searchResults.length > 0 ? (
+                <div className="row g-3">
+                  {searchResults.map((book, index) => (
+                    <div className="col-md-4" key={index}>
+                      <BookCard book={book} />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center text-muted">No results found.</div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={() => setModalIsOpen(false)}>
+                Close
+              </button>
+            </div>
+          </Modal>
+        )}
+      </div>
+    </>
   );
 };
 
