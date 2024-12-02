@@ -131,6 +131,8 @@ app.get("/book/:isbn", (req, res) => {
   console.log("/book route hit");
   routes.bookByISBN(req, res);
 });
+app.get("/countriesList", routes.countriesList);
+app.get("/reviewsWithCoordinates/:country", routes.reviewsWithCoordinates)
 
 // used in BookPage
 app.get("/reviews/:isbn", (req, res) => {
