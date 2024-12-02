@@ -1,14 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, Card, CardMedia, CardContent, CircularProgress, Alert, Container, Rating } from "@mui/material";
-import { getFallbackCover } from "../utils/bookUtils";
+import { Box, Typography, Button, Card, CardContent, CircularProgress, Alert, Container, Rating } from "@mui/material";
+import BookCard from './BookCard';
 import '../styles/BookCard.css';
-const getBookDetails = (book) => ({
-    title: book.title || "No title available",
-    author: book.author || "Author Unknown",
-    description: book.description || "No description available",
-    averageRating: book.avg_review || 0,
-    image: book.image || getFallbackCover(book.title || "No title available"),
-});
+import { getBookDetails } from '../utils/bookUtils';
 
 const RandomBook = () => {
   const [book, setBook] = useState(null);
@@ -87,18 +81,7 @@ const RandomBook = () => {
             borderRadius: "8px",
         }}
         >
-        {/* Book Cover */}
-        <CardMedia
-            component="img"
-            image={image}
-            alt={title}
-            sx={{
-            width: { xs: "100%", md: "250px" },
-            height: "auto",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            }}
-        />
+        <BookCard book={book} />
 
         {/* Book Information */}
         <CardContent

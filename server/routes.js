@@ -24,13 +24,13 @@ const testDatabaseConnection = async (req, res) => {
   console.log("test database connection route hit");
   try {
     const result = await connection.query("SELECT 1");
-    res.json({
+    return res.status(200).json({
       message: "Database connected successfully",
       result: result.rows,
     });
   } catch (err) {
     console.error("Error testing database connection:", err);
-    res.status(500).json({ error: "Failed to connect to the database" });
+    return res.status(500).json({ error: "Failed to connect to the database" });
   }
 };
 
@@ -114,6 +114,7 @@ const searchBooks = async (req, res) => {
 const random = async (req, res) => {
   console.log("random route hit");
   try {
+    console.log("fetching random book");
     const result = await connection.query(`
         SELECT *
         FROM book
@@ -121,10 +122,11 @@ const random = async (req, res) => {
         ORDER BY RANDOM()
         LIMIT 1
       `);
-    res.json(result.rows[0]);
+    console.log("random book fetched: ", result.rows[0]);
+    return res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error("Error fetching random book", err);
-    res.status(500).json({ error: "Failed to fetch random book" });
+    return res.status(500).json({ error: "Failed to fetch random book" });
   }
 };
 
@@ -203,12 +205,11 @@ const popularBooksByLocation = async (req, res) => {
       `,
       [lat, long]
     );
-    res.json(result.rows);
+    console.log("popular books by location fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing popular books by location query", err);
-    res
-      .status(500)
-      .json({ error: "Failed to execute popular books by location query" });
+    return res.status(500).json({ error: "Failed to execute popular books by location query" });
   }
 };
 
@@ -216,8 +217,8 @@ const popularBooksByLocation = async (req, res) => {
 const polarizingBooks = async (req, res) => {
   console.log("polarizing books route hit");
   try {
-
-      const result = await connection.query(`
+    console.log("fetching polarizing books");
+    const result = await connection.query(`
         WITH highScoreCounts AS (
           SELECT isbn, COUNT(*) AS count
           FROM review r WHERE r.Score > 8
@@ -253,11 +254,11 @@ const polarizingBooks = async (req, res) => {
         WHERE highScoreCount > midScoreCount and lowScoreCount > midScoreCount
         ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC;
       `);
-    console.log(result.rows.slice(0, 1000));
-    res.json(result.rows.slice(0, 1000));
+    console.log("polarizing books fetched: ", result.rows.slice(0, 1000));
+    return res.status(200).json(result.rows.slice(0, 1000));
   } catch (err) {
     console.error("Error fetching polarizing books", err);
-    res.status(500).json({ error: "Failed to fetch polarizing books." });
+    return res.status(500).json({ error: "Failed to fetch polarizing books." });
   }
 };
 
@@ -265,7 +266,7 @@ const polarizingBooks = async (req, res) => {
 const byAgeGroup = async (req, res) => {
   console.log("books by age group route hit");
   try {
-
+      console.log("fetching books by age group"); 
       const {birthYear} = req.params;
       const birthYearInt = parseInt(birthYear); // attempt to parse
 
@@ -293,12 +294,6 @@ const byAgeGroup = async (req, res) => {
       } else {
         ageGroup = "65+";
       }
-
-      // const definedGroups = ['Under 18', '18-30', '31-50', '51-65', '65+'];
-      // if (!definedGroups.includes(ageGroup)) {
-      //   return res.status(400).json({error: "Requested age group not defined."})
-      // }
-
 
       const result = await connection.query(`
         WITH age_groups AS (
@@ -348,11 +343,11 @@ const byAgeGroup = async (req, res) => {
         WHERE rank BETWEEN 1 AND 5 AND age_group = $1
         ORDER BY age_group;
       `, [ageGroup]);
-    console.log(result.rows);
-    res.json(result.rows);
+    console.log("books by age group fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by age group", err);
-    res.status(500).json({ error: "Failed to fetch books by age group."});
+    return res.status(500).json({ error: "Failed to fetch books by age group."});
   }
 };
 
@@ -378,11 +373,11 @@ const byLocation = async (req, res) => {
           GROUP BY b.isbn, b.title, b.author
           ORDER BY reviewCount DESC;
       `, [`%${placeName}%`]);
-    console.log(result.rows);
-    res.json(result.rows);
+    console.log("books by location fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by location", err);
-    res.status(500).json({ error: "Failed to fetch books by location."});
+    return res.status(500).json({ error: "Failed to fetch books by location."});
   }
 };
 
@@ -443,12 +438,11 @@ const topReviewerFavorites = async(req, res) => {
      FROM distinct_author_book_combos
      ORDER BY top_reviewer_count DESC, avg_rating;`
     );
-    res.json(response.rows);
+    console.log("top reviewer favorites fetched: ", response.rows);
+    return res.status(200).json(response.rows);
   } catch (err) {
     console.log(err)
-    res
-      .status(500)
-      .json({error: "Failed to execute top reviewer favorites query"})
+    return res.status(500).json({error: "Failed to execute top reviewer favorites query"})
   }
 }
 
@@ -477,13 +471,11 @@ const magnumOpus = async (req, res) => {
    ORDER BY avg_rating DESC
    LIMIT 1;
     `);
-    res.json(response.rows);
+    console.log("magnum opus fetched: ", response.rows);
+    return res.status(200).json(response.rows);
   } catch (err) {
     console.error("Error executing magnum opus query");
-
-    res
-      .status(500)
-      .json({error: "Failed to execute magnum opus query"});
+    return res.status(500).json({error: "Failed to execute magnum opus query"});
   }
 }
 
@@ -517,15 +509,12 @@ const hiddenGems = async (req, res) => {
       ORDER BY rs.avg_rating DESC, rs. review_count DESC;
       `
     );
-    res.json(result.rows);
+    console.log("hidden gems fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing hidden gems query")
 
-    res
-    .status(500)
-    .json({error: "Failed to execute hidden gems query",
-      
-    })
+    return res.status(500).json({error: "Failed to execute hidden gems query"});
   }
 }
 
@@ -584,15 +573,12 @@ const helpfulUsers = async (req, res) => {
       `,
       [minNumVotes, maxUsers]
     );
-    res.json(result.rows);
+    console.log("helpful users fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing helpful-users query")
 
-    res
-    .status(500)
-    .json({error: "Failed to execute helpful-users query",
-      
-    })
+    return res.status(500).json({error: "Failed to execute helpful-users query"});
   }
 }
 
@@ -632,13 +618,12 @@ const authorStats = async (req, res) => {
       `,
       [authorName, numAuthors]
     );
-    res.json(result.rows);
+    console.log("author stats fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing author-stats query", err)
 
-    res
-    .status(500)
-    .json({error: "Failed to execute author-stats query"})
+    return res.status(500).json({error: "Failed to execute author-stats query"});
   }
 }
 
@@ -683,13 +668,12 @@ const genreStats = async (req, res) => {
       `,
       [genreName, numGenres]
     );
-    res.json(result.rows);
+    console.log("genre stats fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing genre-stats query", err)
 
-    res
-    .status(500)
-    .json({error: "Failed to execute genre-stats query"});
+    return res.status(500).json({error: "Failed to execute genre-stats query"});
   }
 }
 
@@ -704,10 +688,11 @@ const get20Books = async (req, res) => {
       ORDER BY RANDOM()
       LIMIT 20
       `);
-    res.json(result.rows);
+    console.log("20 books fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing getAllBooks:", err.message, err.stack);
-    res.status(500).json({ error: "Failed to retrieve books from the database." });
+    return res.status(500).json({ error: "Failed to retrieve books from the database." });
   }
 };
 
@@ -775,7 +760,8 @@ const reviewsByISBN = async (req, res) => {
   // Execute the query
   try {
     const result = await connection.query(queryText, values);
-    res.json(result.rows);
+    console.log("reviews by isbn fetched: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing reviews handler query", err);
     return res.status(500).json({ error: "Failed to execute reviews handler query" });

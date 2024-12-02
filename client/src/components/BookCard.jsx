@@ -1,20 +1,9 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Rating } from '@mui/material';
-import { getFallbackCover } from '../utils/bookUtils';
 import { useNavigate } from 'react-router-dom';
 import '../styles/BookCard.css';
-
-const getBookDetails = (book) => {
-  console.log("getBookDetails function is called with book:", book);
-  return {
-    title: book.title || "No title available",
-    author: book.author || "No author available",
-    averageRating: book.avg_review || 0,
-    image: book.image || getFallbackCover(book.title || "No title available"),
-    isbn: book.isbn || "No ISBN available",
-  };
-};
+import { getBookDetails } from '../utils/bookUtils';
 
 const BookCard = ({ book }) => {
   console.log("BookCard component is rendering with book:", book);

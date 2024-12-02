@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Container, Row, Col } from "react-bootstrap";
 import Reviews from "../components/Reviews";
+import NavBar from '../components/NavBar';
 
 const ReviewsPage = () => {
   console.log("ReviewsPage component is rendering");
@@ -36,20 +37,23 @@ const ReviewsPage = () => {
 
   console.log("Review data:", reviewData);
   return (
-    <Container>
-      <Row>
-        <Col md={12}>
-          <h2>Reviews</h2>
-          {loading ? (
-            <p>Loading reviews...</p>
-          ) : reviewData ? (
-            <Reviews reviews={reviewData} />
-          ) : (
-            <p>No reviews found</p>
-          )}
-        </Col>
-      </Row>
-    </Container>
+    <>
+      <NavBar />
+      <Container>
+        <Row>
+          <Col md={12}>
+            <h2>Reviews</h2>
+            {loading ? (
+              <p>Loading reviews...</p>
+            ) : reviewData ? (
+              <Reviews reviews={reviewData} />
+            ) : (
+              <p>No reviews found</p>
+            )}
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
 };
 

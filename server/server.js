@@ -107,14 +107,18 @@ app.get("/", (req, res) => {
 
 // routes that exist but are not used in the frontend
 app.get("/test-db", routes.testDatabaseConnection); // test connection to DB
-app.get("/popular-books-by-location", routes.popularBooksByLocation);
-app.get("/polarizing-books", routes.polarizingBooks);
-app.get("/by-age-group/:birthYear", routes.byAgeGroup);
-app.get("/by-location/:column/:placeName", routes.byLocation);
-app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
-app.get("/magnum-opus/:author", routes.magnumOpus);
-app.get("/hidden-gems", routes.hiddenGems);
 app.get("/helpful-users", routes.helpfulUsers);
+
+// to be used in the location page
+app.get("/popular-books-by-location", routes.popularBooksByLocation);
+app.get("/by-location/:column/:placeName", routes.byLocation);
+
+// used in interesting page
+app.get("/polarizing-books", routes.polarizingBooks);
+app.get("/hidden-gems", routes.hiddenGems);
+app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
+app.get("/magnum-opus/:author", routes.magnumOpus); // to be added to interesting page
+app.get("/by-age-group/:birthYear", routes.byAgeGroup); // to be added to interesting page
 
 // used in HomePage
 app.get("/20books", routes.get20Books);

@@ -3,16 +3,6 @@ import { Card, Button } from 'react-bootstrap';
 import { evaluate } from 'mathjs';
 
 // Review component to display individual review
-// helpfulness
-// isbn
-// price
-// review_id
-// score
-// summary
-// text
-// time
-// userid
-// username 
 const Review = ({ review }) => {
     console.log("review: ", review);
 
