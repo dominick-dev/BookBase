@@ -21,6 +21,7 @@ connection.connect((err) => err && console.log(err));
 // routes...
 // Route 1: Use to test connection to PostgreSQL db
 const testDatabaseConnection = async (req, res) => {
+  console.log("test database connection route hit");
   try {
     const result = await connection.query("SELECT 1");
     res.json({
@@ -43,41 +44,45 @@ const searchBooks = async (req, res) => {
   let limitInt = null;
   let queryConditions = [];
 
-  if ('author' in req.query && req.query.author !== '') {
-    const author = req.query.author;
+  // Parse the query string into an object
+  const queryParams = new URLSearchParams(req.query);
+
+  // Check for each parameter in the parsed query
+  if (queryParams.has('author') && queryParams.get('author') !== '') {
+    const author = queryParams.get('author');
     console.log("author: ", author);
     values.push(author);
     queryConditions.push(`author = $${values.length}`);
     console.log("queryConditions: ", queryConditions);
   }
-  if ('title' in req.query && req.query.title !== '') {
-    const title = req.query.title;
+  if (queryParams.has('title') && queryParams.get('title') !== '') {
+    const title = queryParams.get('title');
     console.log("title: ", title);
     values.push(title);
     queryConditions.push(`title = $${values.length}`);
     console.log("queryConditions: ", queryConditions);
   }
-  if ('genre' in req.query && req.query.genre !== '') {
-    const genre = req.query.genre;
+  if (queryParams.has('genre') && queryParams.get('genre') !== '') {
+    const genre = queryParams.get('genre');
     console.log("genre: ", genre);
     values.push(genre);
     queryConditions.push(`genre = $${values.length}`);
     console.log("queryConditions: ", queryConditions);
   }
-  if ('isbn' in req.query && req.query.isbn !== '') {
-    const isbn = req.query.isbn;
+  if (queryParams.has('isbn') && queryParams.get('isbn') !== '') {
+    const isbn = queryParams.get('isbn');
     console.log("isbn: ", isbn);
     values.push(isbn);
     queryConditions.push(`isbn = $${values.length}`);
     console.log("queryConditions: ", queryConditions);
   }
-  if ('limit' in req.query && req.query.limit !== '') {
-    const limit = req.query.limit;
+  if (queryParams.has('limit') && queryParams.get('limit') !== '') {
+    const limit = queryParams.get('limit');
     console.log("limit: ", limit);
     limitInt = parseInt(limit, 10);
   }
   // set fetch limit to 10 if not given
-  if (isNaN(limitInt) || limitInt === null || req.query.limit === '') {
+  if (isNaN(limitInt) || limitInt === null || queryParams.get('limit') === '') {
     limitInt = 10;
   }
 
@@ -85,7 +90,7 @@ const searchBooks = async (req, res) => {
   const query = `
     SELECT * 
     FROM book 
-    ${'genre' in req.query ? 'LEFT JOIN genre on book.genre_id = genre.genre_id' : ''}
+    ${queryParams.has('genre') ? 'LEFT JOIN genre on book.genre_id = genre.genre_id' : ''}
     ${queryConditions.length > 0 ? 'WHERE ' + queryConditions.join(' AND ') : ''}
     ${limitInt ? 'LIMIT ' + limitInt : ''}
   `;
@@ -105,37 +110,14 @@ const searchBooks = async (req, res) => {
   }
 };
 
-const searchReviews = async (req, res) => {
-  const { field, query, limit } = req.query;
-  console.log("search reviews route hit");
-  console.log(field, query, limit);
-
-  // define allowed fields
-  const allowedFields = ["isbn"];
-  if (!allowedFields.includes(field)) {
-    console.log("invalid search parameter: ", field);
-    return res.status(400).json({ error: `Invalid search parameter: ${field}` });
-  }
-
-  // set limit to 10 if not given
-  const resLimit = limit ? parseInt(limit, 10) : 10;
-
-  // query the database
-  try {
-    const result = await connection.query(`SELECT * FROM review WHERE ${field} = $1 LIMIT $2`, [query, resLimit]);
-    res.json(result.rows);
-  } catch (err) {
-    console.error("Error executing search reviews query", err);
-    return res.status(500).json({ error: "Failed to execute search reviews query" });
-  }
-}
-
 // Route 3: GET /random
 const random = async (req, res) => {
+  console.log("random route hit");
   try {
     const result = await connection.query(`
         SELECT *
         FROM book
+        WHERE image IS NOT NULL
         ORDER BY RANDOM()
         LIMIT 1
       `);
@@ -148,6 +130,7 @@ const random = async (req, res) => {
 
 // Route 4: GET /popular-books-by-location
 const popularBooksByLocation = async (req, res) => {
+  console.log("popular books by location route hit");
   const { latitude, longitude } = req.query;
 
   const lat = parseFloat(latitude);
@@ -231,6 +214,7 @@ const popularBooksByLocation = async (req, res) => {
 
 // get polarizing books
 const polarizingBooks = async (req, res) => {
+  console.log("polarizing books route hit");
   try {
 
       const result = await connection.query(`
@@ -279,6 +263,7 @@ const polarizingBooks = async (req, res) => {
 
 // get books by age group
 const byAgeGroup = async (req, res) => {
+  console.log("books by age group route hit");
   try {
 
       const {birthYear} = req.params;
@@ -373,6 +358,7 @@ const byAgeGroup = async (req, res) => {
 
 // get books by location
 const byLocation = async (req, res) => {
+  console.log("books by location route hit");
   try {
 
       const {column, placeName} = req.params;
@@ -402,6 +388,7 @@ const byLocation = async (req, res) => {
 
 // Route XX: GET /top-reviewer-favorites/:genre
 const topReviewerFavorites = async(req, res) => {
+  console.log("top reviewer favorites route hit");
   const threshold = req.params.threshold ?? 10;
   const genre = req.params.genre;
 
@@ -467,6 +454,7 @@ const topReviewerFavorites = async(req, res) => {
 
 // Route XX: /magnum-opus
 const magnumOpus = async (req, res) => {
+  console.log("magnum opus route hit");
   const author = req.params.author;
 
   if(!author){
@@ -502,7 +490,7 @@ const magnumOpus = async (req, res) => {
 
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
-
+  console.log("hidden gems route hit");
   const minRating = parseFloat(req.query.minRating ) || 9.0;
   const maxReviews = parseInt(req.query.maxReview) || 8;
 
@@ -543,7 +531,7 @@ const hiddenGems = async (req, res) => {
 
 // Route XX: /helpful-users
 const helpfulUsers = async (req, res) => {
-  
+  console.log("helpful users route hit");
   const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
   const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
 
@@ -610,7 +598,7 @@ const helpfulUsers = async (req, res) => {
 
 // Route XX: /author-stats
 const authorStats = async (req, res) => {
-  
+  console.log("author stats route hit");
   // Optional author name param
   const authorName = req.query.authorName ? req.query.authorName.toString() : null;
   const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
@@ -656,6 +644,7 @@ const authorStats = async (req, res) => {
 
 // Route XX: /genre-stats
 const genreStats = async (req, res) => {
+  console.log("genre stats route hit");
   // Optional author name param
   const genreName = req.query.genreName ? req.query.genreName.toString() : null;
   const numGenres = parseInt(req.query.numGenres, 10) || 10;
@@ -705,8 +694,16 @@ const genreStats = async (req, res) => {
 }
 
 const get20Books = async (req, res) => {
+  console.log("get 20 books route hit");
   try {
-    const result = await connection.query("SELECT * FROM book WHERE image IS NOT NULL LIMIT 20");
+    const result = await connection.query(
+      `
+      SELECT * 
+      FROM book 
+      WHERE image IS NOT NULL AND avg_review IS NOT NULL
+      ORDER BY RANDOM()
+      LIMIT 20
+      `);
     res.json(result.rows);
   } catch (err) {
     console.error("Error executing getAllBooks:", err.message, err.stack);
@@ -716,50 +713,72 @@ const get20Books = async (req, res) => {
 
 // get books by isbn
 const bookByISBN = async (req, res) => {
+  console.log("book by isbn route hit");
+
+  // get the isbn from the request params
   try {
-
       const {isbn} = req.params;
-
-      const result = await connection.query(`
-          SELECT *
-          FROM book
-          WHERE isbn = $1
-          LIMIT 1;
-      `, [isbn]);
-
-
-    // console.log(result.rows);
-    res.json(result.rows);
+      const query = `SELECT * FROM book WHERE isbn = $1 LIMIT 1`;
+      console.log("query: ", query);
+      const result = await connection.query(query, [isbn]); 
+      console.log("result.rows: ", result.rows);
+    return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching book by ISBN", err);
-    res.status(500).json({ error: "Failed to fetch book by ISBN."});
+    return res.status(500).json({ error: "Failed to fetch book by ISBN."});
   }
 };
 
-// get books by isbn
+// get reviews by isbn
 const reviewsByISBN = async (req, res) => {
+  console.log("reviews by isbn route hit");
+  // get the isbn from the request params
+  const { isbn } = req.params;
+  // order by helpfulness if requested, assume true if not given
+  const orderByHelpfulness = req.query.orderByHelpfulness === 'true' || true;
+  console.log("isbn: ", isbn);
+  console.log("orderByHelpfulness: ", orderByHelpfulness);
+
+  // Define allowed fields
+  const allowedFields = ["isbn"];
+  const field = "isbn"; // Define the field variable here
+  if (!allowedFields.includes(field)) {
+    console.log("invalid search parameter: ", field);
+    return res.status(400).json({ error: `Invalid search parameter: ${field}` });
+  }
+
+  // Set limit to 10 if not given
+  const limit = req.query.limit;
+  const resLimit = limit ? parseInt(limit, 10) : 10;
+  console.log("resLimit: ", resLimit);
+
+  // Build the query
+  let queryText = `SELECT * FROM review WHERE isbn = $1`;
+  const values = [isbn];
+
+  // Add ordering by helpfulness if requested
+  if (orderByHelpfulness === 'true') {
+    queryText += `
+      ORDER BY
+        CASE
+          WHEN CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) = 0 THEN 0
+          ELSE CAST(SPLIT_PART(helpfulness, '/', 1) AS INT) * 1.0 / CAST(SPLIT_PART(helpfulness, '/', 2) AS INT)
+        END DESC,
+        CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) DESC
+    `;
+  }
+
+  // Add limit
+  queryText += ` LIMIT $2`;
+  values.push(resLimit);
+
+  // Execute the query
   try {
-
-      const {isbn} = req.params;
-
-      const result = await connection.query(`
-        SELECT *
-        FROM review
-        WHERE isbn = $1
-        ORDER BY
-            CASE
-                WHEN CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) = 0 THEN 0
-                ELSE CAST(SPLIT_PART(helpfulness, '/', 1) AS INT) * 1.0 /  CAST(SPLIT_PART(helpfulness, '/', 2) AS INT)
-            END DESC,
-            CAST(SPLIT_PART(helpfulness, '/', 2) AS INT) DESC;
-      `, [isbn]);
-
-
-    // console.log(result.rows);
+    const result = await connection.query(queryText, values);
     res.json(result.rows);
   } catch (err) {
-    console.error("Error fetching reviews by ISBN", err);
-    res.status(500).json({ error: "Failed to fetch reviews by ISBN."});
+    console.error("Error executing reviews handler query", err);
+    return res.status(500).json({ error: "Failed to execute reviews handler query" });
   }
 };
 
@@ -781,7 +800,7 @@ const countriesList = async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching list of countries", err);
-    res.status(500).json({ error: "Failed to fetch list of countries."});
+    return res.status(500).json({ error: "Failed to fetch list of countries." });
   }
 };
 
@@ -822,7 +841,6 @@ const reviewsWithCoordinates = async (req, res) => {
   }
 }
 
-
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -839,8 +857,9 @@ module.exports = {
   genreStats,
   get20Books,
   connection,
-  searchReviews,
+  reviewsByISBN,
   searchBooks,
+  bookByISBN,
   countriesList,
   reviewsWithCoordinates
 };

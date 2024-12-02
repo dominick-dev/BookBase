@@ -104,11 +104,9 @@ app.get("/", (req, res) => {
   res.send("Express server running!");
 });
 
-// Route to test connection to DB
-app.get("/test-db", routes.testDatabaseConnection);
 
-// Bookbase routes
-app.get("/random", routes.random);
+// routes that exist but are not used in the frontend
+app.get("/test-db", routes.testDatabaseConnection); // test connection to DB
 app.get("/popular-books-by-location", routes.popularBooksByLocation);
 app.get("/polarizing-books", routes.polarizingBooks);
 app.get("/by-age-group/:birthYear", routes.byAgeGroup);
@@ -117,29 +115,30 @@ app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
 app.get("/magnum-opus/:author", routes.magnumOpus);
 app.get("/hidden-gems", routes.hiddenGems);
 app.get("/helpful-users", routes.helpfulUsers);
+
+// used in HomePage
+app.get("/20books", routes.get20Books);
+app.get("/random", routes.random);
 app.get("/author-stats", routes.authorStats);
 app.get("/genre-stats", routes.genreStats);
-app.get("/20books", routes.get20Books);
+
+// used in BookPage
 app.get("/book/:isbn", (req, res) => {
-  req.query.field = "isbn";
-  req.query.query = req.params.isbn;
-  routes.searchBooks(req, res);
+  console.log("/book route hit");
+  routes.bookByISBN(req, res);
 });
 app.get("/countriesList", routes.countriesList);
 app.get("/reviewsWithCoordinates/:country", routes.reviewsWithCoordinates)
 
+// used in BookPage
 app.get("/reviews/:isbn", (req, res) => {
-  console.log("ISBN from params:", req.params.isbn);
-  req.query.field = "isbn";
-  req.query.query = req.params.isbn;
-  routes.searchReviews(req, res);
+  console.log("/reviews route hit");
+  routes.reviewsByISBN(req, res);
 });
 
-// Route 1: GET /search?author=&title=&genre=&isbn=&limit=
-// example: /search?author=J.K. Rowling&limit=5
-// example using all parameters Ursula Hegi,SALT DANCERS,16,0684825309
+// used in SearchPage and BookPage
 app.get("/search", (req, res) => {
-  console.log("search route hit");
+  console.log("/search route hit");
   routes.searchBooks(req, res);
 });
 

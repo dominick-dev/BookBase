@@ -1,36 +1,43 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Ensure Bootstrap is imported
-import {Rating} from '@mui/material'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Rating } from '@mui/material';
 import { getFallbackCover } from '../utils/bookUtils';
+import { useNavigate } from 'react-router-dom';
+import '../styles/BookCard.css';
 
-// fallback function to get book details
 const getBookDetails = (book) => {
+  console.log("getBookDetails function is called with book:", book);
   return {
     title: book.title || "No title available",
     author: book.author || "No author available",
-    averageRating: book.averageRating || 0,
+    averageRating: book.avg_review || 0,
     image: book.image || getFallbackCover(book.title || "No title available"),
+    isbn: book.isbn || "No ISBN available",
   };
 };
 
-// book card component
 const BookCard = ({ book }) => {
-  console.log("BookCard component received book:", book);
+  console.log("BookCard component is rendering with book:", book);
+  const navigate = useNavigate();
 
-  // perform some validation on the book object
   if (typeof book !== 'object' || book === null) {
     console.error("Invalid book object:", book);
     return <div>Invalid book object</div>;
   }
 
-  // use the fallback function to get book details
-  const { title, author, averageRating, image } = getBookDetails(book);
-  console.log("BookCard component extracted book details:", { title, author, averageRating, image });
+  const { title, author, averageRating, image, isbn } = getBookDetails(book);
 
-  // book card component
-  console.log("BookCard component is returning the following JSX:");
+  const handleCardClick = () => {
+    console.log("Navigating to book with ISBN:", isbn);
+    if (isbn && typeof isbn === 'string') {
+      navigate(`/book/${isbn}`);
+    } else {
+      console.error("Invalid ISBN:", isbn);
+    }
+  };
+
   return (
-    <div className='flip-card mx-auto'>
+    <div className='flip-card mx-auto' onClick={handleCardClick} style={{ cursor: 'pointer' }}>
       <div className='flip-card-inner'>
         <div className='flip-card-front'>
           <img 
@@ -39,7 +46,7 @@ const BookCard = ({ book }) => {
             style={{
               width: '100%',
               height: '100%',
-              objectFit: 'cover',
+              objectFit: 'contain',
               borderRadius: '0.25rem',
             }}        
           />
@@ -55,11 +62,9 @@ const BookCard = ({ book }) => {
                 size="large"
                 readOnly
                 precision={0.1}
+                sx={{ color: '#ffb400' }} 
               />
             </div>
-          </div>
-          <div className='button-container'>
-            <a href='#' className='btn-primary'>See More</a>
           </div>
         </div>
       </div>
