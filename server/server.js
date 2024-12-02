@@ -125,6 +125,7 @@ app.get("/book/:isbn", (req, res) => {
   req.query.query = req.params.isbn;
   routes.searchBooks(req, res);
 });
+app.get("/countriesList", routes.countriesList);
 
 app.get("/reviews/:isbn", (req, res) => {
   console.log("ISBN from params:", req.params.isbn);

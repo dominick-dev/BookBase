@@ -763,7 +763,25 @@ const reviewsByISBN = async (req, res) => {
   }
 };
 
+// get list of countries
+const countriesList = async (req, res) => {
+  try {
 
+      const result = await connection.query(`
+        SELECT DISTINCT TRIM(country) AS country
+        FROM location
+        WHERE TRIM(country) ~ '^[A-Za-z. ]+$' --valid characters
+        AND LENGTH(TRIM(country)) > 1
+        ORDER BY country;
+      `);
+
+    // console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching list of countries", err);
+    res.status(500).json({ error: "Failed to fetch list of countries."});
+  }
+};
 
 // export routes
 module.exports = {
@@ -782,5 +800,6 @@ module.exports = {
   get20Books,
   connection,
   searchReviews,
-  searchBooks
+  searchBooks,
+  countriesList
 };
