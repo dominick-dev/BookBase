@@ -10,9 +10,9 @@ const dummyHiddenGems = [
 ];
 
 const dummyPolarizingBooks = [
-    { title: "Polarizing Book 1", author: "Author D", averageRating: 3.0 },
-    { title: "Polarizing Book 2", author: "Author E", averageRating: 3.5 },
-    { title: "Polarizing Book 3", author: "Author F", averageRating: 2.5 },
+    { title: "Polarizing 1", author: "Author D", averageRating: 3.0 },
+    { title: "Polarizing 2", author: "Author E", averageRating: 3.5 },
+    { title: "Polarizing 3", author: "Author F", averageRating: 2.5 },
 ];
 
 const dummyTopReviewerFavorites = [
