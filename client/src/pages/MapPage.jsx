@@ -81,24 +81,23 @@ const MapPage = () => {
 
   return (
     <Container>
-      <h1>HELLOO!!!!</h1>
-    <DropdownButton
-      id="country-dropdown"
-      title={selectedCountry || "Select country"}
-      onSelect={handleSelect}
-    >
-      <div style={dropdownMenuStyle}>
-        {countries && countries.length > 0 ? (  // if countries retrieved
-          countries.map((item, index) => (  // display them in dropdpwn
-            <Dropdown.Item key={index} eventKey={item.country}>
-              {item.country}
-            </Dropdown.Item>
-          ))
-        ) : (
-          <Dropdown.Item>Error: no countries available</Dropdown.Item>  // provide display error
-        )}
-      </div>
-    </DropdownButton>
+      <DropdownButton
+        id="country-dropdown"
+        title={selectedCountry || "Select country"}
+        onSelect={handleSelect}
+      >
+        <div style={dropdownMenuStyle}>
+          {countries && countries.length > 0 ? (  // if countries retrieved
+            countries.map((item, index) => (  // display them in dropdpwn
+              <Dropdown.Item key={index} eventKey={item.country}>
+                {item.country}
+              </Dropdown.Item>
+            ))
+          ) : (
+            <Dropdown.Item>Error: no countries available</Dropdown.Item>  // provide display error
+          )}
+        </div>
+      </DropdownButton>
 
       <MapContainer
         key={`${countryCoordinates.avg_latitude}-${countryCoordinates.avg_longitude}`} // map moves based on selection

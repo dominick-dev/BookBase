@@ -763,14 +763,16 @@ const reviewsByISBN = async (req, res) => {
   }
 };
 
-// get list of countries
+// get list of countries that have reviews
 const countriesList = async (req, res) => {
   try {
 
       const result = await connection.query(`
         SELECT DISTINCT TRIM(country) AS country
-        FROM location
-        WHERE TRIM(country) ~ '^[A-Za-z. ]+$' --valid characters
+        FROM location l
+        JOIN person p ON l.location_id = p.location_id
+        JOIN review r ON p.userid = r.userid
+        WHERE TRIM(country) ~ '^[A-Za-z.\- ]+$' --valid characters
         AND LENGTH(TRIM(country)) > 1
         ORDER BY country;
       `);
