@@ -16,11 +16,13 @@
     "@mui/material": "^6.1.9",
     "axios": "^1.7.8",
     "bootstrap": "^5.3.3",
+    "leaflet": "^1.9.4",
     "mathjs": "^14.0.0",
     "mongodb": "^6.11.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.6",
     "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1",
     "react-modal": "^3.16.1",
     "react-router-dom": "^7.0.1",
     "util": "^0.12.5"
