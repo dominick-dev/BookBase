@@ -6,16 +6,6 @@ import '../styles/BookCard.css';
 import { getBookDetails } from '../utils/bookUtils';
 import AddToWantToReadBtn from './AddToWantToReadBtn';
 
-// fallback function to get book details
-const getBookDetails = (book) => {
-  return {
-    title: book.title || "No title available",
-    author: book.author || "No author available",
-    averageRating: book.averageRating || 0,
-    image: book.image || getFallbackCover(book.title || "No title available"),
-  };
-};
-
 // book card component
 const BookCard = ({ book }) => {
   console.log("BookCard component is rendering with book:", book);
