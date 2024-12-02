@@ -26,6 +26,12 @@ const AccountMenu = ({
     navigate("/auth", { replace: true });
   };
 
+  const handleProfile = () => {
+    // close user menu and navigate to profile page
+    handleCloseUserMenu();
+    navigate("/profile", { replace: true });
+  }
+
   return (
     <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
       <Tooltip title="Open settings">
@@ -49,7 +55,7 @@ const AccountMenu = ({
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem onClick={handleCloseUserMenu}>
+        <MenuItem onClick={handleProfile}>
           <Typography textAlign="center">Profile</Typography>
         </MenuItem>
         <MenuItem onClick={handleCloseUserMenu}>
