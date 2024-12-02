@@ -37,7 +37,7 @@ app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
   if (!isbn) return res.status(400).json({ message: "ISBN is required" });
 
   try {
-    const user = await User.findOne({ user_id: req.user_id });
+    const user = await User.findOne({ user_id: req.user.id });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     if (!user.want_to_read.includes(isbn)) {
