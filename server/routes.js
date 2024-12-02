@@ -842,6 +842,5 @@ module.exports = {
   searchReviews,
   searchBooks,
   countriesList,
-  countryCoordinates,
   reviewsWithCoordinates
 };
