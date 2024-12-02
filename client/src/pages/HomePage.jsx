@@ -1,47 +1,49 @@
-import React, { useEffect, useState } from "react";
-import Carousel from "react-bootstrap/Carousel";
-import "bootstrap/dist/css/bootstrap.min.css";
-import BookCard from '../components/BookCard';
+import React, { useState, useEffect } from "react";
+import BookCarousel from "../components/BookCarousel";
+import HomePageHero from "../components/HomePageHero";
+import TopAuthors from '../components/TopAuthors'
+import GenreFacts from "../components/GenreFacts";
+import NavBar from "../components/NavBar";
+import { Routes, Route, Navigate } from "react-router-dom";
+import RandomBook from "../components/RandomBook";
+import { Container, Grid, Typography } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // console.log("HomePage component is rendering");
-
-  useEffect(() => {
-    // Fetch books from the /20books route
-    const fetchBooks = async () => {
-      try {
-        // console.log("Attempting to fetch books...")
-        const response = await fetch("http://localhost:8080/20books");
-        const data = await response.json();
-        // console.log("Fetched data:", data);
-        setBooks(data);
-      } catch (error) {
-        console.error("Error fetching books:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, []);
-
-  if (loading) return <div>Loading...</div>;
+  const navigate = useNavigate();
+  console.log("HomePage component is rendering");
 
   return (
-    <div className="container mt-5">
-      <h1 className="text-center mb-4">Book Carousel</h1>
-      <Carousel>
-        {books.map((book, index) => (
-          book ? ( // Check if book is not null or undefined
-            <Carousel.Item key={index}>
-              <BookCard book={book} />
-            </Carousel.Item>
-          ) : null // Do not render if book is invalid
-        ))}
-      </Carousel>
-    </div>
+    <>
+    <NavBar />
+    <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+                <HomePageHero />
+                <Typography variant="h6" align="center" gutterBottom>
+                  Click on the book cards to learn more about the books!
+                </Typography>
+                <BookCarousel />
+                <Container sx={{ backgroundColor: 'wheat', padding: '20px', mt: 4 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={5}>
+                            <TopAuthors/>
+                        </Grid>
+                        <Grid item xs={12} md={7}>
+                            <GenreFacts/>
+                        </Grid>
+                    </Grid>
+                </Container>
+                <RandomBook/>
+            </>
+          }
+        />
+        <Route path="/search" element={<Navigate to="/searchBooks" />} />
+        <Route path="/insights" element={<h1>INTERESTING INSIGHTS</h1>} />
+    </Routes>
+    </>
   );
 };
 

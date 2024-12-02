@@ -1,0 +1,13 @@
+.header {
+    text-decoration: underline;
+    font-family: 'Lato', sans-serif;
+    font-weight: bolder;
+    color: white;
+    padding: 10px;
+}
+
+.top-authors, .genre-facts {
+    background-Color: #333;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
