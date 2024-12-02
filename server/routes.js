@@ -783,6 +783,43 @@ const countriesList = async (req, res) => {
   }
 };
 
+// get lat long of a given country
+const countryCoordinates = async (req, res) => {
+  const countryName = req.params.country;
+
+  if(!countryName){
+    return res.status(400).json({error: "Country is required"});
+  }
+
+  try {
+    const response = await connection.query (
+      `
+        WITH latLongs AS (
+            SELECT
+              country,
+              AVG(latitude) AS avg_latitude,
+              AVG(longitude) AS avg_longitude
+            FROM
+              location
+            GROUP BY
+            country
+        )
+        SELECT *
+        FROM latLongs
+        WHERE country LIKE '%${countryName}%'
+        LIMIT 1;
+      `);
+    res.json(response.rows);
+  } catch (err) {
+    console.error("Error fetching country coordinates.");
+
+    res
+      .status(500)
+      .json({error: "Failed to fetch country coordinates."});
+  }
+}
+
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -801,5 +838,6 @@ module.exports = {
   connection,
   searchReviews,
   searchBooks,
-  countriesList
+  countriesList,
+  countryCoordinates
 };

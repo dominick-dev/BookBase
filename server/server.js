@@ -126,6 +126,7 @@ app.get("/book/:isbn", (req, res) => {
   routes.searchBooks(req, res);
 });
 app.get("/countriesList", routes.countriesList);
+app.get("/countryCoordinates/:country", routes.countryCoordinates)
 
 app.get("/reviews/:isbn", (req, res) => {
   console.log("ISBN from params:", req.params.isbn);
