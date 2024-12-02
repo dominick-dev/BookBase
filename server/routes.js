@@ -782,7 +782,64 @@ const reviewsByISBN = async (req, res) => {
   }
 };
 
+// get list of countries that have reviews
+const countriesList = async (req, res) => {
+  try {
 
+      const result = await connection.query(`
+        SELECT DISTINCT TRIM(country) AS country
+        FROM location l
+        JOIN person p ON l.location_id = p.location_id
+        JOIN review r ON p.userid = r.userid
+        WHERE TRIM(country) ~ '^[A-Za-z. ]+$' --valid characters
+        AND LENGTH(TRIM(country)) > 1
+        ORDER BY country;
+      `);
+
+    // console.log(result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("Error fetching list of countries", err);
+    return res.status(500).json({ error: "Failed to fetch list of countries." });
+  }
+};
+
+// get book reviews with lat/longs by country
+const reviewsWithCoordinates = async (req, res) => {
+  const countryName = req.params.country;
+
+  if(!countryName){
+    return res.status(400).json({error: "Country is required"});
+  }
+
+  try {
+    const response = await connection.query (
+      `
+      SELECT
+          l.city AS city,
+          l.state AS state,
+          l.longitude AS longitude,
+          l.latitude AS latitude,
+          p.userid AS userid,
+          r.score AS score,
+          b.title AS title,
+          b.author AS author,
+          b.isbn AS isbn
+      FROM location l
+      JOIN person p on l.location_id = p.location_id
+      JOIN review r on r.userid = p.userid
+      JOIN book b on r.isbn = b.isbn
+      WHERE country LIKE '%${countryName}%';
+      `);
+    res.json(response.rows);
+  } catch (err) {
+    console.error("Error fetching reviews by country.");
+
+    res
+      .status(500)
+      .json({error: "Failed to fetch reviews by country."});
+  }
+}
 
 // export routes
 module.exports = {
@@ -802,5 +859,7 @@ module.exports = {
   connection,
   reviewsByISBN,
   searchBooks,
-  bookByISBN
+  bookByISBN,
+  countriesList,
+  reviewsWithCoordinates
 };
