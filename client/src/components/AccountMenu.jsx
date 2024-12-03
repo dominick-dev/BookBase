@@ -58,12 +58,6 @@ const AccountMenu = ({
         <MenuItem onClick={handleProfile}>
           <Typography textAlign="center">Profile</Typography>
         </MenuItem>
-        <MenuItem onClick={handleCloseUserMenu}>
-          <Typography textAlign="center">Account</Typography>
-        </MenuItem>
-        <MenuItem onClick={handleCloseUserMenu}>
-          <Typography textAlign="center">Dashboard</Typography>
-        </MenuItem>
         <MenuItem onClick={handleLogout}>
           <Typography textAlign="center">Logout</Typography>
         </MenuItem>
