@@ -200,6 +200,9 @@ app.get("/reviews/:isbn", (req, res) => {
   routes.reviewsByISBN(req, res);
 });
 
+// used in InsightsPage
+app.post("/books/batch", routes.batchBookFromISBNs)
+
 // used in SearchPage and BookPage
 app.get("/search", (req, res) => {
   // console.log("/search route hit");

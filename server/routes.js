@@ -48,41 +48,41 @@ const searchBooks = async (req, res) => {
   const queryParams = new URLSearchParams(req.query);
 
   // Check for each parameter in the parsed query
-  if (queryParams.has('author') && queryParams.get('author') !== '') {
-    const author = queryParams.get('author');
+  if (queryParams.has("author") && queryParams.get("author") !== "") {
+    const author = queryParams.get("author");
     // console.log("author: ", author);
     values.push(author);
     queryConditions.push(`author = $${values.length}`);
     // console.log("queryConditions: ", queryConditions);
   }
-  if (queryParams.has('title') && queryParams.get('title') !== '') {
-    const title = queryParams.get('title');
+  if (queryParams.has("title") && queryParams.get("title") !== "") {
+    const title = queryParams.get("title");
     // console.log("title: ", title);
     values.push(title);
     queryConditions.push(`title = $${values.length}`);
     // console.log("queryConditions: ", queryConditions);
   }
-  if (queryParams.has('genre') && queryParams.get('genre') !== '') {
-    const genre = queryParams.get('genre');
+  if (queryParams.has("genre") && queryParams.get("genre") !== "") {
+    const genre = queryParams.get("genre");
     // console.log("genre: ", genre);
     values.push(genre);
     queryConditions.push(`genre = $${values.length}`);
     // console.log("queryConditions: ", queryConditions);
   }
-  if (queryParams.has('isbn') && queryParams.get('isbn') !== '') {
-    const isbn = queryParams.get('isbn');
+  if (queryParams.has("isbn") && queryParams.get("isbn") !== "") {
+    const isbn = queryParams.get("isbn");
     // console.log("isbn: ", isbn);
     values.push(isbn);
     queryConditions.push(`isbn = $${values.length}`);
     // console.log("queryConditions: ", queryConditions);
   }
-  if (queryParams.has('limit') && queryParams.get('limit') !== '') {
-    const limit = queryParams.get('limit');
+  if (queryParams.has("limit") && queryParams.get("limit") !== "") {
+    const limit = queryParams.get("limit");
     // console.log("limit: ", limit);
     limitInt = parseInt(limit, 10);
   }
   // set fetch limit to 10 if not given
-  if (isNaN(limitInt) || limitInt === null || queryParams.get('limit') === '') {
+  if (isNaN(limitInt) || limitInt === null || queryParams.get("limit") === "") {
     limitInt = 10;
   }
 
@@ -90,9 +90,15 @@ const searchBooks = async (req, res) => {
   const query = `
     SELECT * 
     FROM book 
-    ${queryParams.has('genre') ? 'LEFT JOIN genre on book.genre_id = genre.genre_id' : ''}
-    ${queryConditions.length > 0 ? 'WHERE ' + queryConditions.join(' AND ') : ''}
-    ${limitInt ? 'LIMIT ' + limitInt : ''}
+    ${
+      queryParams.has("genre")
+        ? "LEFT JOIN genre on book.genre_id = genre.genre_id"
+        : ""
+    }
+    ${
+      queryConditions.length > 0 ? "WHERE " + queryConditions.join(" AND ") : ""
+    }
+    ${limitInt ? "LIMIT " + limitInt : ""}
   `;
 
   // console.log("query: ", query);
@@ -105,7 +111,9 @@ const searchBooks = async (req, res) => {
   } catch (err) {
     console.error("Error executing query:", err);
     if (!res.headersSent) {
-      return res.status(500).json({ error: "Failed to execute searchBooks query" });
+      return res
+        .status(500)
+        .json({ error: "Failed to execute searchBooks query" });
     }
   }
 };
@@ -209,7 +217,9 @@ const popularBooksByLocation = async (req, res) => {
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing popular books by location query", err);
-    return res.status(500).json({ error: "Failed to execute popular books by location query" });
+    return res
+      .status(500)
+      .json({ error: "Failed to execute popular books by location query" });
   }
 };
 
@@ -252,7 +262,8 @@ const polarizingBooks = async (req, res) => {
         FROM book b
         LEFT JOIN allCounts ON b.isbn = allCounts.isbn
         WHERE highScoreCount > midScoreCount and lowScoreCount > midScoreCount
-        ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC;
+        ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC
+        LIMIT 30;
       `);
     // console.log("polarizing books fetched: ", result.rows.slice(0, 1000));
     return res.status(200).json(result.rows.slice(0, 1000));
@@ -266,39 +277,40 @@ const polarizingBooks = async (req, res) => {
 const byAgeGroup = async (req, res) => {
   // console.log("books by age group route hit");
   try {
-      // console.log("fetching books by age group"); 
-      const {birthYear} = req.params;
-      const birthYearInt = parseInt(birthYear); // attempt to parse
+    // console.log("fetching books by age group");
+    const { birthYear } = req.params;
+    const birthYearInt = parseInt(birthYear); // attempt to parse
 
-      // check for parsing success
-      if (isNaN(birthYearInt)) {
-        return res.status(400).json({error: "Invalid birth year."})
-      }
+    // check for parsing success
+    if (isNaN(birthYearInt)) {
+      return res.status(400).json({ error: "Invalid birth year." });
+    }
 
-      // changed to accept age
-      const age = birthYearInt;
+    // changed to accept age
+    const age = birthYearInt;
 
-      if (age < 0) {
-        return res.status(400).json({error: "Invalid age"})
-      }
+    if (age < 0) {
+      return res.status(400).json({ error: "Invalid age" });
+    }
 
-      let ageGroup;
+    let ageGroup;
 
-      if (age < 18) {
-        ageGroup = "Under 18";
-      } else if (age <= 30) {
-        ageGroup = "18-30";
-      } else if (age <= 50) {
-        ageGroup = "31-50";
-      } else if (age <= 65) {
-        ageGroup = "51-65";
-      } else {
-        ageGroup = "65+";
-      }
+    if (age < 18) {
+      ageGroup = "Under 18";
+    } else if (age <= 30) {
+      ageGroup = "18-30";
+    } else if (age <= 50) {
+      ageGroup = "31-50";
+    } else if (age <= 65) {
+      ageGroup = "51-65";
+    } else {
+      ageGroup = "65+";
+    }
 
-      // console.log(ageGroup);
+    // console.log(ageGroup);
 
-      const result = await connection.query(`
+    const result = await connection.query(
+      `
         WITH age_groups AS (
           SELECT
               p.userId,
@@ -345,12 +357,16 @@ const byAgeGroup = async (req, res) => {
         FROM ranked_books
         WHERE rank BETWEEN 1 AND 5 AND age_group = $1
         ORDER BY age_group;
-      `, [ageGroup]);
+      `,
+      [ageGroup]
+    );
     // console.log("books by age group fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by age group", err);
-    return res.status(500).json({ error: "Failed to fetch books by age group."});
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch books by age group." });
   }
 };
 
@@ -358,15 +374,14 @@ const byAgeGroup = async (req, res) => {
 const byLocation = async (req, res) => {
   // console.log("books by location route hit");
   try {
+    const { column, placeName } = req.params;
+    const definedColumns = ["city", "state", "country"];
+    if (!definedColumns.includes(column)) {
+      return res.status(400).json({ error: "Requested column not defined." });
+    }
 
-      const {column, placeName} = req.params;
-      const definedColumns = ['city', 'state', 'country'];
-      if (!definedColumns.includes(column)) {
-        return res.status(400).json({error: "Requested column not defined."})
-      }
-
-
-      const result = await connection.query(`
+    const result = await connection.query(
+      `
           SELECT b.isbn, b.title, b.author, COUNT(r.userid) AS reviewCount
           FROM book b
           JOIN review r ON b.isbn = r.isbn
@@ -375,27 +390,31 @@ const byLocation = async (req, res) => {
           WHERE l.${column} LIKE $1
           GROUP BY b.isbn, b.title, b.author
           ORDER BY reviewCount DESC;
-      `, [`%${placeName}%`]);
+      `,
+      [`%${placeName}%`]
+    );
     // console.log("books by location fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by location", err);
-    return res.status(500).json({ error: "Failed to fetch books by location."});
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch books by location." });
   }
 };
 
 // Route XX: GET /top-reviewer-favorites/:genre?threshold
-const topReviewerFavorites = async(req, res) => {
+const topReviewerFavorites = async (req, res) => {
   // console.log("top reviewer favorites route hit");
   const threshold = req.params.threshold ?? 10;
   const genre = req.params.genre;
 
-  if(!genre) {
-    return res.status(400).json({error: "Genre parameter is required"});
+  if (!genre) {
+    return res.status(400).json({ error: "Genre parameter is required" });
   }
 
   try {
-    const response = await connection.query (
+    const response = await connection.query(
       `with top_reviewer_books AS (
         SELECT DISTINCT ON (b.author)
             b.isbn,
@@ -409,53 +428,59 @@ const topReviewerFavorites = async(req, res) => {
                             HAVING COUNT(*) > $1) top_reviewers
             ON r.userId = top_reviewers.userId JOIN book b ON r.isbn = b.isbn
             JOIN genre g ON b.genre_id = g.genre_id
-        WHERE g.genre = $2
+        WHERE LOWER(g.genre) = LOWER($2)
         GROUP BY b.isbn, b.title, b.author
       )
       SELECT *
       FROM top_reviewer_books
       ORDER BY top_reviewer_count DESC, avg_rating
       LIMIT 30;`,
-     [threshold, genre]);
+      [threshold, genre]
+    );
     // console.log("top reviewer favorites fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
     // console.log(err)
-    return res.status(500).json({error: "Failed to execute top reviewer favorites query"})
+    return res
+      .status(500)
+      .json({ error: "Failed to execute top reviewer favorites query" });
   }
-}
+};
 
 // Route XX: /magnum-opus
 const magnumOpus = async (req, res) => {
   // console.log("magnum opus route hit");
   const author = req.params.author;
 
-  if(!author){
-    return res.status(400).json({error: "Author is required"});
+  if (!author) {
+    return res.status(400).json({ error: "Author is required" });
   }
 
   try {
-    const response = await connection.query (
-    `
+    const response = await connection.query(
+      `
     SELECT b.isbn, b.title, b.author, b.avg_review
     FROM book b
     WHERE avg_review IS NOT NULL
     ORDER BY levenshtein(b.author, $1), avg_review DESC
     LIMIT 5;
-    `, [author]);
+    `,
+      [author]
+    );
     // console.log("magnum opus fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
     console.error("Error executing magnum opus query");
-    return res.status(500).json({error: "Failed to execute magnum opus query"});
+    return res
+      .status(500)
+      .json({ error: "Failed to execute magnum opus query" });
   }
-}
-
+};
 
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
   // console.log("hidden gems route hit");
-  const minRating = parseFloat(req.query.minRating ) || 9.0;
+  const minRating = parseFloat(req.query.minRating) || 9.0;
   const maxReviews = parseInt(req.query.maxReview) || 8;
 
   try {
@@ -477,29 +502,43 @@ const hiddenGems = async (req, res) => {
         rs.review_count
     FROM review_summary rs LEFT JOIN book b ON b.isbn = rs.isbn
     WHERE b.author IS NOT NULL AND avg_review >= $2
-    ORDER BY b.avg_review DESC, rs. review_count DESC;`,
-    [maxReviews, minRating]);
+    ORDER BY b.avg_review DESC, rs. review_count DESC
+    LIMIT 30;
+    `,
+      [maxReviews, minRating]
+    );
     // console.log("hidden gems fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error executing hidden gems query")
+    console.error("Error executing hidden gems query");
 
-    return res.status(500).json({error: "Failed to execute hidden gems query"});
+    return res
+      .status(500)
+      .json({ error: "Failed to execute hidden gems query" });
   }
-}
+};
 
 // Route XX: /helpful-users
 const helpfulUsers = async (req, res) => {
   // console.log("helpful users route hit");
-  const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
+  const minNumVotes = parseInt(req.query.minNumVotes, 10) || 5;
   const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
 
   // Validation on the parameters if they're given
   if (minNumVotes < 0) {
-    return res.status(400).json({ error: "Invalid minNumVotes provided. Please provide a positive integer." });
+    return res
+      .status(400)
+      .json({
+        error:
+          "Invalid minNumVotes provided. Please provide a positive integer.",
+      });
   }
   if (maxUsers < 0) {
-    return res.status(400).json({ error: "Invalid maxUsers provided. Please provide a positive integer." });
+    return res
+      .status(400)
+      .json({
+        error: "Invalid maxUsers provided. Please provide a positive integer.",
+      });
   }
 
   try {
@@ -546,22 +585,31 @@ const helpfulUsers = async (req, res) => {
     // console.log("helpful users fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error executing helpful-users query")
+    console.error("Error executing helpful-users query");
 
-    return res.status(500).json({error: "Failed to execute helpful-users query"});
+    return res
+      .status(500)
+      .json({ error: "Failed to execute helpful-users query" });
   }
-}
+};
 
 // Route XX: /author-stats
 const authorStats = async (req, res) => {
   // console.log("author stats route hit");
   // Optional author name param
-  const authorName = req.query.authorName ? req.query.authorName.toString() : null;
+  const authorName = req.query.authorName
+    ? req.query.authorName.toString()
+    : null;
   const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
 
   // data validation
   if (isNaN(numAuthors) || numAuthors < 0) {
-    return res.status(400).json({ error: "Invalid numAuthors provided. Please provide a positive integer." });
+    return res
+      .status(400)
+      .json({
+        error:
+          "Invalid numAuthors provided. Please provide a positive integer.",
+      });
   }
 
   try {
@@ -591,11 +639,13 @@ const authorStats = async (req, res) => {
     // console.log("author stats fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error executing author-stats query", err)
+    console.error("Error executing author-stats query", err);
 
-    return res.status(500).json({error: "Failed to execute author-stats query"});
+    return res
+      .status(500)
+      .json({ error: "Failed to execute author-stats query" });
   }
-}
+};
 
 // Route XX: /genre-stats
 const genreStats = async (req, res) => {
@@ -606,7 +656,11 @@ const genreStats = async (req, res) => {
 
   // data validation
   if (isNaN(numGenres) || numGenres < 0) {
-    return res.status(400).json({ error: "Invalid numGenres provided. Please provide a positive integer." });
+    return res
+      .status(400)
+      .json({
+        error: "Invalid numGenres provided. Please provide a positive integer.",
+      });
   }
 
   try {
@@ -641,11 +695,13 @@ const genreStats = async (req, res) => {
     // console.log("genre stats fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
-    console.error("Error executing genre-stats query", err)
+    console.error("Error executing genre-stats query", err);
 
-    return res.status(500).json({error: "Failed to execute genre-stats query"});
+    return res
+      .status(500)
+      .json({ error: "Failed to execute genre-stats query" });
   }
-}
+};
 
 const get20Books = async (req, res) => {
   // console.log("get 20 books route hit");
@@ -657,12 +713,15 @@ const get20Books = async (req, res) => {
       WHERE image IS NOT NULL AND avg_review IS NOT NULL
       ORDER BY RANDOM()
       LIMIT 20
-      `);
+      `
+    );
     // console.log("20 books fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing getAllBooks:", err.message, err.stack);
-    return res.status(500).json({ error: "Failed to retrieve books from the database." });
+    return res
+      .status(500)
+      .json({ error: "Failed to retrieve books from the database." });
   }
 };
 
@@ -672,15 +731,15 @@ const bookByISBN = async (req, res) => {
 
   // get the isbn from the request params
   try {
-      const {isbn} = req.params;
-      const query = `SELECT * FROM book WHERE isbn = $1 LIMIT 1`;
-      // console.log("query: ", query);
-      const result = await connection.query(query, [isbn]); 
-      // console.log("result.rows: ", result.rows);
+    const { isbn } = req.params;
+    const query = `SELECT * FROM book WHERE isbn = $1 LIMIT 1`;
+    // console.log("query: ", query);
+    const result = await connection.query(query, [isbn]);
+    // console.log("result.rows: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching book by ISBN", err);
-    return res.status(500).json({ error: "Failed to fetch book by ISBN."});
+    return res.status(500).json({ error: "Failed to fetch book by ISBN." });
   }
 };
 
@@ -690,7 +749,7 @@ const reviewsByISBN = async (req, res) => {
   // get the isbn from the request params
   const { isbn } = req.params;
   // order by helpfulness if requested, assume true if not given
-  const orderByHelpfulness = req.query.orderByHelpfulness === 'true' || true;
+  const orderByHelpfulness = req.query.orderByHelpfulness === "true" || true;
   // console.log("isbn: ", isbn);
   // console.log("orderByHelpfulness: ", orderByHelpfulness);
 
@@ -699,7 +758,9 @@ const reviewsByISBN = async (req, res) => {
   const field = "isbn"; // Define the field variable here
   if (!allowedFields.includes(field)) {
     // console.log("invalid search parameter: ", field);
-    return res.status(400).json({ error: `Invalid search parameter: ${field}` });
+    return res
+      .status(400)
+      .json({ error: `Invalid search parameter: ${field}` });
   }
 
   // Set limit to 10 if not given
@@ -712,7 +773,7 @@ const reviewsByISBN = async (req, res) => {
   const values = [isbn];
 
   // Add ordering by helpfulness if requested
-  if (orderByHelpfulness === 'true') {
+  if (orderByHelpfulness === "true") {
     queryText += `
       ORDER BY
         CASE
@@ -734,15 +795,16 @@ const reviewsByISBN = async (req, res) => {
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing reviews handler query", err);
-    return res.status(500).json({ error: "Failed to execute reviews handler query" });
+    return res
+      .status(500)
+      .json({ error: "Failed to execute reviews handler query" });
   }
 };
 
 // get list of countries that have reviews
 const countriesList = async (req, res) => {
   try {
-
-      const result = await connection.query(`
+    const result = await connection.query(`
         SELECT DISTINCT TRIM(country) AS country
         FROM location l
         JOIN person p ON l.location_id = p.location_id
@@ -756,7 +818,9 @@ const countriesList = async (req, res) => {
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching list of countries", err);
-    return res.status(500).json({ error: "Failed to fetch list of countries." });
+    return res
+      .status(500)
+      .json({ error: "Failed to fetch list of countries." });
   }
 };
 
@@ -764,12 +828,12 @@ const countriesList = async (req, res) => {
 const reviewsWithCoordinates = async (req, res) => {
   const countryName = req.params.country;
 
-  if(!countryName){
-    return res.status(400).json({error: "Country is required"});
+  if (!countryName) {
+    return res.status(400).json({ error: "Country is required" });
   }
 
   try {
-    const response = await connection.query (
+    const response = await connection.query(
       `
       SELECT
           l.city AS city,
@@ -786,16 +850,32 @@ const reviewsWithCoordinates = async (req, res) => {
       JOIN review r on r.userid = p.userid
       JOIN book b on r.isbn = b.isbn
       WHERE country LIKE '%${countryName}%';
-      `);
+      `
+    );
     res.json(response.rows);
   } catch (err) {
     console.error("Error fetching reviews by country.");
 
-    res
-      .status(500)
-      .json({error: "Failed to fetch reviews by country."});
+    res.status(500).json({ error: "Failed to fetch reviews by country." });
   }
-}
+};
+
+// route to batch fetch books by ISBNs
+const batchBookFromISBNs = async (req, res) => {
+  try {
+    const { isbns } = req.body;
+    if (!isbns || !Array.isArray(isbns) || isbns.length === 0) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const query = "SELECT * FROM book WHERE isbn = ANY($1::varchar[])";
+    const result = await connection.query(query, [isbns]);
+    res.status(200).json({ books: result.rows });
+  } catch (err) {
+    console.error("Error fetching books in batch: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 // export routes
 module.exports = {
@@ -817,5 +897,6 @@ module.exports = {
   searchBooks,
   bookByISBN,
   countriesList,
-  reviewsWithCoordinates
+  reviewsWithCoordinates,
+  batchBookFromISBNs,
 };
