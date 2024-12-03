@@ -178,7 +178,7 @@ app.get("/polarizing-books", routes.polarizingBooks);
 app.get("/hidden-gems", routes.hiddenGems);
 app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
 app.get("/magnum-opus/:author", routes.magnumOpus); // to be added to interesting page
-app.get("/by-age-group/:birthYear", routes.byAgeGroup); // to be added to interesting page
+app.get("/by-age-group/:age", routes.byAgeGroup); // to be added to interesting page
 
 // used in HomePage
 app.get("/20books", routes.get20Books);

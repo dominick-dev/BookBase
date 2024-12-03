@@ -275,10 +275,11 @@ const byAgeGroup = async (req, res) => {
         return res.status(400).json({error: "Invalid birth year."})
       }
 
-      const age = new Date().getFullYear() - birthYearInt;
+      // changed to accept age
+      const age = birthYearInt;
 
       if (age < 0) {
-        return res.status(400).json({error: "Invalid birth year."})
+        return res.status(400).json({error: "Invalid age"})
       }
 
       let ageGroup;
@@ -294,6 +295,8 @@ const byAgeGroup = async (req, res) => {
       } else {
         ageGroup = "65+";
       }
+
+      //console.log(ageGroup);
 
       const result = await connection.query(`
         WITH age_groups AS (
@@ -381,7 +384,7 @@ const byLocation = async (req, res) => {
   }
 };
 
-// Route XX: GET /top-reviewer-favorites/:genre/:threshold
+// Route XX: GET /top-reviewer-favorites/:genre?threshold
 const topReviewerFavorites = async(req, res) => {
   console.log("top reviewer favorites route hit");
   const threshold = req.params.threshold ?? 10;
@@ -393,51 +396,27 @@ const topReviewerFavorites = async(req, res) => {
 
   try {
     const response = await connection.query (
-      `WITH top_reviewers AS (
-        SELECT userId
-        FROM review
-        GROUP BY userId
-        HAVING count(*) > $2
-     ), top_reviewer_books AS (
-        SELECT r.isbn, r.userId
-        FROM review r JOIN top_reviewers ts ON r.userid = ts.userid
-     ), top_reviewer_scores AS (
-       SELECT trb.isbn, ROUND(CAST(AVG(r.score) AS numeric), 2) AS avg_top_reviewer_score
-       FROM review r JOIN top_reviewer_books trb ON r.isbn = trb.isbn AND r.userid = trb.userid
-       GROUP BY trb.isbn
-     ), genre_filtered_books AS (
-        SELECT
+      `with top_reviewer_books AS (
+        SELECT DISTINCT ON (b.author)
             b.isbn,
             b.title,
             b.author,
-            b.genre_id
-        FROM book b JOIN genre g ON b.genre_id = g.genre_id
-        WHERE LOWER(g.genre) = LOWER($1)
-     ), all_top_reviewer_books AS (
-        SELECT
-            gfb.isbn,
-            gfb.title,
-            gfb.author,
-            COUNT(trb.userid) AS top_reviewer_count,
-            trs.avg_top_reviewer_score
-        FROM genre_filtered_books gfb JOIN
-            top_reviewer_books trb ON gfb.isbn = trb.isbn JOIN
-            top_reviewer_scores trs ON gfb.isbn = trs.isbn
-        GROUP BY gfb.isbn, gfb.title, gfb.author, trs.avg_top_reviewer_score
-     ), distinct_author_book_combos AS (
-        SELECT DISTINCT ON (author)
-            isbn,
-            title,
-            author,
-            top_reviewer_count,
-            avg_top_reviewer_score as avg_rating
-        FROM all_top_reviewer_books
-        ORDER BY author, title, top_reviewer_count DESC, avg_rating
-     )
-     SELECT *
-     FROM distinct_author_book_combos
-     ORDER BY top_reviewer_count DESC, avg_rating;`,
-     [genre, threshold]);
+            COUNT(r.userId) AS top_reviewer_count,
+            ROUND(AVG(r.score)::numeric, 2) AS avg_rating
+        FROM review r JOIN (SELECT userId
+                            FROM review
+                            GROUP BY userId
+                            HAVING COUNT(*) > $1) top_reviewers
+            ON r.userId = top_reviewers.userId JOIN book b ON r.isbn = b.isbn
+            JOIN genre g ON b.genre_id = g.genre_id
+        WHERE g.genre = $2
+        GROUP BY b.isbn, b.title, b.author
+      )
+      SELECT *
+      FROM top_reviewer_books
+      ORDER BY top_reviewer_count DESC, avg_rating
+      LIMIT 30;`,
+     [threshold, genre]);
     console.log("top reviewer favorites fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
@@ -458,19 +437,12 @@ const magnumOpus = async (req, res) => {
   try {
     const response = await connection.query (
     `
-    WITH review_summary AS (
-      SELECT
-          isbn,
-          AVG(score) as avg_rating
-      FROM review
-      GROUP BY isbn
-   )
-   SELECT b.isbn, b.title, b.author, rs.avg_rating
-   FROM book b JOIN review_summary rs ON b.isbn = rs.isbn
-   WHERE b.author LIKE '%${author}%'
-   ORDER BY avg_rating DESC
-   LIMIT 1;
-    `);
+    SELECT b.isbn, b.title, b.author, b.avg_review
+    FROM book b
+    WHERE avg_review IS NOT NULL
+    ORDER BY levenshtein(b.author, $1), avg_review DESC
+    LIMIT 5;
+    `, [author]);
     console.log("magnum opus fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
@@ -492,23 +464,21 @@ const hiddenGems = async (req, res) => {
       WITH review_summary AS (
         SELECT
             isbn,
-            avg(score) as avg_rating,
             COUNT (userId) as review_count
         FROM review
         GROUP BY isbn
-        HAVING AVG(score) >= ${minRating} AND COUNT(userId) < ${maxReviews}
-     )
-      SELECT
-          b.isbn,
-          b.title,
-          b.author,
-          rs.avg_rating,
-          rs.review_count
-      FROM book b JOIN review_summary rs ON b.isbn = rs.isbn
-      WHERE b.author IS NOT NULL
-      ORDER BY rs.avg_rating DESC, rs. review_count DESC;
-      `
-    );
+        HAVING COUNT(userId) < $1
+    )
+    SELECT
+        b.isbn,
+        b.title,
+        b.author,
+        b.avg_review,
+        rs.review_count
+    FROM review_summary rs LEFT JOIN book b ON b.isbn = rs.isbn
+    WHERE b.author IS NOT NULL AND avg_review >= $2
+    ORDER BY b.avg_review DESC, rs. review_count DESC;`,
+    [maxReviews, minRating]);
     console.log("hidden gems fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
