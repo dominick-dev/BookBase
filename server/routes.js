@@ -480,7 +480,7 @@ const magnumOpus = async (req, res) => {
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
   // console.log("hidden gems route hit");
-  const minRating = parseFloat(req.query.minRating) || 9.0;
+  const minRating = parseFloat(req.query.minRating) || 4.5;
   const maxReviews = parseInt(req.query.maxReview) || 8;
 
   try {
