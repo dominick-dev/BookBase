@@ -72,7 +72,9 @@ const BookPage = () => {
               {loading ? (
                 <p>Loading book information...</p>
               ) : book ? (
-                <BookCard book={book} />
+                <>
+                  <BookCard book={book} />
+                </>
               ) : (
                 <p>No book found</p>
               )}
