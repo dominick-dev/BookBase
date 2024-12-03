@@ -50,7 +50,7 @@ const InsightsPage = () => {
   const fetchBookDetails = async (isbns) => {
     try {
       const bookPromises = isbns.map((isbn) =>
-        axios.get(`http://localhost:8080/books/${isbn}`).then((res) => res.data)
+        axios.get(`http://localhost:8080/book/${isbn}`).then((res) => res.data)
       );
       const books = await Promise.all(bookPromises);
       return books;
@@ -79,6 +79,8 @@ const InsightsPage = () => {
         const polarizingBooksISBNs = polarizingBooksRes.data.map(
           (book) => book.isbn
         );
+
+        console.log(hiddenGemsISBNs, polarizingBooksISBNs);
 
         // fetch full book details
         const [hiddenGemsBooks, polarizingBooksBooks] = await Promise.all([

@@ -409,7 +409,7 @@ const topReviewerFavorites = async(req, res) => {
                             HAVING COUNT(*) > $1) top_reviewers
             ON r.userId = top_reviewers.userId JOIN book b ON r.isbn = b.isbn
             JOIN genre g ON b.genre_id = g.genre_id
-        WHERE LOWER(g.genre) = $2
+        WHERE LOWER(g.genre) = LOWER($2)
         GROUP BY b.isbn, b.title, b.author
       )
       SELECT *
