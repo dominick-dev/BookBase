@@ -4,7 +4,7 @@ import { evaluate } from 'mathjs';
 
 // Review component to display individual review
 const Review = ({ review }) => {
-    console.log("review: ", review);
+    // console.log("review: ", review);
 
     // extract the values from the review object
     let { helpfulness, isbn, price, review_id, score, summary, text, time, userid, username } = review;

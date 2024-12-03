@@ -10,7 +10,7 @@ jest.setTimeout(5000);
 
 describe('GET /test-db', () => {
   it('should return a successful database connection message', async () => {
-    console.log("testing test-db route");
+    // console.log("testing test-db route");
     const response = await request(app).get('/test-db');
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message', 'Database connected successfully');
@@ -18,7 +18,7 @@ describe('GET /test-db', () => {
   });
 
   it('should return an error message on database connection failure', async () => {
-    console.log("testing test-db route failure");
+    // console.log("testing test-db route failure");
     jest.spyOn(connection, 'query').mockImplementationOnce(() => {
       throw new Error('Connection failed');
     });

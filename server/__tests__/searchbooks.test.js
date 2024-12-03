@@ -22,7 +22,7 @@ jest.setTimeout(10000);
 // test searchBooks route
 describe('GET /searchBooks', () => {
   it('should return books matching the searchBooks query', async () => {
-    console.log("testing searchBooks route");
+    // console.log("testing searchBooks route");
     const response = await request(app)
       .get('/searchBooks?limit=5')
       .set('Cache-Control', 'no-cache');
