@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BookCarousel from "../components/BookCarousel";
-import Navbar from "../components/Navbar";
+import NavBar from "../components/NavBar";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import axios from "axios";
 
