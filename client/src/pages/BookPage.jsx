@@ -4,7 +4,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import BookCard from "../components/BookCard";
 import Reviews from "../components/Reviews";
 import NavBar from "../components/NavBar";
-import AddToWantToReadBtn from "../components/AddToWantToReadBtn";
 import '../styles/BookCard.css';
 
 const BookPage = () => {
@@ -75,9 +74,6 @@ const BookPage = () => {
               ) : book ? (
                 <>
                   <BookCard book={book} />
-                <div style={{marginTop: "30px"}}>
-                  <AddToWantToReadBtn isbn={isbn} />
-                </div>
                 </>
               ) : (
                 <p>No book found</p>
