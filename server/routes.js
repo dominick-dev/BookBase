@@ -275,10 +275,11 @@ const byAgeGroup = async (req, res) => {
         return res.status(400).json({error: "Invalid birth year."})
       }
 
-      const age = new Date().getFullYear() - birthYearInt;
+      // changed to accept age
+      const age = birthYearInt;
 
       if (age < 0) {
-        return res.status(400).json({error: "Invalid birth year."})
+        return res.status(400).json({error: "Invalid age"})
       }
 
       let ageGroup;
@@ -294,6 +295,8 @@ const byAgeGroup = async (req, res) => {
       } else {
         ageGroup = "65+";
       }
+
+      //console.log(ageGroup);
 
       const result = await connection.query(`
         WITH age_groups AS (
