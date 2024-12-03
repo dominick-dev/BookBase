@@ -38,6 +38,7 @@ function NavBar() {
           <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
             <NavButton to="/insights" label="Interesting Insights" isMobile={false} />
             <NavButton to="/search" label="Search For Books" isMobile={false} />
+            <NavButton to="/map" label="Explore the Map" isMobile={false} />
           </Box>
 
           {/* Account Button */}
