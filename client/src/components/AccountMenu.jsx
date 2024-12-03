@@ -9,11 +9,23 @@ import {
   Typography,
 } from "@mui/material";
 
+import { useNavigate } from "react-router-dom";
+
 const AccountMenu = ({
   anchorElUser,
   handleOpenUserMenu,
   handleCloseUserMenu,
 }) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // remove token from localStorage, close user menu, and navigate to auth page
+    localStorage.removeItem("token");
+    handleCloseUserMenu();
+    alert("You have been logged out!");
+    navigate("/auth", { replace: true });
+  };
+
   return (
     <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
       <Tooltip title="Open settings">
@@ -37,11 +49,18 @@ const AccountMenu = ({
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        {["Profile", "Account", "Dashboard", "Logout"].map((setting) => (
-          <MenuItem key={setting} onClick={handleCloseUserMenu}>
-            <Typography textAlign="center">{setting}</Typography>
-          </MenuItem>
-        ))}
+        <MenuItem onClick={handleCloseUserMenu}>
+          <Typography textAlign="center">Profile</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleCloseUserMenu}>
+          <Typography textAlign="center">Account</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleCloseUserMenu}>
+          <Typography textAlign="center">Dashboard</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>
+          <Typography textAlign="center">Logout</Typography>
+        </MenuItem>
       </Menu>
     </Box>
   );
