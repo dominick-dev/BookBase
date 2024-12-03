@@ -54,11 +54,13 @@ const ProfilePage = () => {
       try {
         const bookPromises = wantToReadISBNs.map((isbn) =>
           axios
-            .get(`http://localhost:8080/books/${isbn}`)
+            .get(`http://localhost:8080/book/${isbn}`)
             .then((response) => response.data)
         );
+
         const booksData = await Promise.all(bookPromises);
-        setBooks(booksData);
+        const books = booksData.map((bookArray) => bookArray[0]);
+        setBooks(books);
       } catch (err) {
         console.error("Error retrieving book details: ", err);
         setError("Error retrieving book details");
