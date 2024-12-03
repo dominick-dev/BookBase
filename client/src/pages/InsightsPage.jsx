@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import BookCard from "../components/BookCard";
+import Navbar from "../components/Navbar";
 
 // dummy data
 const dummyHiddenGems = [
@@ -127,87 +128,90 @@ const InsightsPage = () => {
   //   }
 
   return (
-    <Box sx={{ padding: "40px", backgroundColor: "#f5f5f5" }}>
-      <Typography variant="h3" align="center" gutterBottom>
-        Interesting Insights
-      </Typography>
-      <Typography
-        variant="body1"
-        align="center"
-        gutterBottom
-        sx={{ marginBottom: "30px" }}
-      >
-        Discover hidden gems, polarizing books, and top reviewer favorites based
-        on book reviews and ratings.
-      </Typography>
+    <>
+      <Navbar />
+      <Box sx={{ padding: "100px", backgroundColor: "#f5f5f5" }}>
+        <Typography variant="h3" align="center" gutterBottom>
+          Interesting Insights
+        </Typography>
+        <Typography
+          variant="body1"
+          align="center"
+          gutterBottom
+          sx={{ marginBottom: "30px" }}
+        >
+          Discover hidden gems, polarizing books, and top reviewer favorites
+          based on book reviews and ratings.
+        </Typography>
 
-      {/* Hidden Gems */}
-      <Box sx={{ marginBottom: "40px" }}>
-        <Typography variant="h4" gutterBottom>
-          Hidden Gems
-        </Typography>
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          Books with high ratings but fewer reviews, making them undiscovered
-          treasures.
-        </Typography>
-        <Grid container spacing={3}>
-          {hiddenGems.map((book, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
-              <BookCard book={book} />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-
-      {/* Polarizing Books */}
-      <Box sx={{ marginBottom: "40px" }}>
-        <Typography variant="h4" gutterBottom>
-          Polarizing Books
-        </Typography>
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          Books that spark strong opinions with high and low scores dominating
-          the reviews.
-        </Typography>
-        <Grid container spacing={3}>
-          {polarizingBooks.map((book, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
-              <BookCard book={book} />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-
-      {/* Top Reviewer Favorites */}
-      <Box>
-        <Typography variant="h4" gutterBottom>
-          Top Reviewer Favorites
-        </Typography>
-        <Typography variant="body2" color="textSecondary" gutterBottom>
-          Books loved by the most active reviewers in the community.
-        </Typography>
-        <FormControl fullWidth sx={{ marginBottom: "20px" }}>
-          <InputLabel id="genre-select-label">Genre</InputLabel>
-          <Select
-            labelId="genre-select-label"
-            value={selectedGenre}
-            // onChange={handleGenreChange}
-          >
-            {genreOptions.map((genre) => (
-              <MenuItem key={genre} value={genre}>
-                {genre}
-              </MenuItem>
+        {/* Hidden Gems */}
+        <Box sx={{ marginBottom: "40px" }}>
+          <Typography variant="h4" gutterBottom>
+            Hidden Gems
+          </Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            Books with high ratings but fewer reviews, making them undiscovered
+            treasures.
+          </Typography>
+          <Grid container spacing={3}>
+            {hiddenGems.map((book, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <BookCard book={book} />
+              </Grid>
             ))}
-          </Select>
-        </FormControl>
-        <Grid container spacing={3}>
-          {topReviewerFavorites.map((book, index) => (
-            <Grid item key={index} xs={12} sm={6} md={4}>
-              <BookCard book={book} />
-            </Grid>
-          ))}
-        </Grid>
+          </Grid>
+        </Box>
+
+        {/* Polarizing Books */}
+        <Box sx={{ marginBottom: "40px" }}>
+          <Typography variant="h4" gutterBottom>
+            Polarizing Books
+          </Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            Books that spark strong opinions with high and low scores dominating
+            the reviews.
+          </Typography>
+          <Grid container spacing={3}>
+            {polarizingBooks.map((book, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <BookCard book={book} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* Top Reviewer Favorites */}
+        <Box>
+          <Typography variant="h4" gutterBottom>
+            Top Reviewer Favorites
+          </Typography>
+          <Typography variant="body2" color="textSecondary" gutterBottom>
+            Books loved by the most active reviewers in the community.
+          </Typography>
+          <FormControl fullWidth sx={{ marginBottom: "20px" }}>
+            <InputLabel id="genre-select-label">Genre</InputLabel>
+            <Select
+              labelId="genre-select-label"
+              value={selectedGenre}
+              // onChange={handleGenreChange}
+            >
+              {genreOptions.map((genre) => (
+                <MenuItem key={genre} value={genre}>
+                  {genre}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Grid container spacing={3}>
+            {topReviewerFavorites.map((book, index) => (
+              <Grid item key={index} xs={12} sm={6} md={4}>
+                <BookCard book={book} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
