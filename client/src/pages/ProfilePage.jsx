@@ -12,7 +12,7 @@ const ProfilePage = () => {
   const [loadingBooks, setLoadingBooks] = useState(true);
   const [error, setError] = useState(null);
 
-  //   fetch users want to read list
+  // fetch users want to read list
   useEffect(() => {
     const fetchWantToReadList = async () => {
       const token = localStorage.getItem("token");
@@ -43,7 +43,7 @@ const ProfilePage = () => {
     fetchWantToReadList();
   }, []);
 
-  //   fetch book details for each ISBN
+  // fetch book details for each ISBN
   useEffect(() => {
     const fetchBookDetails = async () => {
       if (wantToReadISBNs.length === 0) {
@@ -74,6 +74,7 @@ const ProfilePage = () => {
     }
   }, [loadingList, wantToReadISBNs]);
 
+  // loading state
   if (loadingList || loadingBooks) {
     return (
       <>
@@ -94,6 +95,7 @@ const ProfilePage = () => {
     );
   }
 
+  // error state
   if (error) {
     return (
       <>
@@ -112,13 +114,28 @@ const ProfilePage = () => {
     );
   }
 
+  // success state
   return (
     <>
       <Navbar />
       <Typography variant="h4" align="center" gutterBottom>
         Your Want to Read List
       </Typography>
-      <BookCarousel books={books} />
+      {books.length > 0 ? (
+        <BookCarousel books={books} />
+      ) : (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          minHeight="300px"
+        >
+          <Typography variant="h6" align="center">
+            You have no books in your Want to Read list. Check out the other
+            pages and add some!
+          </Typography>
+        </Box>
+      )}
     </>
   );
 };
