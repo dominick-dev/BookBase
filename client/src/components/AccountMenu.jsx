@@ -36,7 +36,7 @@ const AccountMenu = ({
     <Box sx={{ flexGrow: 0, display: "flex", alignItems: "center" }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+          <Avatar alt="Remy Sharp" src="https://attic.sh/prxqzg7nk65j2ccjjyogebflzb4q/static/images/avatar/2.jpg" />
         </IconButton>
       </Tooltip>
       <Menu
