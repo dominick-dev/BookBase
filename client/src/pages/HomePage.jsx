@@ -67,6 +67,7 @@ const HomePage = () => {
                 Click on the book cards to learn more about the books!
               </Typography>
               <BookCarousel books={books} />
+              <RandomBook />
               <Container
                 sx={{ backgroundColor: "wheat", padding: "20px", mt: 4 }}
               >
@@ -79,7 +80,6 @@ const HomePage = () => {
                   </Grid>
                 </Grid>
               </Container>
-              <RandomBook />
             </>
           }
         />
