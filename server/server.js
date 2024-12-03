@@ -199,6 +199,22 @@ app.get("/reviews/:isbn", (req, res) => {
   routes.reviewsByISBN(req, res);
 });
 
+// route to batch fetch books by ISBNs
+app.post("books/batch", async (req, res) => {
+  try {
+    const { isbns } = req.body;
+    if (!isbns || !Array.isArray(isbns) || isbns.length === 0) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const query = "SELECT * FROM books WEHRE isbn = ANY($1::varchar[])";
+    const result = await connection.query(query, [isbns]);
+    res.status(200).json({ books: result.rows });
+  } catch (err) {
+    console.error("Error fetching books in batch: ", err);
+    res.status(500).json({ message: "Internal server error" });
+})
+
 // used in SearchPage and BookPage
 app.get("/search", (req, res) => {
   console.log("/search route hit");
