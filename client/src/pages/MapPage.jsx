@@ -57,10 +57,8 @@ const MapPage = () => {
         }));
 
         setMarkers(fetchedMarkers);  // set based on query result
-      } else {
-        console.log("No markers found");
       }
-
+      
       // get most popular books in the given country
       const popularBooksResponse = await fetch(`http://localhost:8080/by-location/country/${countryName}`);
       const popularBooksData = await popularBooksResponse.json();

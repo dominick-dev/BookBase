@@ -3,7 +3,7 @@ export const getFallbackCover = (title) => {
 };
 
 export const getBookDetails = (book) => {
-  console.log("getBookDetails function is called with book:", book);
+  // console.log("getBookDetails function is called with book:", book);
   return {
     title: book.title || "No title available",
     author: book.author || "No author available",

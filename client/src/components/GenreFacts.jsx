@@ -90,10 +90,10 @@ const GenreFacts = () => {
     // Fetch books from the top-authors route
     const fetchBooks = async () => {
       try {
-        console.log("Attempting to fetch genre facts...")
+        // console.log("Attempting to fetch genre facts...")
         const response = await fetch("http://localhost:8080/genre-stats");
         const data = await response.json();
-        console.log(`Fetched ${data.length} genres.`);
+        // console.log(`Fetched ${data.length} genres.`);
         setGenres(data);
       } catch (error) {
         console.error("Error fetching books:", error);
@@ -119,7 +119,7 @@ const GenreFacts = () => {
   };
 
   
-  console.log("Genre Stats component is rendering");
+  // console.log("Genre Stats component is rendering");
 
   if (loading) return <div>Loading...</div>;
 

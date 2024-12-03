@@ -95,7 +95,7 @@ const searchBooks = async (req, res) => {
     ${limitInt ? 'LIMIT ' + limitInt : ''}
   `;
 
-  console.log("query: ", query);
+  // console.log("query: ", query);
 
   // console.log("executing query");
   try {
@@ -420,7 +420,7 @@ const topReviewerFavorites = async(req, res) => {
     // console.log("top reviewer favorites fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
-    console.log(err)
+    // console.log(err)
     return res.status(500).json({error: "Failed to execute top reviewer favorites query"})
   }
 }
@@ -698,7 +698,7 @@ const reviewsByISBN = async (req, res) => {
   const allowedFields = ["isbn"];
   const field = "isbn"; // Define the field variable here
   if (!allowedFields.includes(field)) {
-    console.log("invalid search parameter: ", field);
+    // console.log("invalid search parameter: ", field);
     return res.status(400).json({ error: `Invalid search parameter: ${field}` });
   }
 

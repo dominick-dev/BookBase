@@ -8,7 +8,7 @@ const RandomBook = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log("RandomBook component is rendering");
+//   console.log("RandomBook component is rendering");
 
   const fetchRandomBook = async () => {
         setLoading(true);

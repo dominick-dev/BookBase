@@ -54,7 +54,7 @@ app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
 
 // route to get user's want to read list
 app.get("/get-want-to-read", authenticationToken, async (req, res) => {
-  console.log("GET /get-want-to-read route hit");
+  // console.log("GET /get-want-to-read route hit");
   try {
     // extract userID from token
     const userId = req.user.id;
@@ -138,7 +138,7 @@ passport.use(
       try {
         let user = await User.findOne({ email });
         if (!user) {
-          console.log("User not found. Creating new user...");
+          // console.log("User not found. Creating new user...");
           user = new User({
             email,
             provider: "facebook",
@@ -146,11 +146,11 @@ passport.use(
             user_id: new mongoose.Types.ObjectId(),
           });
           await user.save();
-          console.log("User created successfully!", user);
+          // console.log("User created successfully!", user);
         }
         done(null, user);
       } catch (err) {
-        console.log("Error in Facebook Strategy: ", err);
+        // console.log("Error in Facebook Strategy: ", err);
         done(err, null);
       }
     }
@@ -188,7 +188,7 @@ app.get("/genre-stats", routes.genreStats);
 
 // used in BookPage
 app.get("/book/:isbn", (req, res) => {
-  console.log("/book route hit");
+  // console.log("/book route hit");
   routes.bookByISBN(req, res);
 });
 app.get("/countriesList", routes.countriesList);
@@ -196,21 +196,19 @@ app.get("/reviewsWithCoordinates/:country", routes.reviewsWithCoordinates);
 
 // used in BookPage
 app.get("/reviews/:isbn", (req, res) => {
-  console.log("/reviews route hit");
+  // console.log("/reviews route hit");
   routes.reviewsByISBN(req, res);
 });
 
 // used in SearchPage and BookPage
 app.get("/search", (req, res) => {
-  console.log("/search route hit");
+  // console.log("/search route hit");
   routes.searchBooks(req, res);
 });
 
 // Start the server
 app.listen(config.server_port, () => {
-  console.log(
-    `Server running at http://${config.server_host}:${config.server_port}/`
-  );
+  console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
 });
 
 module.exports = app;

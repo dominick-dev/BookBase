@@ -22,7 +22,7 @@ const BookPage = () => {
         const bookResponse = await fetch(`http://localhost:8080/book/${isbn}`);
         if (!bookResponse.ok) {
           setBookData(null);
-          console.log("Error fetching book data", bookResponse.statusText);
+          // console.log("Error fetching book data", bookResponse.statusText);
           return;
         }
         const book = await bookResponse.json();

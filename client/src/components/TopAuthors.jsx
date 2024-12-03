@@ -91,10 +91,10 @@ const TopAuthors = () => {
     // Fetch books from the top-authors route
     const fetchBooks = async () => {
       try {
-        console.log("Attempting to fetch authors...")
+        // console.log("Attempting to fetch authors...")
         const response = await fetch("http://localhost:8080/author-stats?numAuthors=30");
         const data = await response.json();
-        console.log(`Fetched ${data.length} authors.`);
+        // console.log(`Fetched ${data.length} authors.`);
         setAuthors(data);
       } catch (error) {
         console.error("Error fetching books:", error);
@@ -120,7 +120,7 @@ const TopAuthors = () => {
   };
 
   
-  console.log("Top Authors component is rendering");
+  // console.log("Top Authors component is rendering");
 
   if (loading) return <div>Loading...</div>;
 

@@ -5,16 +5,16 @@ import Reviews from "../components/Reviews";
 import NavBar from '../components/NavBar';
 
 const ReviewsPage = () => {
-  console.log("ReviewsPage component is rendering");
+  // console.log("ReviewsPage component is rendering");
   const { isbn } = useParams();
   const [reviewData, setReviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchReviews = async () => {
-      console.log(`Fetching review data for ISBN: ${isbn}`);
+      // console.log(`Fetching review data for ISBN: ${isbn}`);
       try {
-        console.log(`Fetching review data for ISBN: ${isbn}`);
+        // console.log(`Fetching review data for ISBN: ${isbn}`);
         const reviewResponse = await fetch(`http://localhost:8080/reviews/${isbn}?limit=10`);
         if (!reviewResponse || !reviewResponse.ok) {
           setReviewData(null);
@@ -22,20 +22,20 @@ const ReviewsPage = () => {
         }
         const reviews = await reviewResponse.json();
         setReviewData(reviews);
-        console.log("Review data fetched successfully");
+        // console.log("Review data fetched successfully");
       } catch (error) {
-        console.log("Error fetching review data", error);
+        // console.log("Error fetching review data", error);
         setReviewData(null);
       } finally {
         setLoading(false);
       }
     };
 
-    console.log("Fetching reviews...");
+    // console.log("Fetching reviews...");
     fetchReviews();
   }, [isbn]);
 
-  console.log("Review data:", reviewData);
+  // console.log("Review data:", reviewData);
   return (
     <>
       <NavBar />
