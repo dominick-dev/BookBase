@@ -217,80 +217,111 @@ const InsightsPage = () => {
   return (
     <>
       <Navbar />
-      <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
+      {/* Hero Section */}
+      <Box
+        sx={{
+          gutterBottom: true,
+          backgroundColor: "var(--primary-color)",
+          color: "white",
+          padding: 4,
+          textAlign: "center",
+          marginTop: 7.5,
+        }}
+      >
         <Typography variant="h4" component="h1" gutterBottom>
           Interesting Insights 🔎
         </Typography>
-        <Typography variant="body1" align="left">
-          Explore fascinating book insights from our carefully curated data.
+      </Box>
+
+      <Box
+        sx={{
+          padding: "0 20px",
+          maxWidth: "1000px",
+          textAlign: "center",
+          marginTop: 2,
+          marginBottom: 2,
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <Typography variant="h4" component="h1" gutterBottom></Typography>
+        <Typography variant="body1" align="center">
+          Explore interesting book insights from our carefully curated data.
           Discover hidden gems that deserve more attention, uncover polarizing
           books that spark heated debates, and see what the top reviewers in the
           community love the most!
         </Typography>
       </Box>
       <div className="insights-page">
-        <Box sx={{ textAlign: "center", margin: 2 }}>
-          <img
-            src={diamond}
-            alt="Hidden Gems"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenHiddenGems}
-            className="insight-button"
+        <div className="container">
+          <Box
+            sx={{
+              textAlign: "center",
+              margin: 2,
+            }}
           >
-            View Hidden Gems
-          </Button>
-          <img
-            src={diamond}
-            alt="Hidden Gems"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-        </Box>
+            <img
+              src={diamond}
+              alt="Hidden Gems"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenHiddenGems}
+              className="insight-button"
+            >
+              View Hidden Gems
+            </Button>
+            <img
+              src={diamond}
+              alt="Hidden Gems"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+          </Box>
 
-        <Box sx={{ textAlign: "center", margin: 2 }}>
-          <img
-            src={scale}
-            alt="Polarizing Books"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenPolarizingBooks}
-            className="insight-button"
-          >
-            View Polarizing Books
-          </Button>
-          <img
-            src={scale}
-            alt="Polarizing Books"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-        </Box>
+          <Box sx={{ textAlign: "center", margin: 2 }}>
+            <img
+              src={scale}
+              alt="Polarizing Books"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenPolarizingBooks}
+              className="insight-button"
+            >
+              View Polarizing Books
+            </Button>
+            <img
+              src={scale}
+              alt="Polarizing Books"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+          </Box>
 
-        <Box sx={{ textAlign: "center", margin: 2 }}>
-          <img
-            src={stars}
-            alt="Top Reviewer Favorites"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenTopReviewerFavorites}
-            className="insight-button"
-          >
-            View Top Reviewer Favorites
-          </Button>
-          <img
-            src={stars}
-            alt="Top Reviewer Favorites"
-            style={{ width: "50px", marginBottom: "10px" }}
-          />
-        </Box>
+          <Box sx={{ textAlign: "center", margin: 2 }}>
+            <img
+              src={stars}
+              alt="Top Reviewer Favorites"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenTopReviewerFavorites}
+              className="insight-button"
+            >
+              View Top Reviewer Favorites
+            </Button>
+            <img
+              src={stars}
+              alt="Top Reviewer Favorites"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+          </Box>
+        </div>
 
         {/* Hidden Gems Modal */}
         <Dialog
