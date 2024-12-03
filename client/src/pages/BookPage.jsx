@@ -73,7 +73,22 @@ const BookPage = () => {
                 <p>Loading book information...</p>
               ) : book ? (
                 <>
+                  <Container>
                   <BookCard book={book} />
+                    <div className="book-details my-5 mx-3">
+
+                      {/* render each if not null */}
+                      {book.title && <h4><strong>{book.title}</strong></h4>}
+                      {book.author && <h5>{book.author}</h5>}
+                      <br></br>
+                      {book.isbn && <p><strong>ISBN: </strong>{book.isbn}</p>}
+                      {book.num_pages && <p><strong>Number of Pages: </strong>{book.num_pages}</p>}
+                      {book.published_date && <p><strong>Published: </strong>{book.published_date}</p>}
+                      {book.description && <p><strong>Description: </strong>{book.description}</p>}
+                      {book.preview_link && (<p><a href={book.preview_link} target="_blank" rel="noopener noreferrer">Preview</a></p>)}
+                      {book.info_link && (<p><a href={book.info_link} target="_blank" rel="noopener noreferrer">More info</a></p>)}
+                    </div>
+                  </Container>
                 </>
               ) : (
                 <p>No book found</p>
