@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
-import { Container, Dropdown, DropdownButton, Row, Col } from "react-bootstrap";
+import { Container, Dropdown, DropdownButton, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import NavBar from "../components/NavBar";
 import '../styles/MapPage.css';
@@ -11,7 +11,8 @@ const MapPage = () => {
   const [countries, setCountries] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [markers, setMarkers] = useState([]);
-  const [zoomLevel, setZoomLevel] = useState(2);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [popularBooks, setPopularBooks] = useState([]);
 
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const MapPage = () => {
       // search database based on country name
       const reviewResponse = await fetch(`http://localhost:8080/reviewsWithCoordinates/${countryName}`);
       const reviewData = await reviewResponse.json();
-      setZoomLevel(2);
+      setZoomLevel(1);
 
       if (reviewData.length > 0) {
 
@@ -59,18 +60,16 @@ const MapPage = () => {
       } else {
         console.log("No markers found");
       }
+
+      // get most popular books in the given country
+      const popularBooksResponse = await fetch(`http://localhost:8080/by-location/country/${countryName}`);
+      const popularBooksData = await popularBooksResponse.json();
+      console.log('Top 10 books data:', popularBooksData);
+      setPopularBooks(popularBooksData)
+
     } catch (error) {
       console.error("Error fetching markers:", error);
     }
-
-  const backgroundStyle = {
-    backgroundImage: `url(${background})`,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    height: '100vh',
-    width: '100%',
-  }
 
   };
 
@@ -131,7 +130,18 @@ const MapPage = () => {
             </Col>
             <Col md={6}>
               <Container>
-                <p>alksdjf;laksjdf;j</p>
+                <h3>Top 10 most-reviewed books</h3>
+                <ListGroup>
+                  {popularBooks.length > 0 ? (
+                    popularBooks.slice(0, 10).map((book, index) => (
+                      <ListGroup.Item key={index} style={{textAlign: 'left'}}>
+                        {index + 1}. <strong>{book.title}</strong> by {book.author} ({book.reviewcount} reviews)
+                      </ListGroup.Item>
+                    ))
+                  ) : (
+                    <div></div> // return empty div
+                  )}
+                </ListGroup>
               </Container>
             </Col>
           </Row>
