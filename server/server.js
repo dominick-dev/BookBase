@@ -53,7 +53,8 @@ app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
 });
 
 // route to get user's want to read list
-app.get("get-want-to-read", authenticationToken, async (req, res) => {
+app.get("/get-want-to-read", authenticationToken, async (req, res) => {
+  console.log("GET /get-want-to-read route hit");
   try {
     // extract userID from token
     const userId = req.user.id;
@@ -164,7 +165,6 @@ app.get("/", (req, res) => {
   res.send("Express server running!");
 });
 
-
 // routes that exist but are not used in the frontend
 app.get("/test-db", routes.testDatabaseConnection); // test connection to DB
 app.get("/helpful-users", routes.helpfulUsers);
@@ -192,7 +192,7 @@ app.get("/book/:isbn", (req, res) => {
   routes.bookByISBN(req, res);
 });
 app.get("/countriesList", routes.countriesList);
-app.get("/reviewsWithCoordinates/:country", routes.reviewsWithCoordinates)
+app.get("/reviewsWithCoordinates/:country", routes.reviewsWithCoordinates);
 
 // used in BookPage
 app.get("/reviews/:isbn", (req, res) => {
