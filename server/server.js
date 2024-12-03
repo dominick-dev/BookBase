@@ -53,7 +53,7 @@ app.post("/add-to-want-to-read", authenticationToken, async (req, res) => {
 });
 
 // route to get user's want to read list
-app.get("get-want-to-read", authenticationToken, async (req, res) => {
+app.get("/get-want-to-read", authenticationToken, async (req, res) => {
   try {
     // extract userID from token
     const userId = req.user.id;
