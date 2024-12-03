@@ -7,7 +7,6 @@
   
 .map-page-body {
     min-height: 100vh;
-    /* background-color: red; */
     background-image: url('../assets/darklibrary.jpg');
     background-size: cover;
     background-attachment: fixed;
