@@ -11,10 +11,15 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 import BookCarousel from "../components/BookCarousel";
 import Navbar from "../components/Navbar";
+import "../styles/InsightsPage.css";
+import stars from "../assets/stars.png";
+import scale from "../assets/scale.png";
+import diamond from "../assets/diamond.png";
 
 const genreOptions = [
   "Fiction",
@@ -212,155 +217,214 @@ const InsightsPage = () => {
   return (
     <>
       <Navbar />
-      <Box sx={{ textAlign: "center", marginTop: 4 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenHiddenGems}
-          sx={{ margin: 1 }}
-        >
-          View Hidden Gems
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenPolarizingBooks}
-          sx={{ margin: 1 }}
-        >
-          View Polarizing Books
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenTopReviewerFavorites}
-          sx={{ margin: 1 }}
-        >
-          View Top Reviewer Favorites
-        </Button>
+      <Box sx={{ textAlign: "center", marginTop: 4, marginBottom: 4 }}>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Interesting Insights 🔎
+        </Typography>
+        <Typography variant="body1" align="left">
+          Explore fascinating book insights from our carefully curated data.
+          Discover hidden gems that deserve more attention, uncover polarizing
+          books that spark heated debates, and see what the top reviewers in the
+          community love the most!
+        </Typography>
       </Box>
-
-      {/* Hidden Gems Modal */}
-      <Dialog
-        open={openHiddenGemsModal}
-        onClose={handleCloseHiddenGems}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Hidden Gems</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="textSecondary" gutterBottom>
-            Books with high ratings but fewer reviews, making them undiscovered
-            treasures.
-          </Typography>
-          {hiddenGemsLoading ? (
-            <Typography variant="body2" align="center">
-              Loading hidden gems...
-            </Typography>
-          ) : hiddenGemsError ? (
-            <Typography variant="body2" color="error" align="center">
-              {hiddenGemsError}
-            </Typography>
-          ) : hiddenGems.length > 0 ? (
-            <BookCarousel books={hiddenGems} />
-          ) : (
-            <Typography variant="body2" align="center">
-              No hidden gems found.
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseHiddenGems} color="primary">
-            Close
+      <div className="insights-page">
+        <Box sx={{ textAlign: "center", margin: 2 }}>
+          <img
+            src={diamond}
+            alt="Hidden Gems"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenHiddenGems}
+            className="insight-button"
+          >
+            View Hidden Gems
           </Button>
-        </DialogActions>
-      </Dialog>
+          <img
+            src={diamond}
+            alt="Hidden Gems"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+        </Box>
 
-      {/* Polarizing Books Modal */}
-      <Dialog
-        open={openPolarizingBooksModal}
-        onClose={handleClosePolarizingBooks}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Polarizing Books</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="textSecondary" gutterBottom>
-            Books that spark strong opinions with high and low scores dominating
-            the reviews.
-          </Typography>
-          {polarizingBooksLoading ? (
-            <Typography variant="body2" align="center">
-              Loading polarizing books...
-            </Typography>
-          ) : polarizingBooksError ? (
-            <Typography variant="body2" color="error" align="center">
-              {polarizingBooksError}
-            </Typography>
-          ) : polarizingBooks.length > 0 ? (
-            <BookCarousel books={polarizingBooks} />
-          ) : (
-            <Typography variant="body2" align="center">
-              No polarizing books found.
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClosePolarizingBooks} color="primary">
-            Close
+        <Box sx={{ textAlign: "center", margin: 2 }}>
+          <img
+            src={scale}
+            alt="Polarizing Books"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenPolarizingBooks}
+            className="insight-button"
+          >
+            View Polarizing Books
           </Button>
-        </DialogActions>
-      </Dialog>
+          <img
+            src={scale}
+            alt="Polarizing Books"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+        </Box>
 
-      {/* Top Reviewer Favorites Modal */}
-      <Dialog
-        open={openTopReviewerFavoritesModal}
-        onClose={handleCloseTopReviewerFavorites}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle>Top Reviewer Favorites</DialogTitle>
-        <DialogContent>
-          <Typography variant="body2" color="textSecondary" gutterBottom>
-            Books loved by the most active reviewers in the community.
-          </Typography>
-
-          <FormControl fullWidth sx={{ marginBottom: "20px" }}>
-            <InputLabel id="genre-select-label">Genre</InputLabel>
-            <Select
-              labelId="genre-select-label"
-              value={selectedGenre}
-              onChange={handleGenreChange}
-            >
-              {genreOptions.map((genre) => (
-                <MenuItem key={genre} value={genre}>
-                  {genre}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          {topReviewerFavoritesLoading ? (
-            <Typography variant="body2" align="center">
-              Loading top reviewer favorites...
-            </Typography>
-          ) : topReviewerFavoritesError ? (
-            <Typography variant="body2" color="error" align="center">
-              {topReviewerFavoritesError}
-            </Typography>
-          ) : topReviewerFavorites.length > 0 ? (
-            <BookCarousel books={topReviewerFavorites} />
-          ) : (
-            <Typography variant="body2" align="center">
-              No top reviewer favorites found.
-            </Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseTopReviewerFavorites} color="primary">
-            Close
+        <Box sx={{ textAlign: "center", margin: 2 }}>
+          <img
+            src={stars}
+            alt="Top Reviewer Favorites"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenTopReviewerFavorites}
+            className="insight-button"
+          >
+            View Top Reviewer Favorites
           </Button>
-        </DialogActions>
-      </Dialog>
+          <img
+            src={stars}
+            alt="Top Reviewer Favorites"
+            style={{ width: "50px", marginBottom: "10px" }}
+          />
+        </Box>
+
+        {/* Hidden Gems Modal */}
+        <Dialog
+          open={openHiddenGemsModal}
+          onClose={handleCloseHiddenGems}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Hidden Gems</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              Books with high ratings but fewer reviews, making them
+              undiscovered treasures.
+            </Typography>
+            {hiddenGemsLoading ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: 6,
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : hiddenGemsError ? (
+              <Typography variant="body2" color="error" align="center">
+                {hiddenGemsError}
+              </Typography>
+            ) : hiddenGems.length > 0 ? (
+              <BookCarousel books={hiddenGems} />
+            ) : (
+              <Typography variant="body2" align="center">
+                No hidden gems found.
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseHiddenGems} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Polarizing Books Modal */}
+        <Dialog
+          open={openPolarizingBooksModal}
+          onClose={handleClosePolarizingBooks}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Polarizing Books</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              Books that spark strong opinions with high and low scores
+              dominating the reviews.
+            </Typography>
+            {polarizingBooksLoading ? (
+              <Box
+                sx={{ display: "flex", justifyContent: "center", marginTop: 6 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : polarizingBooksError ? (
+              <Typography variant="body2" color="error" align="center">
+                {polarizingBooksError}
+              </Typography>
+            ) : polarizingBooks.length > 0 ? (
+              <BookCarousel books={polarizingBooks} />
+            ) : (
+              <Typography variant="body2" align="center">
+                No polarizing books found.
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClosePolarizingBooks} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Top Reviewer Favorites Modal */}
+        <Dialog
+          open={openTopReviewerFavoritesModal}
+          onClose={handleCloseTopReviewerFavorites}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Top Reviewer Favorites</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              Books loved by the most active reviewers in the community.
+            </Typography>
+
+            <FormControl fullWidth sx={{ marginBottom: "20px" }}>
+              <InputLabel id="genre-select-label">Genre</InputLabel>
+              <Select
+                labelId="genre-select-label"
+                value={selectedGenre}
+                onChange={handleGenreChange}
+              >
+                {genreOptions.map((genre) => (
+                  <MenuItem key={genre} value={genre}>
+                    {genre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {topReviewerFavoritesLoading ? (
+              <Box
+                sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : topReviewerFavoritesError ? (
+              <Typography variant="body2" color="error" align="center">
+                {topReviewerFavoritesError}
+              </Typography>
+            ) : topReviewerFavorites.length > 0 ? (
+              <BookCarousel books={topReviewerFavorites} />
+            ) : (
+              <Typography variant="body2" align="center">
+                No top reviewer favorites found.
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseTopReviewerFavorites} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </>
   );
 };
