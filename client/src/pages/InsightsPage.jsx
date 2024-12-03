@@ -43,8 +43,22 @@ const InsightsPage = () => {
   const [topReviewerFavoritesLoading, setTopReviewerFavoritesLoading] =
     useState(false);
 
-  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("Fiction");
   const [error, setError] = useState(null);
+
+  // helper function to fetch book details
+  const fetchBookDetails = async (isbns) => {
+    try {
+      const bookPromises = isbns.map((isbn) =>
+        axios.get(`http://localhost:8080/books/${isbn}`).then((res) => res.data)
+      );
+      const books = await Promise.all(bookPromises);
+      return books;
+    } catch (error) {
+      console.error("Error fetching book details: ", error);
+      throw error;
+    }
+  };
 
   useEffect(() => {
     // fetch insights data
@@ -53,15 +67,28 @@ const InsightsPage = () => {
         setHiddenGemsLoading(true);
         setPolarizingBooksLoading(true);
         setError(null);
+
         // fetch data for hidden gems and polarizing books
         const [hiddenGemsRes, polarizingBooksRes] = await Promise.all([
-          axios.get("/hidden-gems"),
-          axios.get("/polarizing-books"),
+          axios.get("http://localhost:8080/hidden-gems"),
+          axios.get("http://localhost:8080/polarizing-books"),
         ]);
 
-        // update state with fetched data
-        setHiddenGems(hiddenGemsRes.data);
-        setPolarizingBooks(polarizingBooksRes.data);
+        // extract ISBNs from the response data
+        const hiddenGemsISBNs = hiddenGemsRes.data.map((book) => book.isbn);
+        const polarizingBooksISBNs = polarizingBooksRes.data.map(
+          (book) => book.isbn
+        );
+
+        // fetch full book details
+        const [hiddenGemsBooks, polarizingBooksBooks] = await Promise.all([
+          fetchBookDetails(hiddenGemsISBNs),
+          fetchBookDetails(polarizingBooksISBNs),
+        ]);
+
+        // update state variables
+        setHiddenGems(hiddenGemsBooks);
+        setPolarizingBooks(polarizingBooksBooks);
       } catch (error) {
         setError("Error fetching insights data: " + error.message);
       } finally {
@@ -83,10 +110,23 @@ const InsightsPage = () => {
       try {
         setTopReviewerFavoritesLoading(true);
         setError(null);
+
         const response = await axios.get(
-          `/top-reviewer-favorites?genre=${selectedGenre}`
+          `http://localhost:8080/top-reviewer-favorites?${selectedGenre}`
         );
-        setTopReviewerFavorites(response.data);
+
+        // extract ISBNs from the response data
+        const topReviewerFavoritesISBNs = response.data.map(
+          (book) => book.isbn
+        );
+
+        // fetch full book details
+        const topReviewerFavoritesBooks = await fetchBookDetails(
+          topReviewerFavoritesISBNs
+        );
+
+        // update state
+        setTopReviewerFavorites(topReviewerFavoritesBooks);
       } catch (error) {
         setError("Error fetching top reviewer favorites: " + error.message);
       } finally {
@@ -142,14 +182,12 @@ const InsightsPage = () => {
             <Typography variant="body2" align="center">
               Loading hidden gems...
             </Typography>
+          ) : hiddenGems.length > 0 ? (
+            <BookCarousel books={hiddenGems} />
           ) : (
-            <Grid container spacing={3}>
-              {hiddenGems.map((book, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
-                  <BookCard book={book} />
-                </Grid>
-              ))}
-            </Grid>
+            <Typography variant="body2" align="center">
+              No hidden gems found.
+            </Typography>
           )}
         </Box>
 
@@ -166,14 +204,12 @@ const InsightsPage = () => {
             <Typography variant="body2" align="center">
               Loading polarizing books...
             </Typography>
+          ) : polarizingBooks.length > 0 ? (
+            <BookCarousel books={polarizingBooks} />
           ) : (
-            <Grid container spacing={3}>
-              {polarizingBooks.map((book, index) => (
-                <Grid item key={index} xs={12} sm={6} md={4}>
-                  <BookCard book={book} />
-                </Grid>
-              ))}
-            </Grid>
+            <Typography variant="body2" align="center">
+              No polarizing books found.
+            </Typography>
           )}
         </Box>
 
@@ -185,34 +221,30 @@ const InsightsPage = () => {
           <Typography variant="body2" color="textSecondary" gutterBottom>
             Books loved by the most active reviewers in the community.
           </Typography>
+          <FormControl fullWidth sx={{ marginBottom: "20px" }}>
+            <InputLabel id="genre-select-label">Genre</InputLabel>
+            <Select
+              labelId="genre-select-label"
+              value={selectedGenre}
+              onChange={handleGenreChange}
+            >
+              {genreOptions.map((genre) => (
+                <MenuItem key={genre} value={genre}>
+                  {genre}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           {topReviewerFavoritesLoading ? (
             <Typography variant="body2" align="center">
               Loading top reviewer favorites...
             </Typography>
+          ) : topReviewerFavorites.length > 0 ? (
+            <BookCarousel books={topReviewerFavorites} />
           ) : (
-            <>
-              <FormControl fullWidth sx={{ marginBottom: "20px" }}>
-                <InputLabel id="genre-select-label">Genre</InputLabel>
-                <Select
-                  labelId="genre-select-label"
-                  value={selectedGenre}
-                  onChange={handleGenreChange}
-                >
-                  {genreOptions.map((genre) => (
-                    <MenuItem key={genre} value={genre}>
-                      {genre}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <Grid container spacing={3}>
-                {topReviewerFavorites.map((book, index) => (
-                  <Grid item key={index} xs={12} sm={6} md={4}>
-                    <BookCard book={book} />
-                  </Grid>
-                ))}
-              </Grid>
-            </>
+            <Typography variant="body2" align="center">
+              No top reviewer favorites found for this genre.
+            </Typography>
           )}
         </Box>
       </Box>
