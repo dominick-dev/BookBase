@@ -253,7 +253,7 @@ const InsightsPage = () => {
         </Typography>
       </Box>
       <div className="insights-page">
-        <div className="container">
+        <div className="insights-container">
           <Box
             sx={{
               textAlign: "center",
