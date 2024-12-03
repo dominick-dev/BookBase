@@ -1,0 +1,51 @@
+.auth-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  margin-top: 8rem;
+  padding: 2rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: wheat;
+}
+
+.auth-header {
+  font-family: 'Merriweather', serif;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #4b3f2f;
+}
+
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.auth-tab {
+  font-family: 'Merriweather', serif;
+  font-weight: bold;
+  color: #8b4513;
+}
+
+.auth-tab:hover {
+  color: #a0522d;
+}
+
+.auth-form {
+  margin-top: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.banner {
+  width: 100%;
+  height: 200px;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/d/d1/Sterling_Memorial_Library_Newspaper_Reading_Room.JPG');
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 2rem;
+}
