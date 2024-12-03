@@ -28,6 +28,7 @@ const MapPage = () => {
 
     fetchCountries();
   }, []);
+  
 
   const dropdownMenuStyle = {
     maxHeight: "400px",  // height of dropdown menu itself
@@ -44,7 +45,6 @@ const MapPage = () => {
       setZoomLevel(1);
 
       if (reviewData.length > 0) {
-
         const fetchedMarkers = reviewData.map(item => ({
           geocode: [item.latitude, item.longitude],
           city: item.city,
@@ -64,8 +64,16 @@ const MapPage = () => {
       // get most popular books in the given country
       const popularBooksResponse = await fetch(`http://localhost:8080/by-location/country/${countryName}`);
       const popularBooksData = await popularBooksResponse.json();
-      console.log('Top 10 books data:', popularBooksData);
-      setPopularBooks(popularBooksData)
+
+      const popularBooksWithLinks = popularBooksData.map(item => ({
+        isbn: item.isbn,
+        title: item.title,
+        author: item.author,
+        reviewcount: item.reviewcount,
+        link: `http://localhost:3000/book/${item.isbn}`
+      }));
+
+      setPopularBooks(popularBooksWithLinks);
 
     } catch (error) {
       console.error("Error fetching markers:", error);
@@ -135,7 +143,7 @@ const MapPage = () => {
                   {popularBooks.length > 0 ? (
                     popularBooks.slice(0, 10).map((book, index) => (
                       <ListGroup.Item key={index} style={{textAlign: 'left'}}>
-                        {index + 1}. <strong>{book.title}</strong> by {book.author} ({book.reviewcount} reviews)
+                        {index + 1}. <strong><a href={book.link} target="_blank">{book.title}</a></strong> by {book.author} ({book.reviewcount} reviews)
                       </ListGroup.Item>
                     ))
                   ) : (
