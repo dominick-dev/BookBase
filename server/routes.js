@@ -252,7 +252,8 @@ const polarizingBooks = async (req, res) => {
         FROM book b
         LEFT JOIN allCounts ON b.isbn = allCounts.isbn
         WHERE highScoreCount > midScoreCount and lowScoreCount > midScoreCount
-        ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC;
+        ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC
+        LIMIT 500;
       `);
     console.log("polarizing books fetched: ", result.rows.slice(0, 1000));
     return res.status(200).json(result.rows.slice(0, 1000));
@@ -415,7 +416,7 @@ const topReviewerFavorites = async(req, res) => {
       SELECT *
       FROM top_reviewer_books
       ORDER BY top_reviewer_count DESC, avg_rating
-      LIMIT 30;`,
+      LIMIT 100;`,
      [threshold, genre]);
     console.log("top reviewer favorites fetched: ", response.rows);
     return res.status(200).json(response.rows);
@@ -477,7 +478,9 @@ const hiddenGems = async (req, res) => {
         rs.review_count
     FROM review_summary rs LEFT JOIN book b ON b.isbn = rs.isbn
     WHERE b.author IS NOT NULL AND avg_review >= $2
-    ORDER BY b.avg_review DESC, rs. review_count DESC;`,
+    ORDER BY b.avg_review DESC, rs. review_count DESC
+    LIMIT 500;
+    `,
     [maxReviews, minRating]);
     console.log("hidden gems fetched: ", result.rows);
     return res.status(200).json(result.rows);
