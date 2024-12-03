@@ -10,7 +10,7 @@ import { EffectCoverflow, Navigation, Mousewheel } from "swiper/modules";
 import { Box } from "@mui/material";
 
 const BookCarousel = ({ books }) => {
-  console.log("HomePage component is rendering");
+  // console.log("HomePage component is rendering");
 
   if (!books || books.length === 0) {
     return (

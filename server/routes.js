@@ -21,7 +21,7 @@ connection.connect((err) => err && console.log(err));
 // routes...
 // Route 1: Use to test connection to PostgreSQL db
 const testDatabaseConnection = async (req, res) => {
-  console.log("test database connection route hit");
+  // console.log("test database connection route hit");
   try {
     const result = await connection.query("SELECT 1");
     return res.status(200).json({
@@ -36,9 +36,9 @@ const testDatabaseConnection = async (req, res) => {
 
 // Route 2: GET /search?author=&title=&genre=&isbn=
 const searchBooks = async (req, res) => {
-  console.log("searching for books");
-  console.log("query parameters: ", req.query);
-  console.log("building query");
+  // console.log("searching for books");
+  // console.log("query parameters: ", req.query);
+  // console.log("building query");
 
   const values = [];
   let limitInt = null;
@@ -50,35 +50,35 @@ const searchBooks = async (req, res) => {
   // Check for each parameter in the parsed query
   if (queryParams.has('author') && queryParams.get('author') !== '') {
     const author = queryParams.get('author');
-    console.log("author: ", author);
+    // console.log("author: ", author);
     values.push(author);
     queryConditions.push(`author = $${values.length}`);
-    console.log("queryConditions: ", queryConditions);
+    // console.log("queryConditions: ", queryConditions);
   }
   if (queryParams.has('title') && queryParams.get('title') !== '') {
     const title = queryParams.get('title');
-    console.log("title: ", title);
+    // console.log("title: ", title);
     values.push(title);
     queryConditions.push(`title = $${values.length}`);
-    console.log("queryConditions: ", queryConditions);
+    // console.log("queryConditions: ", queryConditions);
   }
   if (queryParams.has('genre') && queryParams.get('genre') !== '') {
     const genre = queryParams.get('genre');
-    console.log("genre: ", genre);
+    // console.log("genre: ", genre);
     values.push(genre);
     queryConditions.push(`genre = $${values.length}`);
-    console.log("queryConditions: ", queryConditions);
+    // console.log("queryConditions: ", queryConditions);
   }
   if (queryParams.has('isbn') && queryParams.get('isbn') !== '') {
     const isbn = queryParams.get('isbn');
-    console.log("isbn: ", isbn);
+    // console.log("isbn: ", isbn);
     values.push(isbn);
     queryConditions.push(`isbn = $${values.length}`);
-    console.log("queryConditions: ", queryConditions);
+    // console.log("queryConditions: ", queryConditions);
   }
   if (queryParams.has('limit') && queryParams.get('limit') !== '') {
     const limit = queryParams.get('limit');
-    console.log("limit: ", limit);
+    // console.log("limit: ", limit);
     limitInt = parseInt(limit, 10);
   }
   // set fetch limit to 10 if not given
@@ -97,10 +97,10 @@ const searchBooks = async (req, res) => {
 
   console.log("query: ", query);
 
-  console.log("executing query");
+  // console.log("executing query");
   try {
     const result = await connection.query(query, values);
-    console.log("query result of length: ", result.rows.length, "returned");
+    // console.log("query result of length: ", result.rows.length, "returned");
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing query:", err);
@@ -112,9 +112,9 @@ const searchBooks = async (req, res) => {
 
 // Route 3: GET /random
 const random = async (req, res) => {
-  console.log("random route hit");
+  // console.log("random route hit");
   try {
-    console.log("fetching random book");
+    // console.log("fetching random book");
     const result = await connection.query(`
         SELECT *
         FROM book
@@ -122,7 +122,7 @@ const random = async (req, res) => {
         ORDER BY RANDOM()
         LIMIT 1
       `);
-    console.log("random book fetched: ", result.rows[0]);
+    // console.log("random book fetched: ", result.rows[0]);
     return res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error("Error fetching random book", err);
@@ -132,7 +132,7 @@ const random = async (req, res) => {
 
 // Route 4: GET /popular-books-by-location
 const popularBooksByLocation = async (req, res) => {
-  console.log("popular books by location route hit");
+  // console.log("popular books by location route hit");
   const { latitude, longitude } = req.query;
 
   const lat = parseFloat(latitude);
@@ -205,7 +205,7 @@ const popularBooksByLocation = async (req, res) => {
       `,
       [lat, long]
     );
-    console.log("popular books by location fetched: ", result.rows);
+    // console.log("popular books by location fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing popular books by location query", err);
@@ -215,9 +215,9 @@ const popularBooksByLocation = async (req, res) => {
 
 // get polarizing books
 const polarizingBooks = async (req, res) => {
-  console.log("polarizing books route hit");
+  // console.log("polarizing books route hit");
   try {
-    console.log("fetching polarizing books");
+    // console.log("fetching polarizing books");
     const result = await connection.query(`
         WITH highScoreCounts AS (
           SELECT isbn, COUNT(*) AS count
@@ -254,7 +254,7 @@ const polarizingBooks = async (req, res) => {
         WHERE highScoreCount > midScoreCount and lowScoreCount > midScoreCount
         ORDER BY lowScoreCount + midScoreCount + highScoreCount DESC;
       `);
-    console.log("polarizing books fetched: ", result.rows.slice(0, 1000));
+    // console.log("polarizing books fetched: ", result.rows.slice(0, 1000));
     return res.status(200).json(result.rows.slice(0, 1000));
   } catch (err) {
     console.error("Error fetching polarizing books", err);
@@ -264,9 +264,9 @@ const polarizingBooks = async (req, res) => {
 
 // get books by age group
 const byAgeGroup = async (req, res) => {
-  console.log("books by age group route hit");
+  // console.log("books by age group route hit");
   try {
-      console.log("fetching books by age group"); 
+      // console.log("fetching books by age group"); 
       const {birthYear} = req.params;
       const birthYearInt = parseInt(birthYear); // attempt to parse
 
@@ -296,7 +296,7 @@ const byAgeGroup = async (req, res) => {
         ageGroup = "65+";
       }
 
-      //console.log(ageGroup);
+      // console.log(ageGroup);
 
       const result = await connection.query(`
         WITH age_groups AS (
@@ -346,7 +346,7 @@ const byAgeGroup = async (req, res) => {
         WHERE rank BETWEEN 1 AND 5 AND age_group = $1
         ORDER BY age_group;
       `, [ageGroup]);
-    console.log("books by age group fetched: ", result.rows);
+    // console.log("books by age group fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by age group", err);
@@ -356,7 +356,7 @@ const byAgeGroup = async (req, res) => {
 
 // get books by location
 const byLocation = async (req, res) => {
-  console.log("books by location route hit");
+  // console.log("books by location route hit");
   try {
 
       const {column, placeName} = req.params;
@@ -376,7 +376,7 @@ const byLocation = async (req, res) => {
           GROUP BY b.isbn, b.title, b.author
           ORDER BY reviewCount DESC;
       `, [`%${placeName}%`]);
-    console.log("books by location fetched: ", result.rows);
+    // console.log("books by location fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by location", err);
@@ -386,7 +386,7 @@ const byLocation = async (req, res) => {
 
 // Route XX: GET /top-reviewer-favorites/:genre?threshold
 const topReviewerFavorites = async(req, res) => {
-  console.log("top reviewer favorites route hit");
+  // console.log("top reviewer favorites route hit");
   const threshold = req.params.threshold ?? 10;
   const genre = req.params.genre;
 
@@ -417,7 +417,7 @@ const topReviewerFavorites = async(req, res) => {
       ORDER BY top_reviewer_count DESC, avg_rating
       LIMIT 30;`,
      [threshold, genre]);
-    console.log("top reviewer favorites fetched: ", response.rows);
+    // console.log("top reviewer favorites fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
     console.log(err)
@@ -427,7 +427,7 @@ const topReviewerFavorites = async(req, res) => {
 
 // Route XX: /magnum-opus
 const magnumOpus = async (req, res) => {
-  console.log("magnum opus route hit");
+  // console.log("magnum opus route hit");
   const author = req.params.author;
 
   if(!author){
@@ -443,7 +443,7 @@ const magnumOpus = async (req, res) => {
     ORDER BY levenshtein(b.author, $1), avg_review DESC
     LIMIT 5;
     `, [author]);
-    console.log("magnum opus fetched: ", response.rows);
+    // console.log("magnum opus fetched: ", response.rows);
     return res.status(200).json(response.rows);
   } catch (err) {
     console.error("Error executing magnum opus query");
@@ -454,7 +454,7 @@ const magnumOpus = async (req, res) => {
 
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
-  console.log("hidden gems route hit");
+  // console.log("hidden gems route hit");
   const minRating = parseFloat(req.query.minRating ) || 9.0;
   const maxReviews = parseInt(req.query.maxReview) || 8;
 
@@ -479,7 +479,7 @@ const hiddenGems = async (req, res) => {
     WHERE b.author IS NOT NULL AND avg_review >= $2
     ORDER BY b.avg_review DESC, rs. review_count DESC;`,
     [maxReviews, minRating]);
-    console.log("hidden gems fetched: ", result.rows);
+    // console.log("hidden gems fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing hidden gems query")
@@ -490,7 +490,7 @@ const hiddenGems = async (req, res) => {
 
 // Route XX: /helpful-users
 const helpfulUsers = async (req, res) => {
-  console.log("helpful users route hit");
+  // console.log("helpful users route hit");
   const minNumVotes = parseInt(req.query.minNumVotes, 10 ) || 5;
   const maxUsers = parseInt(req.query.maxUsers, 10) || 10;
 
@@ -543,7 +543,7 @@ const helpfulUsers = async (req, res) => {
       `,
       [minNumVotes, maxUsers]
     );
-    console.log("helpful users fetched: ", result.rows);
+    // console.log("helpful users fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing helpful-users query")
@@ -554,7 +554,7 @@ const helpfulUsers = async (req, res) => {
 
 // Route XX: /author-stats
 const authorStats = async (req, res) => {
-  console.log("author stats route hit");
+  // console.log("author stats route hit");
   // Optional author name param
   const authorName = req.query.authorName ? req.query.authorName.toString() : null;
   const numAuthors = parseInt(req.query.numAuthors, 10) || 10;
@@ -588,7 +588,7 @@ const authorStats = async (req, res) => {
       `,
       [authorName, numAuthors]
     );
-    console.log("author stats fetched: ", result.rows);
+    // console.log("author stats fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing author-stats query", err)
@@ -599,7 +599,7 @@ const authorStats = async (req, res) => {
 
 // Route XX: /genre-stats
 const genreStats = async (req, res) => {
-  console.log("genre stats route hit");
+  // console.log("genre stats route hit");
   // Optional author name param
   const genreName = req.query.genreName ? req.query.genreName.toString() : null;
   const numGenres = parseInt(req.query.numGenres, 10) || 10;
@@ -638,7 +638,7 @@ const genreStats = async (req, res) => {
       `,
       [genreName, numGenres]
     );
-    console.log("genre stats fetched: ", result.rows);
+    // console.log("genre stats fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing genre-stats query", err)
@@ -648,7 +648,7 @@ const genreStats = async (req, res) => {
 }
 
 const get20Books = async (req, res) => {
-  console.log("get 20 books route hit");
+  // console.log("get 20 books route hit");
   try {
     const result = await connection.query(
       `
@@ -658,7 +658,7 @@ const get20Books = async (req, res) => {
       ORDER BY RANDOM()
       LIMIT 20
       `);
-    console.log("20 books fetched: ", result.rows);
+    // console.log("20 books fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing getAllBooks:", err.message, err.stack);
@@ -668,15 +668,15 @@ const get20Books = async (req, res) => {
 
 // get books by isbn
 const bookByISBN = async (req, res) => {
-  console.log("book by isbn route hit");
+  // console.log("book by isbn route hit");
 
   // get the isbn from the request params
   try {
       const {isbn} = req.params;
       const query = `SELECT * FROM book WHERE isbn = $1 LIMIT 1`;
-      console.log("query: ", query);
+      // console.log("query: ", query);
       const result = await connection.query(query, [isbn]); 
-      console.log("result.rows: ", result.rows);
+      // console.log("result.rows: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching book by ISBN", err);
@@ -686,13 +686,13 @@ const bookByISBN = async (req, res) => {
 
 // get reviews by isbn
 const reviewsByISBN = async (req, res) => {
-  console.log("reviews by isbn route hit");
+  // console.log("reviews by isbn route hit");
   // get the isbn from the request params
   const { isbn } = req.params;
   // order by helpfulness if requested, assume true if not given
   const orderByHelpfulness = req.query.orderByHelpfulness === 'true' || true;
-  console.log("isbn: ", isbn);
-  console.log("orderByHelpfulness: ", orderByHelpfulness);
+  // console.log("isbn: ", isbn);
+  // console.log("orderByHelpfulness: ", orderByHelpfulness);
 
   // Define allowed fields
   const allowedFields = ["isbn"];
@@ -705,7 +705,7 @@ const reviewsByISBN = async (req, res) => {
   // Set limit to 10 if not given
   const limit = req.query.limit;
   const resLimit = limit ? parseInt(limit, 10) : 10;
-  console.log("resLimit: ", resLimit);
+  // console.log("resLimit: ", resLimit);
 
   // Build the query
   let queryText = `SELECT * FROM review WHERE isbn = $1`;
@@ -730,7 +730,7 @@ const reviewsByISBN = async (req, res) => {
   // Execute the query
   try {
     const result = await connection.query(queryText, values);
-    console.log("reviews by isbn fetched: ", result.rows);
+    // console.log("reviews by isbn fetched: ", result.rows);
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error executing reviews handler query", err);
