@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
-import { Container, Dropdown, DropdownButton } from "react-bootstrap";
+import { Container, Dropdown, DropdownButton, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import NavBar from "../components/NavBar";
+import '../styles/MapPage.css';
 
 
 const MapPage = () => {
@@ -10,6 +12,7 @@ const MapPage = () => {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [markers, setMarkers] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(1);
+  const [popularBooks, setPopularBooks] = useState([]);
 
 
   useEffect(() => {
@@ -57,63 +60,94 @@ const MapPage = () => {
       } else {
         console.log("No markers found");
       }
+
+      // get most popular books in the given country
+      const popularBooksResponse = await fetch(`http://localhost:8080/by-location/country/${countryName}`);
+      const popularBooksData = await popularBooksResponse.json();
+      console.log('Top 10 books data:', popularBooksData);
+      setPopularBooks(popularBooksData)
+
     } catch (error) {
       console.error("Error fetching markers:", error);
     }
 
-
   };
 
   return (
-    <Container>
-      <DropdownButton
-        id="country-dropdown"
-        title={selectedCountry || "Select country"}
-        onSelect={handleSelect}
-        className="my-5"
-      >
-        <div style={dropdownMenuStyle}>
-          {countries && countries.length > 0 ? (  // if countries retrieved
-            countries.map((item, index) => (  // display them in dropdpwn
-              <Dropdown.Item key={index} eventKey={item.country}>
-                {item.country}
-              </Dropdown.Item>
-            ))
-          ) : (
-            <Dropdown.Item>Loading countries...</Dropdown.Item>
-          )}
-        </div>
-      </DropdownButton>
+    <>
+    <NavBar/>
+      <div className="map-page-body">
+        <Container>
+          <DropdownButton
+            id="country-dropdown"
+            title={selectedCountry || "Select country"}
+            onSelect={handleSelect}
+            className="my-5"
+          >
+            <div style={dropdownMenuStyle}>
+              {countries && countries.length > 0 ? (  // if countries retrieved
+                countries.map((item, index) => (  // display them in dropdpwn
+                  <Dropdown.Item key={index} eventKey={item.country}>
+                    {item.country}
+                  </Dropdown.Item>
+                ))
+              ) : (
+                <Dropdown.Item>Loading countries...</Dropdown.Item>
+              )}
+            </div>
+          </DropdownButton>
 
-      <MapContainer
-        key={`${selectedCountry}-${zoomLevel}`}
-        center={[0, 0]}
-        zoom={zoomLevel}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+          <Row>
+            <Col md={6}>
+              <MapContainer
+                key={`${selectedCountry}-${zoomLevel}`}
+                center={[0, 0]}
+                zoom={zoomLevel}
+                style={{height: "60vh", width: "100%"}}
+              >
+                <TileLayer
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
 
-        <MarkerClusterGroup>
-          {markers.map(marker =>
-            <Marker position={marker.geocode}>
-              <Popup>
-                <div>
-                  User #{marker.userId} in {marker.city}, {marker.state}<br />
-                  <br />
-                  <a href={marker.link} target="_blank">{marker.title}</a><br />
-                  By {marker.author}<br />
-                  <br />
-                  Score: {marker.score}/10
-                </div>
-              </Popup>
-            </Marker>
-          )}
-        </MarkerClusterGroup>
-
-      </MapContainer>
-    </Container>
+                <MarkerClusterGroup>
+                  {markers.map(marker =>
+                    <Marker position={marker.geocode}>
+                      <Popup>
+                        <div>
+                          User #{marker.userId} in {marker.city}, {marker.state}<br />
+                          <br />
+                          <a href={marker.link} target="_blank">{marker.title}</a><br />
+                          By {marker.author}<br />
+                          <br />
+                          Score: {marker.score}/10
+                        </div>
+                      </Popup>
+                    </Marker>
+                  )}
+                </MarkerClusterGroup>
+              </MapContainer>
+            </Col>
+            <Col md={6}>
+              <Container>
+                <h3>Top 10 most-reviewed books</h3>
+                <ListGroup>
+                  {popularBooks.length > 0 ? (
+                    popularBooks.slice(0, 10).map((book, index) => (
+                      <ListGroup.Item key={index} style={{textAlign: 'left'}}>
+                        {index + 1}. <strong>{book.title}</strong> by {book.author} ({book.reviewcount} reviews)
+                      </ListGroup.Item>
+                    ))
+                  ) : (
+                    <div></div> // return empty div
+                  )}
+                </ListGroup>
+              </Container>
+            </Col>
+          </Row>
+        </Container>
+      </div>
+    </>
   );
 };
 
