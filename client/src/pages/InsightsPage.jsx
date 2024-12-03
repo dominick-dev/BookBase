@@ -255,3 +255,9 @@ const InsightsPage = () => {
 };
 
 export default InsightsPage;
+
+
+// todo
+// batch processing
+// figure out why top reviewer favorites is not working
+// figure out why books not rendering in carousel (says no title available)
