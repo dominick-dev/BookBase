@@ -800,6 +800,23 @@ const reviewsWithCoordinates = async (req, res) => {
   }
 }
 
+// route to batch fetch books by ISBNs
+const batchBookFromISBNs = async (req, res) => {
+  try {
+    const { isbns } = req.body;
+    if (!isbns || !Array.isArray(isbns) || isbns.length === 0) {
+      return res.status(400).json({ message: "Invalid request" });
+    }
+
+    const query = "SELECT * FROM book WHERE isbn = ANY($1::varchar[])";
+    const result = await connection.query(query, [isbns]);
+    res.status(200).json({ books: result.rows });
+  } catch (err) {
+    console.error("Error fetching books in batch: ", err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 // export routes
 module.exports = {
   testDatabaseConnection,
@@ -820,5 +837,6 @@ module.exports = {
   searchBooks,
   bookByISBN,
   countriesList,
-  reviewsWithCoordinates
+  reviewsWithCoordinates,
+  batchBookFromISBNs
 };

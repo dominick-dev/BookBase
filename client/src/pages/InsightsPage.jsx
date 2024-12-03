@@ -49,11 +49,8 @@ const InsightsPage = () => {
   // helper function to fetch book details
   const fetchBookDetails = async (isbns) => {
     try {
-      const bookPromises = isbns.map((isbn) =>
-        axios.get(`http://localhost:8080/book/${isbn}`).then((res) => res.data[0])
-      );
-      const books = await Promise.all(bookPromises);
-      return books;
+      const response = await axios.post("http://localhost:8080/books/batch", { isbns });
+      return response.data.books;
     } catch (error) {
       console.error("Error fetching book details: ", error);
       throw error;
@@ -74,11 +71,15 @@ const InsightsPage = () => {
           axios.get("http://localhost:8080/polarizing-books"),
         ]);
 
+        console.log("finished getting hidden gems and polarizing books");
+
         // extract ISBNs from the response data
         const hiddenGemsISBNs = hiddenGemsRes.data.map((book) => book.isbn);
         const polarizingBooksISBNs = polarizingBooksRes.data.map(
           (book) => book.isbn
         );
+
+        console.log("finished extracting isbns")
 
         // fetch full book details
         const [hiddenGemsBooks, polarizingBooksBooks] = await Promise.all([
@@ -192,7 +193,7 @@ const InsightsPage = () => {
         </Box>
 
         {/* Polarizing Books */}
-        <Box sx={{ marginBottom: "40px" }}>
+        {/* <Box sx={{ marginBottom: "40px" }}>
           <Typography variant="h4" gutterBottom>
             Polarizing Books
           </Typography>
@@ -211,10 +212,10 @@ const InsightsPage = () => {
               No polarizing books found.
             </Typography>
           )}
-        </Box>
+        </Box> */}
 
         {/* Top Reviewer Favorites */}
-        <Box>
+        {/* <Box>
           <Typography variant="h4" gutterBottom>
             Top Reviewer Favorites
           </Typography>
@@ -246,7 +247,7 @@ const InsightsPage = () => {
               No top reviewer favorites found for this genre.
             </Typography>
           )}
-        </Box>
+        </Box> */}
       </Box>
     </>
   );
