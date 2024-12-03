@@ -7,7 +7,7 @@ import NavBar from "../components/NavBar";
 import '../styles/BookCard.css';
 
 const BookPage = () => {
-  console.log("BookPage component is rendering");
+  // console.log("BookPage component is rendering");
   
   const { isbn } = useParams();
   const [bookData, setBookData] = useState(null);
@@ -17,19 +17,19 @@ const BookPage = () => {
 
   useEffect(() => {
     const fetchBookData = async () => {
-      console.log(`Fetching book data for ISBN: ${isbn}`);
+      // console.log(`Fetching book data for ISBN: ${isbn}`);
       try {
         const bookResponse = await fetch(`http://localhost:8080/book/${isbn}`);
         if (!bookResponse.ok) {
           setBookData(null);
-          console.log("Error fetching book data", bookResponse.statusText);
+          // console.log("Error fetching book data", bookResponse.statusText);
           return;
         }
         const book = await bookResponse.json();
         setBookData(book);
-        console.log("Book data fetched successfully");
+        // console.log("Book data fetched successfully");
       } catch (error) {
-        console.log("Error fetching book data", error);
+        // console.log("Error fetching book data", error);
         setBookData(null);
       } finally {
         setLoading(false);
@@ -37,7 +37,7 @@ const BookPage = () => {
     };
 
     const fetchReviews = async () => {
-      console.log(`Fetching reviews for ISBN: ${isbn}`);
+      // console.log(`Fetching reviews for ISBN: ${isbn}`);
       try {
         const reviewsResponse = await fetch(`http://localhost:8080/reviews/${isbn}`);
         if (!reviewsResponse.ok) {
@@ -47,7 +47,7 @@ const BookPage = () => {
         }
         const reviewsData = await reviewsResponse.json();
         setReviews(reviewsData);
-        console.log("Reviews fetched successfully");
+        // console.log("Reviews fetched successfully");
       } catch (error) {
         console.log("Error fetching reviews", error);
         setReviews([]);

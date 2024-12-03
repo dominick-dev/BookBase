@@ -120,24 +120,33 @@ const ProfilePage = () => {
   return (
     <>
       <Navbar />
-      <Typography variant="h4" align="center" gutterBottom>
-        Your Want to Read List
-      </Typography>
-      {books.length > 0 ? (
-        <BookCarousel books={books} />
-      ) : (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          minHeight="300px"
-        >
-          <Typography variant="h6" align="center">
-            You have no books in your Want to Read list. Check out the other
-            pages and add some!
-          </Typography>
-        </Box>
-      )}
+      <Box
+        sx={{
+          backgroundColor: "#6b4f4f",
+          minHeight: "100vh",
+          padding: 12,
+          color: "white",
+        }}
+      >
+        <Typography variant="h4" align="center" gutterBottom>
+          Your Want to Read List
+        </Typography>
+        {books.length > 0 ? (
+          <BookCarousel books={books} />
+        ) : (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            minHeight="300px"
+          >
+            <Typography variant="h6" align="center">
+              You have no books in your Want to Read list. Check out the other
+              pages and add some!
+            </Typography>
+          </Box>
+        )}
+      </Box>
     </>
   );
 };

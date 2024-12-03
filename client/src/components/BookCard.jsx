@@ -8,7 +8,7 @@ import AddToWantToReadBtn from './AddToWantToReadBtn';
 
 // book card component
 const BookCard = ({ book }) => {
-  console.log("BookCard component is rendering with book:", book);
+  // console.log("BookCard component is rendering with book:", book);
   const navigate = useNavigate();
 
   if (typeof book !== 'object' || book === null) {
@@ -19,7 +19,7 @@ const BookCard = ({ book }) => {
   const { title, author, averageRating, image, isbn } = getBookDetails(book);
 
   const handleCardClick = () => {
-    console.log("Navigating to book with ISBN:", isbn);
+    // console.log("Navigating to book with ISBN:", isbn);
     if (isbn && typeof isbn === 'string') {
       navigate(`/book/${isbn}`);
     } else {

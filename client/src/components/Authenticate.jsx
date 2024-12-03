@@ -9,14 +9,14 @@ const Authenticate = () => {
   // useEffect hook to run the code inside the callback function when the component mounts
   useEffect(() => {
     // get the token from the URL query
-    console.log("Authenticate component mounted");
+    // console.log("Authenticate component mounted");
     const query = new URLSearchParams(location.search);
     const token = query.get("token");
-    console.log("Token from URL query:", token);
+    // console.log("Token from URL query:", token);
 
     // if token is present, save it to local storage
     if (token) {
-      console.log("Token received:", token);
+      // console.log("Token received:", token);
       // save the token to local storage
       localStorage.setItem("token", token);
       // remove the token from the URL

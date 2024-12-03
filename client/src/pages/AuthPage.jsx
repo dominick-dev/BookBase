@@ -14,7 +14,7 @@ const AuthPage = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      console.log("User already logged in, redirecting to home page");
+      // console.log("User already logged in, redirecting to home page");
       alert("User already logged in, redirecting to home page");
       window.location.href = "/";
     }
