@@ -526,19 +526,14 @@ const helpfulUsers = async (req, res) => {
 
   // Validation on the parameters if they're given
   if (minNumVotes < 0) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "Invalid minNumVotes provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid minNumVotes provided. Please provide a positive integer.",
+    });
   }
   if (maxUsers < 0) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid maxUsers provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid maxUsers provided. Please provide a positive integer.",
+    });
   }
 
   try {
@@ -604,12 +599,9 @@ const authorStats = async (req, res) => {
 
   // data validation
   if (isNaN(numAuthors) || numAuthors < 0) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "Invalid numAuthors provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid numAuthors provided. Please provide a positive integer.",
+    });
   }
 
   try {
@@ -656,11 +648,9 @@ const genreStats = async (req, res) => {
 
   // data validation
   if (isNaN(numGenres) || numGenres < 0) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid numGenres provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid numGenres provided. Please provide a positive integer.",
+    });
   }
 
   try {
