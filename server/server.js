@@ -178,7 +178,7 @@ app.get("/polarizing-books", routes.polarizingBooks);
 app.get("/hidden-gems", routes.hiddenGems);
 app.get("/top-reviewer-favorites/:genre", routes.topReviewerFavorites);
 app.get("/magnum-opus/:author", routes.magnumOpus); // to be added to interesting page
-app.get("/by-age-group/:age", routes.byAgeGroup); // to be added to interesting page
+app.get("/by-age-group/:ageGroup", routes.byAgeGroup); // to be added to interesting page
 
 // used in HomePage
 app.get("/20books", routes.get20Books);
@@ -201,7 +201,7 @@ app.get("/reviews/:isbn", (req, res) => {
 });
 
 // used in InsightsPage
-app.post("/books/batch", routes.batchBookFromISBNs)
+app.post("/books/batch", routes.batchBookFromISBNs);
 
 // used in SearchPage and BookPage
 app.get("/search", (req, res) => {
@@ -211,7 +211,9 @@ app.get("/search", (req, res) => {
 
 // Start the server
 app.listen(config.server_port, () => {
-  console.log(`Server running at http://${config.server_host}:${config.server_port}/`);
+  console.log(
+    `Server running at http://${config.server_host}:${config.server_port}/`
+  );
 });
 
 module.exports = app;

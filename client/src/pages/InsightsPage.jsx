@@ -20,6 +20,7 @@ import "../styles/InsightsPage.css";
 import stars from "../assets/stars.png";
 import scale from "../assets/scale.png";
 import diamond from "../assets/diamond.png";
+import fam from "../assets/fam.png";
 
 const genreOptions = [
   "Fiction",
@@ -40,31 +41,40 @@ const genreOptions = [
   "Other",
 ];
 
+const ageOptions = ["Under 18", "18-30", "31-50", "51-65", "65+"];
+
 const InsightsPage = () => {
-  // State variables for modals
+  // state variables for modals
   const [openHiddenGemsModal, setOpenHiddenGemsModal] = useState(false);
   const [openPolarizingBooksModal, setOpenPolarizingBooksModal] =
     useState(false);
   const [openTopReviewerFavoritesModal, setOpenTopReviewerFavoritesModal] =
     useState(false);
+  const [openAgeBooksModal, setOpenAgeBooksModal] = useState(false);
 
-  // State variables for Hidden Gems
+  // state variables for Hidden Gems
   const [hiddenGems, setHiddenGems] = useState([]);
   const [hiddenGemsLoading, setHiddenGemsLoading] = useState(false);
   const [hiddenGemsError, setHiddenGemsError] = useState(null);
 
-  // State variables for Polarizing Books
+  // state variables for Polarizing Books
   const [polarizingBooks, setPolarizingBooks] = useState([]);
   const [polarizingBooksLoading, setPolarizingBooksLoading] = useState(false);
   const [polarizingBooksError, setPolarizingBooksError] = useState(null);
 
-  // State variables for Top Reviewer Favorites
+  // state variables for Top Reviewer Favorites
   const [topReviewerFavorites, setTopReviewerFavorites] = useState([]);
   const [topReviewerFavoritesLoading, setTopReviewerFavoritesLoading] =
     useState(false);
   const [topReviewerFavoritesError, setTopReviewerFavoritesError] =
     useState(null);
   const [selectedGenre, setSelectedGenre] = useState("Fiction");
+
+  // state variables for Age Books
+  const [ageBooks, setAgeBooks] = useState([]);
+  const [ageBooksLoading, setAgeBooksLoading] = useState(false);
+  const [ageBooksError, setAgeBooksError] = useState(null);
+  const [selectedAge, setSelectedAge] = useState("Under 18");
 
   // Helper function to fetch book details
   const fetchBookDetails = async (isbns) => {
@@ -102,12 +112,24 @@ const InsightsPage = () => {
     setTopReviewerFavoritesError(null);
   };
 
-  // Handle genre change
+  const handleOpenAgeBooks = () => setOpenAgeBooksModal(true);
+  const handleCloseAgeBooks = () => {
+    setOpenAgeBooksModal(false);
+    setAgeBooks([]);
+    setAgeBooksError(null);
+  };
+
+  // handle genre change
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
   };
 
-  // Fetch hidden gems when modal opens
+  // handle age change
+  const handleAgeChange = (event) => {
+    setSelectedAge(event.target.value);
+  };
+
+  // fetch hidden gems when modal opens
   useEffect(() => {
     const fetchHiddenGems = async () => {
       if (!openHiddenGemsModal) return;
@@ -116,16 +138,16 @@ const InsightsPage = () => {
         setHiddenGemsLoading(true);
         setHiddenGemsError(null);
 
-        // Fetch hidden gems data
+        // fetch hidden gems data
         const response = await axios.get("http://localhost:8080/hidden-gems");
 
-        // Extract ISBNs
+        // extract ISBNs
         const hiddenGemsISBNs = response.data.map((book) => book.isbn);
 
-        // Fetch full book details using batch fetching
+        // fetch full book details using batch fetching
         const hiddenGemsBooks = await fetchBookDetails(hiddenGemsISBNs);
 
-        // Update state variables
+        // update state variables
         setHiddenGems(hiddenGemsBooks);
       } catch (error) {
         console.error("Error fetching hidden gems: ", error);
@@ -138,7 +160,7 @@ const InsightsPage = () => {
     fetchHiddenGems();
   }, [openHiddenGemsModal]);
 
-  // Fetch polarizing books when modal opens
+  // fetch polarizing books when modal opens
   useEffect(() => {
     const fetchPolarizingBooks = async () => {
       if (!openPolarizingBooksModal) return;
@@ -147,20 +169,20 @@ const InsightsPage = () => {
         setPolarizingBooksLoading(true);
         setPolarizingBooksError(null);
 
-        // Fetch polarizing books data
+        // fetch polarizing books data
         const response = await axios.get(
           "http://localhost:8080/polarizing-books"
         );
 
-        // Extract ISBNs
+        // extract ISBNs
         const polarizingBooksISBNs = response.data.map((book) => book.isbn);
 
-        // Fetch full book details using batch fetching
+        // fetch full book details using batch fetching
         const polarizingBooksBooks = await fetchBookDetails(
           polarizingBooksISBNs
         );
 
-        // Update state variables
+        // update state variables
         setPolarizingBooks(polarizingBooksBooks);
       } catch (error) {
         console.error("Error fetching polarizing books: ", error);
@@ -175,7 +197,7 @@ const InsightsPage = () => {
     fetchPolarizingBooks();
   }, [openPolarizingBooksModal]);
 
-  // Fetch top reviewer favorites when modal opens or selectedGenre changes
+  // fetch top reviewer favorites when modal opens or selectedGenre changes
   useEffect(() => {
     const fetchTopReviewerFavorites = async () => {
       if (!openTopReviewerFavoritesModal) return;
@@ -184,22 +206,22 @@ const InsightsPage = () => {
         setTopReviewerFavoritesLoading(true);
         setTopReviewerFavoritesError(null);
 
-        // Fetch top reviewer favorite data
+        // fetch top reviewer favorite data
         const response = await axios.get(
           `http://localhost:8080/top-reviewer-favorites/${selectedGenre}`
         );
 
-        // Extract ISBNs
+        // extract ISBNs
         const topReviewerFavoritesISBNs = response.data.map(
           (book) => book.isbn
         );
 
-        // Fetch full book details using batch fetching
+        // fetch full book details using batch fetching
         const topReviewerFavoritesBooks = await fetchBookDetails(
           topReviewerFavoritesISBNs
         );
 
-        // Update state variables
+        // update state variables
         setTopReviewerFavorites(topReviewerFavoritesBooks);
       } catch (error) {
         console.error("Error fetching top reviewer favorites: ", error);
@@ -213,6 +235,38 @@ const InsightsPage = () => {
 
     fetchTopReviewerFavorites();
   }, [openTopReviewerFavoritesModal, selectedGenre]);
+
+  // fetch age books when modal opens or selectedAge changes
+  useEffect(() => {
+    const fetchAgeBooks = async () => {
+      if (!openAgeBooksModal) return;
+
+      try {
+        setAgeBooksLoading(true);
+        setAgeBooksError(null);
+
+        // fetch age books data
+        const response = await axios.get(
+          `http://localhost:8080/by-age-group/${selectedAge}`
+        );
+
+        // extract ISBNs
+        const ageBooksISBNs = response.data.map((book) => book.isbn);
+
+        // Fetch full book details using batch fetching
+        const ageBooksBooks = await fetchBookDetails(ageBooksISBNs);
+
+        // Update state variables
+        setAgeBooks(ageBooksBooks);
+      } catch (error) {
+        console.error("Error fetching age books: ", error);
+        setAgeBooksError("Error fetching age books: " + error.message);
+      } finally {
+        setAgeBooksLoading(false);
+      }
+    };
+    fetchAgeBooks();
+  }, [openAgeBooksModal, selectedAge]);
 
   return (
     <>
@@ -254,6 +308,7 @@ const InsightsPage = () => {
       </Box>
       <div className="insights-page">
         <div className="insights-container">
+          {/* hidden gems button */}
           <Box
             sx={{
               textAlign: "center",
@@ -280,6 +335,7 @@ const InsightsPage = () => {
             />
           </Box>
 
+          {/* polarizing books button */}
           <Box sx={{ textAlign: "center", margin: 2 }}>
             <img
               src={scale}
@@ -301,6 +357,7 @@ const InsightsPage = () => {
             />
           </Box>
 
+          {/* top reviewer favorites button */}
           <Box sx={{ textAlign: "center", margin: 2 }}>
             <img
               src={stars}
@@ -321,9 +378,31 @@ const InsightsPage = () => {
               style={{ width: "50px", marginBottom: "10px" }}
             />
           </Box>
+
+          {/* age book button */}
+          <Box sx={{ textAlign: "center", margin: 2 }}>
+            <img
+              src={fam}
+              alt="Top Books by Age Group"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenAgeBooks}
+              className="insight-button"
+            >
+              View Top Books by Age Group
+            </Button>
+            <img
+              src={fam}
+              alt="Top Books by Age Group"
+              style={{ width: "50px", marginBottom: "10px" }}
+            />
+          </Box>
         </div>
 
-        {/* Hidden Gems Modal */}
+        {/* hidden gems modal */}
         <Dialog
           open={openHiddenGemsModal}
           onClose={handleCloseHiddenGems}
@@ -365,7 +444,7 @@ const InsightsPage = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Polarizing Books Modal */}
+        {/* polarizing books modal */}
         <Dialog
           open={openPolarizingBooksModal}
           onClose={handleClosePolarizingBooks}
@@ -403,7 +482,7 @@ const InsightsPage = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Top Reviewer Favorites Modal */}
+        {/* top reviewer favorites modal */}
         <Dialog
           open={openTopReviewerFavoritesModal}
           onClose={handleCloseTopReviewerFavorites}
@@ -451,6 +530,59 @@ const InsightsPage = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseTopReviewerFavorites} color="primary">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* age book modal */}
+        <Dialog
+          open={openAgeBooksModal}
+          onClose={handleCloseAgeBooks}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Top Books By Age Group</DialogTitle>
+          <DialogContent>
+            <Typography variant="body2" color="textSecondary" gutterBottom>
+              Books that are enjoyed by readers of different age groups.
+            </Typography>
+
+            <FormControl fullWidth sx={{ marginBottom: "20px" }}>
+              <InputLabel id="genre-select-label">Age Range</InputLabel>
+              <Select
+                labelId="genre-select-label"
+                value={selectedAge}
+                onChange={handleAgeChange}
+              >
+                {ageOptions.map((age) => (
+                  <MenuItem key={age} value={age}>
+                    {age}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {ageBooksLoading ? (
+              <Box
+                sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}
+              >
+                <CircularProgress />
+              </Box>
+            ) : ageBooksError ? (
+              <Typography variant="body2" color="error" align="center">
+                {ageBooksError}
+              </Typography>
+            ) : ageBooks.length > 0 ? (
+              <BookCarousel books={ageBooks} />
+            ) : (
+              <Typography variant="body2" align="center">
+                No books found in selected age range.
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseAgeBooks} color="primary">
               Close
             </Button>
           </DialogActions>
