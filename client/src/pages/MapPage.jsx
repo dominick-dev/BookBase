@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
-import { MapContainer, TileLayer, Marker, Popup} from "react-leaflet";
-import { Container, Dropdown, DropdownButton, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import {
+  Container,
+  Dropdown,
+  DropdownButton,
+  Row,
+  Col,
+  ListGroup,
+  ListGroupItem,
+} from "react-bootstrap";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import NavBar from "../components/NavBar";
-import '../styles/MapPage.css';
-
+import "../styles/MapPage.css";
 
 const MapPage = () => {
   const [countries, setCountries] = useState([]);
@@ -13,7 +21,6 @@ const MapPage = () => {
   const [markers, setMarkers] = useState([]);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [popularBooks, setPopularBooks] = useState([]);
-
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -28,24 +35,25 @@ const MapPage = () => {
 
     fetchCountries();
   }, []);
-  
 
   const dropdownMenuStyle = {
-    maxHeight: "400px",  // height of dropdown menu itself
-    overflowY: "auto",  // scroll
+    maxHeight: "400px", // height of dropdown menu itself
+    overflowY: "auto", // scroll
   };
 
   const handleSelect = async (countryName) => {
-    setSelectedCountry(countryName);  // set in the dropdown
+    setSelectedCountry(countryName); // set in the dropdown
 
     try {
       // search database based on country name
-      const reviewResponse = await fetch(`http://localhost:8080/reviewsWithCoordinates/${countryName}`);
+      const reviewResponse = await fetch(
+        `http://localhost:8080/reviewsWithCoordinates/${countryName}`
+      );
       const reviewData = await reviewResponse.json();
       setZoomLevel(1);
 
       if (reviewData.length > 0) {
-        const fetchedMarkers = reviewData.map(item => ({
+        const fetchedMarkers = reviewData.map((item) => ({
           geocode: [item.latitude, item.longitude],
           city: item.city,
           state: item.state,
@@ -53,35 +61,36 @@ const MapPage = () => {
           title: item.title,
           author: item.author,
           score: item.score,
-          link: `http://localhost:3000/book/${item.isbn}`
+          link: `http://localhost:3000/book/${item.isbn}`,
+          isbn: item.isbn,
         }));
 
-        setMarkers(fetchedMarkers);  // set based on query result
+        setMarkers(fetchedMarkers); // set based on query result
       }
-      
+
       // get most popular books in the given country
-      const popularBooksResponse = await fetch(`http://localhost:8080/by-location/country/${countryName}`);
+      const popularBooksResponse = await fetch(
+        `http://localhost:8080/by-location/country/${countryName}`
+      );
       const popularBooksData = await popularBooksResponse.json();
 
-      const popularBooksWithLinks = popularBooksData.map(item => ({
+      const popularBooksWithLinks = popularBooksData.map((item) => ({
         isbn: item.isbn,
         title: item.title,
         author: item.author,
         reviewcount: item.reviewcount,
-        link: `http://localhost:3000/book/${item.isbn}`
+        link: `http://localhost:3000/book/${item.isbn}`,
       }));
 
       setPopularBooks(popularBooksWithLinks);
-
     } catch (error) {
       console.error("Error fetching markers:", error);
     }
-
   };
 
   return (
     <>
-    <NavBar/>
+      <NavBar />
       <div className="map-page-body">
         <Container>
           <DropdownButton
@@ -91,12 +100,17 @@ const MapPage = () => {
             className="my-5"
           >
             <div style={dropdownMenuStyle}>
-              {countries && countries.length > 0 ? (  // if countries retrieved
-                countries.map((item, index) => (  // display them in dropdpwn
-                  <Dropdown.Item key={index} eventKey={item.country}>
-                    {item.country}
-                  </Dropdown.Item>
-                ))
+              {countries && countries.length > 0 ? ( // if countries retrieved
+                countries.map(
+                  (
+                    item,
+                    index // display them in dropdpwn
+                  ) => (
+                    <Dropdown.Item key={index} eventKey={item.country}>
+                      {item.country}
+                    </Dropdown.Item>
+                  )
+                )
               ) : (
                 <Dropdown.Item>Loading countries...</Dropdown.Item>
               )}
@@ -109,7 +123,7 @@ const MapPage = () => {
                 key={`${selectedCountry}-${zoomLevel}`}
                 center={[0, 0]}
                 zoom={zoomLevel}
-                style={{height: "60vh", width: "100%"}}
+                style={{ height: "60vh", width: "100%" }}
               >
                 <TileLayer
                   attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -117,20 +131,25 @@ const MapPage = () => {
                 />
 
                 <MarkerClusterGroup>
-                  {markers.map(marker =>
+                  {markers.map((marker) => (
                     <Marker position={marker.geocode}>
                       <Popup>
                         <div>
-                          User #{marker.userId} in {marker.city}, {marker.state}<br />
+                          User #{marker.userId} in {marker.city}, {marker.state}
                           <br />
-                          <a href={marker.link} target="_blank">{marker.title}</a><br />
-                          By {marker.author}<br />
+                          <br />
+                          <Link to={`/book/${marker.isbn}`}>
+                            {marker.title}
+                          </Link>
+                          <br />
+                          By {marker.author}
+                          <br />
                           <br />
                           Score: {marker.score}/10
                         </div>
                       </Popup>
                     </Marker>
-                  )}
+                  ))}
                 </MarkerClusterGroup>
               </MapContainer>
             </Col>
@@ -140,8 +159,12 @@ const MapPage = () => {
                 <ListGroup>
                   {popularBooks.length > 0 ? (
                     popularBooks.slice(0, 10).map((book, index) => (
-                      <ListGroup.Item key={index} style={{textAlign: 'left'}}>
-                        {index + 1}. <strong><a href={book.link} target="_blank">{book.title}</a></strong> by {book.author} ({book.reviewcount} reviews)
+                      <ListGroup.Item key={index} style={{ textAlign: "left" }}>
+                        {index + 1}.{" "}
+                        <strong>
+                          <Link to={`/book/${book.isbn}`}>{book.title}</Link>
+                        </strong>{" "}
+                        by {book.author} ({book.reviewcount} reviews)
                       </ListGroup.Item>
                     ))
                   ) : (
