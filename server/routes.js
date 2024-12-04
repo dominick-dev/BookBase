@@ -461,9 +461,9 @@ const magnumOpus = async (req, res) => {
       `
     SELECT b.isbn, b.title, b.author, b.avg_review
     FROM book b
-    WHERE avg_review IS NOT NULL
-    ORDER BY levenshtein(b.author, $1), avg_review DESC
-    LIMIT 5;
+    WHERE b.author = $1 AND avg_review IS NOT NULL
+    ORDER BY avg_review DESC
+    LIMIT 1;
     `,
       [author]
     );

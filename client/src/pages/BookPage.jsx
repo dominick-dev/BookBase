@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Container, Row, Col } from "react-bootstrap";
+import { useParams } from "react-router-dom";
+import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import BookCard from "../components/BookCard";
 import Reviews from "../components/Reviews";
 import NavBar from "../components/NavBar";
@@ -14,6 +14,8 @@ const BookPage = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [magnumOpus, setMagnumOpus] = useState(null);
 
   useEffect(() => {
     const fetchBookData = async () => {
@@ -59,6 +61,16 @@ const BookPage = () => {
     fetchBookData();
     fetchReviews();
   }, [isbn]);
+
+  const fetchMagnumOpus = async () => {
+    try {
+      const response = await fetch (`http://localhost:8080/magnum-opus/${author}`);
+      if (response.ok) {
+        const magnumOpus = await response.json();
+        setMagnumOpus(magnumOpus);
+      }
+    }
+  }
 
   const book = bookData ? bookData[0] : null;
 
