@@ -54,7 +54,7 @@ const RandomBook = () => {
         maxWidth={false}
         sx={{
             bgcolor: 'wheat',
-            padding: 4
+            padding: 2
         }}    
     >
     <Container
@@ -117,20 +117,6 @@ const RandomBook = () => {
                 }}
             >
                 Get Another Book
-            </Button>
-            <Button
-                variant="outlined"
-                href={`/search/${book.isbn}`}
-                sx={{
-                color: "#333",
-                borderColor: "#333",
-                "&:hover": {
-                    bgcolor: "#f5f5f5",
-                    borderColor: "#555",
-                },
-                }}
-            >
-                Learn More
             </Button>
             </Box>
         </CardContent>

@@ -42,7 +42,7 @@ const BookCarousel = ({ books }) => {
           loop={true}
           grabCursor={true}
           centeredSlides={true}
-          slidesPerView={"4"}
+          slidesPerView={"3"}
           mousewheel={true}
           coverflowEffect={{
             rotate: 50,

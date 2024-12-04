@@ -7,7 +7,7 @@ const HomePageHero = () => {
     <div
       className="hero-section"
       style={{
-        height: '50vh',
+        height: '60vh',
         backgroundImage: `url(${bookshelf})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
