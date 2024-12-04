@@ -302,8 +302,9 @@ const InsightsPage = () => {
         <Typography variant="body1" align="center">
           Explore interesting book insights from our carefully curated data.
           Discover hidden gems that deserve more attention, uncover polarizing
-          books that spark heated debates, and see what the top reviewers in the
-          community love the most!
+          books that spark heated debates, see what the top reviewers in the
+          community love the most, and find books that are enjoyed by readers of
+          different age groups!
         </Typography>
       </Box>
       <div className="insights-page">
