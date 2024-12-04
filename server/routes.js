@@ -290,35 +290,7 @@ const byAgeGroup = async (req, res) => {
 
     const result = await connection.query(
       `
-        WITH age_groups AS (
-          SELECT
-              p.userId,
-              r.isbn,
-              CASE
-                  WHEN 2024 - p.birthYear < 18 THEN 'Under 18'
-                  WHEN 2024 - p.birthYear BETWEEN 18 AND 30 THEN '18-30'
-                  WHEN 2024 - p.birthYear BETWEEN 31 AND 50 THEN '31-50'
-                  WHEN 2024 - p.birthYear BETWEEN 51 AND 65 THEN '51-65'
-                  WHEN 2024 - p.birthYear > 65 THEN '65+'
-                  ELSE 'Unknown'
-              END AS age_group,
-              r.score
-          FROM person p
-          JOIN review r ON p.userId = r.userId
-          WHERE p.birthYear IS NOT NULL
-        ),
-        age_group_popular_books AS (
-          SELECT
-              ag.age_group,
-              b.isbn,
-              b.title,
-              b.author,
-              COUNT(ag.userId) AS review_count,
-              ROUND(cast(AVG(ag.score) as numeric), 2) AS avg_rating
-          FROM age_groups ag
-          JOIN book b ON ag.isbn = b.isbn
-          GROUP BY ag.age_group, b.isbn, b.title, b.author
-        ), ranked_books AS (
+        WITH ranked_books AS (
           SELECT
               agpb.age_group,
               agpb.isbn,
@@ -330,7 +302,7 @@ const byAgeGroup = async (req, res) => {
                   PARTITION BY agpb.age_group
                   ORDER BY agpb.review_count DESC, agpb.avg_rating DESC
               ) AS rank
-          FROM age_group_popular_books agpb
+          FROM age_based_popular_books agpb
         )
         SELECT age_group, isbn, title, author, review_count, avg_rating, rank
         FROM ranked_books
@@ -461,32 +433,21 @@ const magnumOpus = async (req, res) => {
 // ROUTE XXX: /hidden-gems
 const hiddenGems = async (req, res) => {
   // console.log("hidden gems route hit");
-  const minRating = parseFloat(req.query.minRating) || 4.5;
-  const maxReviews = parseInt(req.query.maxReview) || 8;
 
   try {
     const result = await connection.query(
       `
-      WITH review_summary AS (
-        SELECT
-            isbn,
-            COUNT (userId) as review_count
-        FROM review
-        GROUP BY isbn
-        HAVING COUNT(userId) < $1
-    )
-    SELECT
+      SELECT
         b.isbn,
         b.title,
         b.author,
         b.avg_review,
         rs.review_count
-    FROM review_summary rs LEFT JOIN book b ON b.isbn = rs.isbn
-    WHERE b.author IS NOT NULL AND avg_review >= $2
-    ORDER BY b.avg_review DESC, rs. review_count DESC
-    LIMIT 30;
-    `,
-      [maxReviews, minRating]
+      FROM review_summary rs LEFT JOIN book b ON b.isbn = rs.isbn
+      WHERE b.author IS NOT NULL AND avg_review >= 4.5
+      ORDER BY b.avg_review DESC, rs. review_count DESC
+      LIMIT 50;
+    `
     );
     // console.log("hidden gems fetched: ", result.rows);
     return res.status(200).json(result.rows);
