@@ -276,38 +276,17 @@ const polarizingBooks = async (req, res) => {
 // get books by age group
 const byAgeGroup = async (req, res) => {
   // console.log("books by age group route hit");
+
   try {
     // console.log("fetching books by age group");
-    const { birthYear } = req.params;
-    const birthYearInt = parseInt(birthYear); // attempt to parse
+    const { ageGroup } = req.params;
 
-    // check for parsing success
-    if (isNaN(birthYearInt)) {
-      return res.status(400).json({ error: "Invalid birth year." });
+    const validAgeGroups = ["Under 18", "18-30", "31-50", "51-65", "65+"];
+    if (!ageGroup || !validAgeGroups.includes(ageGroup)) {
+      return res.status(400).json({ error: "Invalid age group." });
     }
 
-    // changed to accept age
-    const age = birthYearInt;
-
-    if (age < 0) {
-      return res.status(400).json({ error: "Invalid age" });
-    }
-
-    let ageGroup;
-
-    if (age < 18) {
-      ageGroup = "Under 18";
-    } else if (age <= 30) {
-      ageGroup = "18-30";
-    } else if (age <= 50) {
-      ageGroup = "31-50";
-    } else if (age <= 65) {
-      ageGroup = "51-65";
-    } else {
-      ageGroup = "65+";
-    }
-
-    // console.log(ageGroup);
+    // console.log("Received age group: ", ageGroup);
 
     const result = await connection.query(
       `
@@ -356,11 +335,13 @@ const byAgeGroup = async (req, res) => {
         SELECT age_group, isbn, title, author, review_count, avg_rating, rank
         FROM ranked_books
         WHERE rank BETWEEN 1 AND 5 AND age_group = $1
-        ORDER BY age_group;
+        ORDER BY age_group
+        LIMIT 30;
       `,
       [ageGroup]
     );
     // console.log("books by age group fetched: ", result.rows);
+
     return res.status(200).json(result.rows);
   } catch (err) {
     console.error("Error fetching books by age group", err);
@@ -526,19 +507,14 @@ const helpfulUsers = async (req, res) => {
 
   // Validation on the parameters if they're given
   if (minNumVotes < 0) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "Invalid minNumVotes provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid minNumVotes provided. Please provide a positive integer.",
+    });
   }
   if (maxUsers < 0) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid maxUsers provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid maxUsers provided. Please provide a positive integer.",
+    });
   }
 
   try {
@@ -604,12 +580,9 @@ const authorStats = async (req, res) => {
 
   // data validation
   if (isNaN(numAuthors) || numAuthors < 0) {
-    return res
-      .status(400)
-      .json({
-        error:
-          "Invalid numAuthors provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid numAuthors provided. Please provide a positive integer.",
+    });
   }
 
   try {
@@ -656,11 +629,9 @@ const genreStats = async (req, res) => {
 
   // data validation
   if (isNaN(numGenres) || numGenres < 0) {
-    return res
-      .status(400)
-      .json({
-        error: "Invalid numGenres provided. Please provide a positive integer.",
-      });
+    return res.status(400).json({
+      error: "Invalid numGenres provided. Please provide a positive integer.",
+    });
   }
 
   try {
