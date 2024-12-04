@@ -82,4 +82,4 @@ Bookbase is a web application designed to provide users with a comprehensive pla
 
 ## Acknowledgments
 
-- Students: Aadit Vyas, Dominic DeVincenzo, Jaxon Bailey, and Zakaria Loudini
+- Students: Aadit Vyas, Dominick DeVincenzo, Jaxon Bailey, and Zakaria Loudini
