@@ -44,7 +44,7 @@ const BookCard = ({ book }) => {
         </div>
         <div className='flip-card-back'>
           <div className='content-container'>
-            <h2 className='card-title'>{title}</h2>
+            <h2 className='card-title' style={{color: 'wheat'}}>{title}</h2>
             <p className='card-text'>By {author}</p>
             <div className='book-rating'>
               <Rating

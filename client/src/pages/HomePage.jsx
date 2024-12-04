@@ -7,12 +7,11 @@ import NavBar from "../components/NavBar";
 import { Routes, Route, Navigate } from "react-router-dom";
 import RandomBook from "../components/RandomBook";
 import {
-  Container,
-  Grid,
-  Typography,
   CircularProgress,
   Box,
 } from "@mui/material";
+import Grid from '@mui/material/Grid2'
+import HomePageCarouselHeader from "../components/HomePageCarouselHeader";
 
 const HomePage = () => {
   const [books, setBooks] = useState([]);
@@ -63,23 +62,19 @@ const HomePage = () => {
           element={
             <>
               <HomePageHero />
-              <Typography variant="h6" align="center" gutterBottom>
-                Click on the book cards to learn more about the books!
-              </Typography>
+              <HomePageCarouselHeader />
               <BookCarousel books={books} />
               <RandomBook />
-              <Container
-                sx={{ backgroundColor: "wheat", padding: "20px", mt: 4 }}
-              >
+              <Box sx={{flexGrow: 1, bgcolor: 'wheat', paddingRight:'20px', paddingLeft: '20px', paddingBottom: '40px'}}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} md={5}>
-                    <TopAuthors />
-                  </Grid>
-                  <Grid item xs={12} md={7}>
-                    <GenreFacts />
-                  </Grid>
+                    <Grid size={5}>
+                        <TopAuthors/>
+                    </Grid>
+                    <Grid size={7}>
+                        <GenreFacts/>
+                    </Grid>
                 </Grid>
-              </Container>
+                </Box>
             </>
           }
         />
