@@ -446,7 +446,7 @@ const hiddenGems = async (req, res) => {
       FROM review_summary rs JOIN book b ON b.isbn = rs.isbn
       WHERE b.author IS NOT NULL AND avg_review >= 4.5
       ORDER BY b.avg_review DESC, rs. review_count DESC
-      LIMIT 15;
+      LIMIT 10;
     `
     );
     // console.log("hidden gems fetched: ", result.rows);
