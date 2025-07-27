@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -9,7 +9,6 @@ import {
   Row,
   Col,
   ListGroup,
-  ListGroupItem,
 } from "react-bootstrap";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import NavBar from "../components/NavBar";
