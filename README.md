@@ -1,5 +1,7 @@
 # Bookbase Project
 
+This project was built as part of a group assignment for **CIS 5500: Databases and Information Systems** at the University of Pennsylvania.
+
 ## Overview
 
 Bookbase is a web application designed to provide users with a comprehensive platform for exploring books and reviews. Built with a React frontend and an Express backend, the application leverages PostgreSQL for data storage and retrieval. The project is structured to support various features such as book search, review display, and user interaction.
